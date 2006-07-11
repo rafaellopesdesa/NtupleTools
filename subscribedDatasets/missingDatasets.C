@@ -44,14 +44,14 @@ int missingDatasets(TString input="allsamples.txt", TString output = "outfile.tx
       TString site = "";
  
       status = gSystem->GetFromPipe( "timeout 10s python das_client.py --query=\"dataset= "+dataset+" | grep dataset.status\" | tail -1" );
-      site = gSystem->GetFromPipe( "timeout 10s python das_client.py --query=\"site dataset= "+dataset+" | grep site.name\" " );
+      site = gSystem->GetFromPipe( "timeout 10s python das_client.py --limit=0 --query=\"site dataset= "+dataset+" | grep site.name\" " );
 
       bool atUCSD = site.Contains("T2_US_UCSD");
       
       //if sample is valid, add to vector of missing samples
       if( status == "VALID" && !atUCSD) {
       	das_failed = false;
-	printColor(dataset + " missing, will add.", 92, humanUser);
+	printColor(dataset + " missing, will add.", 95, humanUser);
 	missing.push_back(line);
       }
 
