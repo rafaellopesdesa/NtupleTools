@@ -219,23 +219,14 @@ if( global_tag_flag != '' ):
             print 'Including sParmMaker with parameters %s.\n'%sParms
 	makeCMSSWConfig(cmsswSkelFile)
 	makeCrabConfig()
-else :
-    global_tag = '';
-    dbs_result = '';
-    if dbs_url == '' :
-      command = 'dbsql find config.name,config.content where dataset=' + dataSet.replace("AODSIM", "GEN-SIM-RECO") + '>config.content; while read line; do globaltag=`echo $line | sed -n \'s/^.*process.GlobalTag.globaltag = \([^p]*\).*$/\\1/p\'`; if [ "$globaltag" != "" ]; then echo $globaltag; break; fi; done <config.content; rm config.content';
-    else:
-      command = 'python $DBSCMD_HOME/dbsCommandLine.py -c search --url=' + dbs_url + ' --query="find config.name,config.content where dataset=' + dataSet.replace("AODSIM", "GEN-SIM-RECO") + '">config.content; while read line; do globaltag=`echo $line | sed -n \'s/^.*process.GlobalTag.globaltag = \([^p]*\).*$/\\1/p\'`; if [ "$globaltag" != "" ]; then echo $globaltag; break; fi; done <config.content; rm config.content';
-    #print command
-
+elif( dbs_url != ''):
+    command = './das_client.py --query="config dataset=' + dataSet + ' instance=' + dbs_url + '" --format=JSON'
     length = len( os.popen(command).readlines() )
     if( length > 0 ):
       lines = os.popen(command);
       for i in lines.readlines():
-        dbs_result = re.sub('\n', '', i)
-        global_tag = re.sub('#.+$', '', dbs_result)
+        global_tag = i[i.find("global_tag"):i.find(",",i.find("global_tag"))][14:-1]
         if( global_tag != '' and global_tag_flag == '' ):
-            print '\nDBS Query results:\t\'' + dbs_result + '\' ?\n'
             print 'Use global tag from DBS:\t\'' + global_tag + '\' ?\n'
             answer = raw_input('[y/n]?')
             while(answer != 'y' and answer != 'n'): 
@@ -251,3 +242,51 @@ else :
     else: 
       print '\nGlobal tag not found in DBS. Use -gtag to set global tag. Exiting...\n'
       sys.exit()
+else:
+  counter = 0
+  while (counter < 4):
+    global_tag = '';
+    dbs_result = '';
+    if (counter == 0): command = './das_client.py --query="config dataset=' + dataSet + '" --format=JSON'
+    else: command = './das_client.py --query="config dataset=' + dataSet + ' instance=prod/phys0' + str(counter) + '" --format=JSON'
+    print "Querying DAS with following command: ",command
+    length = len( os.popen(command).readlines() )
+    if( length > 0 ):
+      lines = os.popen(command);
+      for i in lines.readlines():
+        global_tag = i[i.find("global_tag"):i.find(",",i.find("global_tag"))][14:-1]
+        if( global_tag != '' and global_tag_flag == '' and global_tag != 'UNKNOWN'):
+            print 'Use global tag from DBS:\t\'' + global_tag + '\' ?\n'
+            answer = raw_input('[y/n]?')
+            while(answer != 'y' and answer != 'n'): 
+                print 'Please pick either \'y\' or \'n\''
+                answer = raw_input('[y/n]?')
+            if answer == 'y': counter = 4
+            if answer == 'n':
+                print 'Enter alternative Global Tag:'
+                global_tag = raw_input('new global tag:')
+            if sParms > 0:
+                print 'Including sParmMaker with parameters %s.\n'%sParms
+            makeCMSSWConfig(cmsswSkelFile)
+            makeCrabConfig()
+    counter += 1
+    if (counter == 4): 
+      print '\nGlobal tag not found in DAS.  Trying to extract from filename....\n'
+      global_tag = dataSet[dataSet.find("/",1):dataSet.rfind("/")][dataSet[dataSet.find("/",1):dataSet.rfind("/")].find("-")+1:dataSet[dataSet.find("/",1):dataSet.rfind("/")].rfind("_")]
+      if( global_tag != '' and global_tag_flag == '' and global_tag != 'UNKNOWN'):
+          print 'Use global tag from filename:\t\'' + global_tag + '\' ?\n'
+          answer = raw_input('[y/n]?')
+          while(answer != 'y' and answer != 'n'): 
+              print 'Please pick either \'y\' or \'n\''
+              answer = raw_input('[y/n]?')
+          if answer == 'y': counter = 4
+          if answer == 'n':
+              print 'Enter alternative Global Tag:'
+              global_tag = raw_input('new global tag:')
+          if sParms > 0:
+              print 'Including sParmMaker with parameters %s.\n'%sParms
+          makeCMSSWConfig(cmsswSkelFile)
+          makeCrabConfig()
+      else: 
+        print 'Unable to extract global tag from filename. Use -gtag to set global tag. Exiting...\n'
+        sys.exit()
