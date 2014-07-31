@@ -1,0 +1,43 @@
+ROOTCONFIG   := root-config
+ROOTCFLAGS   := $(shell $(ROOTCONFIG) --cflags)
+ROOTLDFLAGS  := $(shell $(ROOTCONFIG) --ldflags)
+ROOTLIBS     := $(shell $(ROOTCONFIG) --libs)
+ROOTGLIBS    := $(shell $(ROOTCONFIG) --glibs)
+HASTHREAD    := $(shell $(ROOTCONFIG) --has-thread)
+
+CXX           = g++
+CXXFLAGS      = -O -Wall -fPIC $(ROOTCFLAGS)
+LD            = g++
+LDFLAGS       = -O $(ROOTLDFLAGS)
+SOFLAGS       = -shared
+LINKER = g++
+LINKERFLAGS = $(shell root-config --ldflags) $(shell root-config --libs)
+ifeq ($(shell root-config --platform),macosx)
+	LINKERFLAGS = -dynamiclib -undefined dynamic_lookup -Wl,-x -O -Xlinker -bind_at_load -flat_namespace $(shell root-config --libs) -lEG -lGenVector
+endif
+LIBS          = $(ROOTLIBS) $(SYSLIBS)
+GLIBS         = $(ROOTGLIBS) $(SYSLIBS)
+
+OBJS          = sweepRoot.o
+EXES          = $(OBJS:.o=)
+
+ABOBJS        = addBranches.o
+ABLIB         = libAddBranches.so
+
+all:	$(EXES) $(ABLIB)
+
+sweepRoot:	sweepRoot.o
+		$(LD) $(LDFLAGS) $^ $(GLIBS) -lTreePlayer -o $@
+
+$(ABLIB):	$(ABOBJECTS) 
+	echo "Linking $(ABLIB)"; \
+	$(LINKER) $(LINKERFLAGS) -shared $(ABOBJECTS) -o $@
+
+.C.o:
+		$(CXX) $(CXXFLAGS) -c $<
+
+clean:
+		@rm -f core $(OBJS) $(EXES)
+
+print:
+		@echo $(EXES)
