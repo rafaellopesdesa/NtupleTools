@@ -156,7 +156,7 @@ if( commands.getstatusoutput('ls ' + outpath)[0] == 256):
 ##get list of fjrs, then look through those for output files
 ##sum the space used by root files, and compare that to the free space on the output disk
 goodCrabXMLFiles = []
-getGoodXMLFiles(crabpath)
+# getGoodXMLFiles(crabpath)
 # checkForSpace(outpath)
 
 
