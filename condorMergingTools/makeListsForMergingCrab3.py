@@ -180,9 +180,11 @@ commands.getstatusoutput(cmd)
 
 
 goodRootFiles = []
-totalNumEventsRun = 0
 rootFilesToMerge = []
 
+### get number of events in a TChain of root files in datapath
+status, macroData = commands.getstatusoutput("root -l -b -q -n 'libC/counts.C(\"%s\")' | grep nevents" % datapath)
+totalNumEventsRun = int(macroData.split("=")[-1])
 
 getGoodRootFiles(datapath,outpath)        
 
@@ -197,6 +199,8 @@ for listName in output:
     f.write("file: %s\n" %(listName))
     
 f.close()
+
+print "Total number of events run over: ",totalNumEventsRun
 
 print "Writing cfg file to cfg/%s.sh" %(samplename)
 f_cfg = open("cfg/%s_cfg.sh" %(samplename),"w")
