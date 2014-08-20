@@ -96,6 +96,17 @@ def makeCMSSWConfig(cmsswSkelFile):
         if iline < nlines:
             outFile.write('\n')
 
+    if len(sParms) > 0:
+        outFile.write('process.sParmMaker.vsparms = cms.untracked.vstring(\n')
+        for sParm in sParms:
+            if sParm != sParms[-1]:  #assumes the list is populated with unique entries
+                sParm = '\"%s\",'%sParm
+            else:
+                sParm = '\"%s\"'%sParm
+            outFile.write('%s\n'%sParm)
+        outFile.write(') # list of sparm parameters, be sure it is the same size as the number of parameter in the files\n')
+        outFile.write('process.p.insert( -1, process.sParmMakerSequence ) #adds the sparm producer in to the sequence\n')
+
     outFile.close()
 
 def checkConventions():
@@ -170,6 +181,9 @@ for i in range(0, len(sys.argv)):
 if os.path.exists(cmsswSkelFile) == False:
     print 'CMSSW skeleton file does not exist. Exiting'
     sys.exit()
+
+if len(sParms) > 0:
+    print 'Including sParmMaker with parameters: ',sParms
 
 checkConventions()
 makeCMSSWConfig(cmsswSkelFile)
