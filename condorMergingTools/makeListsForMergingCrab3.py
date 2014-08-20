@@ -10,30 +10,41 @@ from xml.dom.minidom import Node
 ################### Gets List of good XML files (files corresponding to jobs that have ###################
 ################### completed successfully                                             ###################
 
-def getGoodXMLFiles(crabpath):
-    global goodCrabXMLFiles
+def getNumEventsRun(crabpath):
+    global totalNumEventsRun
+    # global goodCrabXMLFiles
+    #get the job number from the crab file
+    resultspath = crabpath+'/results/'
+    # FrameworkJobReport-1.xml  cmsRun_1.log.tar.gz       cmsRun_2.log.tar.gz       cmsRun_3.log.tar.gz
+    status, tars = commands.getstatusoutput('ls -1 ' + resultspath + '*.gz')
+    tars = tars.split('\n')
+    for tar in tars:
+        print tar
+        tarBasename = tar.replace(resultspath,"")
+        # jobNum = tarBasename.split("_")[-1].split(".")[0]
+        cmd = "tar xzf %s -C %s" % (tar, resultspath)
+        os.system(cmd)
 
-    cmd = 'ls ' + crabpath + '/results/*.xml'
-    temp = commands.getoutput(cmd).split('\n')
-    
-    for j in temp:
-        print 'Parsing ' + j
-        duplicateFile = False
-        for k in goodCrabXMLFiles:
-            if k.split('/')[len(k.split('/'))-1] == j.split('/')[len(j.split('/'))-1]:
-                duplicateFile = True
-                break
-        if duplicateFile == False:
-            try:
-                doc = xml.dom.minidom.parse(j) #read xml file to see if the job failed
-            except:
-                print 'FrameworkJobReport:',j,'could not be parsed and is skipped'
-                continue
-            jobFailed = False
- 	 
-            if jobFailed == False:
-                goodCrabXMLFiles.append(j)
 
+    status, xmls = commands.getstatusoutput('ls -1 ' + resultspath + '*.xml')
+    xmls = xmls.split('\n')
+
+    for i in xmls:
+        print "New: " + i
+        jobNum = i.split("-")[-1]
+        jobNum = jobNum.split(".")[0]
+        #parse the crab file:
+        print "Getting Number of Events run for Job: " + i 
+        try:
+            doc = xml.dom.minidom.parse(i)
+        except:
+            continue
+        for node in doc.getElementsByTagName("EventsRead"):
+            s = node.firstChild.data
+            #s is in unicode
+            #don't need to encode in ascii, but runs faster
+            s.encode('ascii')
+            totalNumEventsRun = totalNumEventsRun + int(s)
 
 
 ###############################################################################################################
@@ -120,6 +131,7 @@ if( len(sys.argv)<15 ):
 crabpath = ''
 datapath = ''
 outpath = ''
+overrideCrab = False
 
     
 localdirectory = commands.getstatusoutput('pwd')[1]
@@ -138,6 +150,8 @@ for i in range (0, len(sys.argv)):
         filtEff     = sys.argv[i+1] 
     if(sys.argv[i] == "-x"):
         xSection     = sys.argv[i+1] 
+    if(sys.argv[i] == "--overrideCrab"):
+        overrideCrab = True
                          
 
 if( commands.getstatusoutput('ls ' + crabpath)[0] == 256):
@@ -160,13 +174,13 @@ goodCrabXMLFiles = []
 # checkForSpace(outpath)
 
 
-if datapath.find("pnfs") != -1 or datapath.find("hadoop") != -1:
-    print "Creating folders for logs and merged file lists in %s/mergeFiles" %(outpath)
-    cmd = "mkdir -p " + crabpath + "/mergeFiles/mergeLists"
-    # print commands.getstatusoutput("ls %s/mergeFiles/mergeLists" %(crabpath))[1]
-    if commands.getstatusoutput(cmd)[0] == 256 and commands.getstatusoutput("ls %s/mergeFiles/mergeLists" %(crabpath))[1]!="":
-        print "The directory %s/mergeFiles/mergeLists already exists and is not empty!. Exiting!" %(crabpath)
-        sys.exit()
+# if datapath.find("pnfs") != -1 or datapath.find("hadoop") != -1:
+print "Creating folders for logs and merged file lists in %s/mergeFiles" %(outpath)
+cmd = "mkdir -p " + crabpath + "/mergeFiles/mergeLists"
+# print commands.getstatusoutput("ls %s/mergeFiles/mergeLists" %(crabpath))[1]
+if commands.getstatusoutput(cmd)[0] == 256 and commands.getstatusoutput("ls %s/mergeFiles/mergeLists" %(crabpath))[1]!="":
+    print "The directory %s/mergeFiles/mergeLists already exists and is not empty!. Exiting!" %(crabpath)
+    sys.exit()
 
         
 
@@ -182,9 +196,13 @@ commands.getstatusoutput(cmd)
 goodRootFiles = []
 rootFilesToMerge = []
 
-### get number of events in a TChain of root files in datapath
-status, macroData = commands.getstatusoutput("root -l -b -q -n 'libC/counts.C(\"%s\")' | grep nevents" % datapath)
-totalNumEventsRun = int(macroData.split("=")[-1])
+totalNumEventsRun = 0
+if(overrideCrab):
+    ### get number of events in a TChain of root files in datapath
+    status, macroData = commands.getstatusoutput("root -l -b -q -n 'libC/counts.C(\"%s\")' | grep nevents" % datapath)
+    totalNumEventsRun = int(macroData.split("=")[-1])
+else:
+    getNumEventsRun(crabpath)
 
 getGoodRootFiles(datapath,outpath)        
 
