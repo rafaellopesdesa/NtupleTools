@@ -6,6 +6,9 @@ import sys
 import xml.dom.minidom
 from xml.dom.minidom import Node
 
+if "CMSSW_BASE" not in os.environ:
+    print "$CMSSW_BASE not set! Please do 'cmsenv' first."
+    sys.exit()
                       
 ################### Gets List of good XML files (files corresponding to jobs that have ###################
 ################### completed successfully                                             ###################
