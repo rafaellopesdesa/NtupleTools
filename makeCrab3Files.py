@@ -39,7 +39,7 @@ def makeCrab3Config():
     outFile.write('config.section_(\'JobType\')\n')
     outFile.write('config.JobType.pluginName = \'Analysis\'\n')
     outFile.write('config.JobType.psetName = \'%s_cfg.py\'\n' % ('./' + psetPfx + outFileName))
-    outFile.write('config.JobType.outputFiles = [\'%s\']\n' % outNtupleName)
+    # outFile.write('config.JobType.outputFiles = [\'%s\']\n' % outNtupleName)
     outFile.write('\n')
     outFile.write('config.section_(\'Data\')\n')
     outFile.write('config.Data.inputDataset = \'%s\'\n' % dataSet)
