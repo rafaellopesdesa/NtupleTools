@@ -16,7 +16,7 @@ outNtupleName = 'ntuple.root'
 storageElement = 'T2_US_UCSD'
 tag = 'V07-00-03'
 mode = 'remoteGlidein'
-dbs_url = 'phys03'
+dbs_url = 'global'
 report_every = 1000;
 global_tag = '';
 sParms = [];
@@ -33,7 +33,7 @@ def makeCrab3Config():
     outFile.write('from WMCore.Configuration import Configuration\n')
     outFile.write('config = Configuration()\n')
     outFile.write('config.section_(\'General\')\n')
-    outFile.write('config.General.transferOutput = True\n')
+    outFile.write('config.General.transferOutputs = True\n')
     outFile.write('config.General.requestName = \'%s\'\n' % outFileName)
     outFile.write('\n')
     outFile.write('config.section_(\'JobType\')\n')
@@ -46,7 +46,7 @@ def makeCrab3Config():
     outFile.write('config.Data.publication = False\n')
     outFile.write('config.Data.unitsPerJob = %i \n' % filesPerJob)
     outFile.write('config.Data.splitting = \'FileBased\'\n')
-    outFile.write('config.Data.dbsUrl = \'%s\'\n' % dbs_url)
+    outFile.write('config.Data.inputDBS = \'%s\'\n' % dbs_url)
     outFile.write('config.Data.ignoreLocality = True\n')
     outFile.write('\n')
     outFile.write('config.section_(\'User\')\n')
