@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [ ! -d ~/$USERNAME/public_html ] 
+then
+mkdir ~/$USERNAME/public_html
+fi
+
+cp $1 /home/users/$USER/public_html/
