@@ -11,6 +11,7 @@ psetPfx = 'pset/'
 dataSet = ''
 numEvtsTotal = -1
 numEvtsPerJob = 20000
+numLumisPerJob = 1000
 filesPerJob = 1
 outNtupleName = 'ntuple.root'
 storageElement = 'T2_US_UCSD'
@@ -44,16 +45,18 @@ def makeCrab3Config():
     outFile.write('config.section_(\'Data\')\n')
     outFile.write('config.Data.inputDataset = \'%s\'\n' % dataSet)
     outFile.write('config.Data.publication = False\n')
-    outFile.write('config.Data.unitsPerJob = %i \n' % filesPerJob)
-    outFile.write('config.Data.splitting = \'FileBased\'\n')
+    #outFile.write('config.Data.unitsPerJob = %i \n' % filesPerJob)
+    outFile.write('config.Data.unitsPerJob = %i \n' % int(numLumisPerJob))
+    #outFile.write('config.Data.splitting = \'FileBased\'\n')
+    outFile.write('config.Data.splitting = \'LumiBased\'\n')
     outFile.write('config.Data.inputDBS = \'%s\'\n' % dbs_url)
-    outFile.write('config.Data.ignoreLocality = True\n')
+    #outFile.write('config.Data.ignoreLocality = True\n')
     outFile.write('\n')
     outFile.write('config.section_(\'User\')\n')
     outFile.write('\n')
     outFile.write('config.section_(\'Site\')\n')
     outFile.write('config.Site.storageSite = \'T2_US_UCSD\'\n')
-    outFile.write('config.Site.whitelist = [\'T2_US_Caltech\',\'T2_US_Florida\', \'T2_US_MIT\', \'T2_US_Nebraska\', \'T2_US_Purdue\', \'T2_US_UCSD\', \'T2_US_Vanderbilt\', \'T2_US_Wisconsin\']\n')
+    #outFile.write('config.Site.whitelist = [\'T2_US_Caltech\',\'T2_US_Florida\', \'T2_US_MIT\', \'T2_US_Nebraska\', \'T2_US_Purdue\', \'T2_US_UCSD\', \'T2_US_Vanderbilt\', \'T2_US_Wisconsin\']\n')
     outFile.write('\n')
 	 
 #
@@ -122,6 +125,8 @@ def checkConventions():
     
     print 'CRAB submission should happen outside of {%s,%s}' % (configPfx, psetPfx)
 
+#def FindLumisPerJob():
+    #os.process()
 
 
 if len(sys.argv) < 9 :
@@ -155,6 +160,8 @@ for i in range(0, len(sys.argv)):
         numEvtsTotal = sys.argv[i+1]
     if sys.argv[i] == '-evtsPerJob':
         numEvtsPerJob = sys.argv[i+1]
+    if sys.argv[i] == '-lumisPerJob':
+        numLumisPerJob = sys.argv[i+1]
     if sys.argv[i] == '-strElem':
         storageElement = sys.argv[i+1]
     if sys.argv[i] == '-t':
