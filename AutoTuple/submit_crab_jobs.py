@@ -16,7 +16,10 @@ s = p.readline()
 p.close()
 inFile_size = int(s)
 
-os.remove('LumisPerJob.txt')
+try:
+    os.remove('LumisPerJob.txt')
+except OSError:
+    pass
 
 lnum = 1
 while (lnum <= inFile_size):
