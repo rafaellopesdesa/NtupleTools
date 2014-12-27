@@ -29,6 +29,7 @@ cp ../../monitor.py .
 cp ../../monitor.sh . 
 cp ../../process.py .
 cp ../../pirate.txt .
+cp ../../FindLumisPerJob.sh . 
 cp ../../web_autoTuple .
 python submit_crab_jobs.py $1
 . monitor.sh $1

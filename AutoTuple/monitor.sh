@@ -59,11 +59,6 @@ do
       echo "Post processing started!" 
       WHICHDONE[$fileNumber]="true"
       python process.py $p &
-    elif [ $exitCode -eq 222 ] 
-    then
-      echo "Status 0 post processing started"
-      WHICHDONE[$fileNumber]="true"
-      (sleep 1800 &) && (python process.py $p &) 
     fi
     #If job is not finished, check directory to make sure
     let "fileNumber += 1"

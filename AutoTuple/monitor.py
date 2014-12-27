@@ -144,7 +144,4 @@ elif (numer+nFailNoResubmit == denom and denom > 0): sys.exit(221)
 dir = '/hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/*/000*/*.root'
 if (os.path.isdir(dir)): sys.exit(0)
 dir2 = glob.glob(dir);
-if len(dir2) == denom:
-    #os.system("crab kill " + crab_dir + ' &' )  
-    sys.exit(222)
 sys.exit(0)
