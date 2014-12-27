@@ -1,9 +1,9 @@
-##!/bin/bash
-#if [ $# -eq 0 ] 
-#  then 
-#  echo "No arguments!" 
-#  return
-#fi
+#!/bin/bash
+if [ $# -eq 0 ] 
+  then 
+  echo "No arguments!" 
+  return
+fi
 
 export PATH=$PATH:`pwd`
 source /cvmfs/cms.cern.ch/crab3/crab.sh
@@ -29,5 +29,5 @@ cp ../../monitor.py .
 cp ../../monitor.sh . 
 cp ../../process.py .
 cp ../../web_autoTuple .
-#python submit_crab_jobs.py $1
-#. monitor.sh $1
+python submit_crab_jobs.py $1
+. monitor.sh $1
