@@ -1,9 +1,9 @@
-#!/bin/bash
-if [ $# -eq 0 ] 
-  then 
-  echo "No arguments!" 
-  return
-fi
+##!/bin/bash
+#if [ $# -eq 0 ] 
+#  then 
+#  echo "No arguments!" 
+#  return
+#fi
 
 export PATH=$PATH:`pwd`
 source /cvmfs/cms.cern.ch/crab3/crab.sh
@@ -20,8 +20,7 @@ scram b -j 10
 cd ..
 mkdir crab
 cd crab
-git clone git@github.com:cmstas/NtupleTools.git .
-cp -r ${CMSSW_BASE}/crab/condorMergingTools/* ${CMSSW_BASE}/crab/
+cp -r ../../condorMergingTools/* ${CMSSW_BASE}/crab/
 cp ${CMSSW_BASE}/src/CMS3/NtupleMaker/test/Slim_MCProduction2012_NoFilter_cfg.py skeleton_cfg.py
 cp ../../submitMergeJobs.sh .
 cp ../../submit_crab_jobs.py  .
@@ -30,5 +29,5 @@ cp ../../monitor.py .
 cp ../../monitor.sh . 
 cp ../../process.py .
 cp ../../web_autoTuple .
-python submit_crab_jobs.py $1
-. monitor.sh $1
+#python submit_crab_jobs.py $1
+#. monitor.sh $1
