@@ -26,6 +26,12 @@ while (lnum <= inFile_size):
   line = linecache.getline(inFile, lnum)
   parts = line.split()
   os.system('./FindLumisPerJob.sh ' + parts[0] + ' >> LumisPerJob.txt')
+  lnum+=1
+
+lnum = 1
+while (lnum <= inFile_size):
+  line = linecache.getline(inFile, lnum)
+  parts = line.split()
   lumi_line = linecache.getline('LumisPerJob.txt', lnum)
   lumi_parts = lumi_line.split()
   numLumiPerJob = lumi_parts[0]
