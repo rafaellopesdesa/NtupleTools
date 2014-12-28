@@ -7,6 +7,9 @@ eval `scramv1 runtime -sh`
 source /cvmfs/cms.cern.ch/crab3/crab.sh
 export PATH=$PATH:`pwd`
 
+web_autoTuple crabPic.png &>/dev/null
+chmod a+r ~/public_html/crabPic.png
+
 #Store WHICHDONE with TRUE when job is finished (so don't keep checking on it)
 WHICHDONE=()
 while read p 
@@ -33,9 +36,9 @@ do
     isNew=true
     touch AutoTupleHQ.html
     echo '<HTML>' > AutoTupleHQ.html
-    echo '<meta http-equiv="refresh" content="5">' >> AutoTupleHQ.html
+    echo '<meta http-equiv="refresh" content="15">' >> AutoTupleHQ.html
     echo '<body>' >> AutoTupleHQ.html 
-    echo '<H2>The AutoTuple HQ </H2>' >> AutoTupleHQ.html
+    echo '<img src="crabPic.png" width="50%" height="50%"> <BR>' >> AutoTupleHQ.html
     echo "Last updated at $timeAG on $dateAG <BR> <BR>" >> AutoTupleHQ.html
   else
     isNew=false
