@@ -35,5 +35,5 @@ cp ../../FindLumisPerJob.sh .
 cp ../../das_client.py . 
 cp ../../web_autoTuple .
 cp ../../crabPic.png .
-python submit_crab_jobs.py $1
-. monitor.sh $1
+python submit_crab_jobs.py $1 $gtag $tag
+. monitor.sh $1 $gtag $tag

@@ -5,9 +5,6 @@ import os
 
 script, inFile, gtag, tag = argv
 
-print gtag
-print tag
-
 #pirate stuff
 f = open('pirate.txt', 'r')
 me_ship = f.read()
