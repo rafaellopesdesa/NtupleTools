@@ -5,6 +5,8 @@ if [ $# -eq 0 ]
   return
 fi
 
+gtag=`sed -n '1p' $1`
+tag=`sed -n '2p' $1`
 export PATH=$PATH:`pwd`
 source /cvmfs/cms.cern.ch/crab3/crab.sh
 export SCRAM_ARCH=slc6_amd64_gcc481
@@ -13,7 +15,7 @@ cd CMSSW_7_2_0/src
 cmsenv
 git clone git@github.com:cmstas/NtupleMaker.git CMS3/NtupleMaker
 cd CMS3/NtupleMaker
-git checkout CMS3_V07-02-02
+git checkout $tag
 source setup/patchesToSource.sh
 cd $CMSSW_BASE/src
 scram b -j 10

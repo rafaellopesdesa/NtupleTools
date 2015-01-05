@@ -1,0 +1,3 @@
+PHYS14_25_V1::All
+deleteLotsOfStuff
+/TTWJets_Tune4C_13TeV-madgraph-tauola/Phys14DR-PU20bx25_PHYS14_25_V1-v1/MINIAODSIM 0.842 1 False
