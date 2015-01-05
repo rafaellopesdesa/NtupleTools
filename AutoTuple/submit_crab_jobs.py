@@ -21,14 +21,14 @@ try:
 except OSError:
     pass
 
-lnum = 1
+lnum = 3
 while (lnum <= inFile_size):
   line = linecache.getline(inFile, lnum)
   parts = line.split()
   os.system('./FindLumisPerJob.sh ' + parts[0] + ' >> LumisPerJob.txt')
   lnum+=1
 
-lnum = 1
+lnum = 3
 while (lnum <= inFile_size):
   line = linecache.getline(inFile, lnum)
   parts = line.split()
