@@ -10,7 +10,9 @@ import glob
 
 #First argument tells whether need to run crab status or just use old output
 args = sys.argv
-parts = args[1:]
+tags = args[1:3]
+samp = args[3:6]
+parts = samp + tags + args[6:]
 
 #Redo and timeout flag in case status check fails
 redoFlag = True

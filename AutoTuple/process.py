@@ -8,7 +8,11 @@ import getpass
 import fileinput
 
 user = getpass.getuser()
-parts = sys.argv[1:]
+args = sys.argv
+tags = args[1:3]
+samp = args[3:6]
+parts = samp + tags + args[6:]
+
 completelyDone = False
 dataSet = parts[0].split('/')[1]
 nLoops = 0

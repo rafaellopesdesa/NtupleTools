@@ -3,7 +3,10 @@ import linecache
 import sys
 import os
 
-script, inFile = argv
+script, inFile, gtag, tag = argv
+
+print gtag
+print tag
 
 #pirate stuff
 f = open('pirate.txt', 'r')
@@ -36,9 +39,9 @@ while (lnum <= inFile_size):
   lumi_parts = lumi_line.split()
   numLumiPerJob = lumi_parts[0]
   print numLumiPerJob
-  command = 'python makeCrab3Files.py -CMS2cfg skeleton_cfg.py -d ' + parts[0] + ' -t ' + parts[3] + ' -gtag ' + parts[4] + ' -isData ' + parts[5] + ' -lumisPerJob ' + numLumiPerJob
-  if len(parts) > 6:
-    command += ' -sParms ' + parts[6]
+  command = 'python makeCrab3Files.py -CMS2cfg skeleton_cfg.py -d ' + parts[0] + ' -t ' + tag + ' -gtag ' + gtag + ' -isData ' + parts[3] + ' -lumisPerJob ' + numLumiPerJob
+  if len(parts) > 4:
+    command += ' -sParms ' + parts[4]
   print command
   os.system(command)
   crab_dir = parts[0].split('/')[1]+'_'+parts[0].split('/')[2]
