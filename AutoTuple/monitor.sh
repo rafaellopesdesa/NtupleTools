@@ -56,7 +56,7 @@ do
       #python monitor.py "False $p"
       continue
     fi
-    python monitor.py $p $gtag $tag
+    python monitor.py $gtag $tag $p
     exitCode=$?
     #If job is now finished, launch post-production
     if [ $exitCode -eq 220 ] || [ $exitCode -eq 221 ]
