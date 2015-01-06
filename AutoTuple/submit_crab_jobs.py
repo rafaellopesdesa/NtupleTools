@@ -32,7 +32,7 @@ lnum = 3
 while (lnum <= inFile_size):
   line = linecache.getline(inFile, lnum)
   parts = line.split()
-  lumi_line = linecache.getline('LumisPerJob.txt', lnum)
+  lumi_line = linecache.getline('LumisPerJob.txt', lnum-2)
   lumi_parts = lumi_line.split()
   numLumiPerJob = lumi_parts[0]
   print numLumiPerJob
