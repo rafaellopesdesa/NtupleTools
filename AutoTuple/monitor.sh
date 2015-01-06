@@ -1,6 +1,8 @@
 #!/bin/bash
 
 file=$1
+gtag=$2
+tag=$3
 
 #Environment
 eval `scramv1 runtime -sh`
@@ -54,7 +56,7 @@ do
       #python monitor.py "False $p"
       continue
     fi
-    python monitor.py $p
+    python monitor.py $p $gtag $tag
     exitCode=$?
     #If job is now finished, launch post-production
     if [ $exitCode -eq 220 ] || [ $exitCode -eq 221 ]
