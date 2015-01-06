@@ -50,6 +50,7 @@ do
   fileNumber=0
   while read p
   do
+    if [ $fileNumber \< 3 ]; then continue; fi
     if [ ${WHICHDONE[$fileNumber]} == "true" ] 
     then
       let "fileNumber += 1"
