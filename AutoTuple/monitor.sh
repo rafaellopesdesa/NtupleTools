@@ -63,7 +63,7 @@ do
     then 
       echo "Post processing started!" 
       WHICHDONE[$fileNumber]="true"
-      python process.py $p &
+      python process.py $gtag $tag $p &
     fi
     #If job is not finished, check directory to make sure
     let "fileNumber += 1"
