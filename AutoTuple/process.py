@@ -9,9 +9,13 @@ import fileinput
 
 user = getpass.getuser()
 args = sys.argv
-tags = args[1:3]
+gtag = args[1]
+tag = args[2]
 samp = args[3:6]
-parts = samp + tags + args[6:]
+parts = samp
+parts.append(tag)
+parts.append(gtag)
+parts += args[6:]
 
 completelyDone = False
 dataSet = parts[0].split('/')[1]
@@ -19,7 +23,7 @@ nLoops = 0
 nEventsIn = 0
 temp = "temp" + parts[0].split('/')[1] + ".txt"
 
-time.sleep(30)
+#time.sleep(30)
 
 while (completelyDone == False):
   #Submit all the jobs
