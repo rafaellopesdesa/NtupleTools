@@ -82,7 +82,7 @@ def makeCMSSWConfig(cmsswSkelFile):
     outFileName = dataSet.split('/')[1]+'_'+dataSet.split('/')[2] + '_cfg.py'
     print 'Writing CMS3 CMSSW python config file : ' + psetPfx + outFileName
     outFile = open(psetPfx + outFileName, 'w')
-    outFile.write( 'import sys, os' + '\n' + 'sys.path.append( os.getenv("CMSSW_BASE") + "/src/CMS2/NtupleMaker/test" )' + '\n' )
+    outFile.write( 'import sys, os' + '\n' + 'sys.path.append( os.getenv("CMSSW_BASE") + "/src/CMS3/NtupleMaker/test" )' + '\n' )
     for i in inFile:
         iline += 1
         if i.find('reportEvery') != -1:
