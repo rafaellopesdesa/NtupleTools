@@ -5,7 +5,7 @@ Instructions:
   2. In the NtupleTools/AutoTuple directory, write a text file called instructions.txt wih the instructions.  First line: global tag.  Second line: CMS3 tag.  Rest of file: 1 line per sample with the following columns, separated by spaces: name, xsec, k, isData (True or False), sparm names (optional).  Hint: see the "awesome trick" below!
   3. ". setup.sh instructions.txt" (no quotes)
   4. Monitor it fairly closely for ~30 mins or so (until the AutoTupleHQ page is available); it may ask for passwords, proxies, etc.  You can find the status page at http://uaf-7.t2.ucsd.edu/~USER/AutoTupleHQ.html, where USER is your username on the uaf
-  5. When all jobs finished, copy to hadoop
+  5. When all jobs finished, copy to hadoop.  You can do this manually or with ". copy.sh /SAMPLENAME/foo/bar CMS3_V07-0X-YY" (the latter way will tell you the location and the nEvents copied).  
 
 Awesome trick: Making the instructions.txt file is a little bit painful.  Here is an easy way:
   1. Check the twiki.  Make sure that ALL columns are filled in for your samples EXCEPT the numEvtsOut and the CMS3 location (you will have to modify step 3 below if this is not true).
