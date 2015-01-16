@@ -9,6 +9,8 @@ import fileinput
 
 user = getpass.getuser()
 if (user == "dsklein"): user = dklein;
+if (user == "iandyckes"): user = gdyckes;
+if (user == "mderdzinski"): user = mderdzin;
 user2 = getpass.getuser()
 args = sys.argv
 gtag = args[1]
