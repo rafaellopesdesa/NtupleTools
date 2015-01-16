@@ -8,6 +8,8 @@ import getpass
 import fileinput
 
 user = getpass.getuser()
+if (user == "dsklein"): user = dklein;
+user2 = getpass.getuser()
 args = sys.argv
 gtag = args[1]
 tag = args[2]
@@ -48,7 +50,7 @@ while (completelyDone == False):
     completelyDone = True
     update = -1
     for line in fileinput.input('AutoTupleHQ.html', inplace=1):
-      if line.startswith('<A HREF="http://uaf-7.t2.ucsd.edu/~' + user + '/' + dataSet): 
+      if line.startswith('<A HREF="http://uaf-7.t2.ucsd.edu/~' + user2 + '/' + dataSet): 
         update = 0
         sys.stdout.write(line)
       elif (update >= 0 and update < 6): 
@@ -59,7 +61,7 @@ while (completelyDone == False):
         else: sys.stdout.write(line)
         update = -1
         sys.stdout.write('\n<b><font color="blue"> &nbsp; &nbsp; Post-processing finished! </b> nEvents in: ' + str(nEventsIn) + '<font color="black"> <BR><BR> \n')
-      elif (update > -1 and line.startswith('<A HREF="http://uaf-7.t2.ucsd.edu/~' + user + '/')): 
+      elif (update > -1 and line.startswith('<A HREF="http://uaf-7.t2.ucsd.edu/~' + user2 + '/')): 
         sys.stdout.write(line)
         update = -1
       elif (update > -1):
@@ -73,7 +75,7 @@ while (completelyDone == False):
   ids = []
   done = []
   log_list = 'jobs_' + date + '.txt'
-  os.system('ls -lthr /data/tmp/' + user + '/' + dataSet + '/' + date + '/std_logs/ > ' + log_list)
+  os.system('ls -lthr /data/tmp/' + user2 + '/' + dataSet + '/' + date + '/std_logs/ > ' + log_list)
   file = open(log_list, "r")
   for line in file:
     if '.out' in line: 
@@ -97,7 +99,7 @@ while (completelyDone == False):
     #Update logs
     update = -1
     for line in fileinput.input('AutoTupleHQ.html', inplace=1):
-      if line.startswith('<A HREF="http://uaf-7.t2.ucsd.edu/~' + user + '/' + dataSet): 
+      if line.startswith('<A HREF="http://uaf-7.t2.ucsd.edu/~' + user2 + '/' + dataSet): 
         update = 0
         sys.stdout.write(line)
       elif (update >= 0 and update < 6): 
@@ -109,7 +111,7 @@ while (completelyDone == False):
         update += 1 
         sys.stdout.write('\n<b><font color="blue"> &nbsp; &nbsp; Post-processing started! </b> nEvents in: ' + str(nEventsIn) + '<font color="black"> <BR> \n')
         sys.stdout.write("&nbsp; &nbsp; PostProcessed: " + str(nFinished) + "/" + str(len(done)) + ' <BR><BR> \n')
-      elif line.startswith('<A HREF="http://uaf-7.t2.ucsd.edu/~' + user): 
+      elif line.startswith('<A HREF="http://uaf-7.t2.ucsd.edu/~' + user2): 
         update = -1
         sys.stdout.write(line)
       elif (update > -1):
