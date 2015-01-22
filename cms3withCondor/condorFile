@@ -1,0 +1,17 @@
+universe = vanilla
++DESIRED_Sites="UCSD"
+Requirements = Memory >= 199 &&OpSys == "LINUX"&& (Arch != "DUMMY" )&& Disk > 1000000
+Should_Transfer_Files = YES
+WhenToTransferOutput = ON_EXIT
+Transfer_Input_Files = RecoEgamma.tar,private/FILENAME
+Output = outputLog.stdout
+Error = errorLog.stderr
+Log = condorLog.log
++Owner = undefined
+notify_user = cag51@FNAL.GOV
+x509userproxy = /tmp/x509up_u31093
+
+Executable = condorExecutable.sh
+Transfer_executable = True
+arguments = FILENAME
+Queue 1
