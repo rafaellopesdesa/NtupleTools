@@ -164,7 +164,7 @@ if( overrideCrab == False and commands.getstatusoutput('ls ' + crabpath)[0] == 2
 
 else:
     print 'samplename: %s/%s' %(os.getcwd(), samplename)
-    subprocess.call('mkdir %s/%s' %(os.getcwd(), samplename), shell=True )
+    subprocess.call('mkdir %s/%s 2>/dev/null' %(os.getcwd(), samplename), shell=True )
     crabpath = samplename + '/'
 
 if( commands.getstatusoutput('ls ' + datapath)[0] == 256):
