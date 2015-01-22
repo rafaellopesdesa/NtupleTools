@@ -4,6 +4,7 @@ import string, random
 import commands, re, os
 import sys 
 import xml.dom.minidom
+import subprocess
 from xml.dom.minidom import Node
 
 if "CMSSW_BASE" not in os.environ:
@@ -118,7 +119,7 @@ def getGoodRootFiles(datapath,outpath):
 
 
 
-if( len(sys.argv)<15 ):
+if( len(sys.argv)<14 ):
     print 'Usage: postProcessing.py '
     print '                              -c [name of crab directory]'
     print '                              -d [directory where root files are]'
@@ -157,9 +158,14 @@ for i in range (0, len(sys.argv)):
         overrideCrab = True
                          
 
-if( commands.getstatusoutput('ls ' + crabpath)[0] == 256):
+if( overrideCrab == False and commands.getstatusoutput('ls ' + crabpath)[0] == 256):
     print 'The crab path does not exist. Please supply a valid path'
     sys.exit()
+
+else:
+    print 'samplename: %s/%s' %(os.getcwd(), samplename)
+    subprocess.call('mkdir %s/%s' %(os.getcwd(), samplename), shell=True )
+    crabpath = samplename + '/'
 
 if( commands.getstatusoutput('ls ' + datapath)[0] == 256):
     print 'The directory containing the root files does not exist. Please supply a valid path'
