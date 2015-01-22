@@ -23,5 +23,3 @@ AutoTupler development -- to do list:
   - Support for "Error during task injection" errors -- have it attempt to resubmit N times. 
   - Seem to frequently get a "PhedEx" error which requires full delete-and-redo after ~1 h, should support this
   - Add cooloff, transferred, submitted to status list?
-  - Some people have uaf names different than hadoop names, should support this.  
-
