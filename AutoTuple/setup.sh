@@ -10,8 +10,8 @@ tag=`sed -n '2p' $1`
 export PATH=$PATH:`pwd`
 source /cvmfs/cms.cern.ch/crab3/crab.sh
 export SCRAM_ARCH=slc6_amd64_gcc481
-scramv1 p -n CMSSW_7_2_0_2 CMSSW CMSSW_7_2_0
-cd CMSSW_7_2_0_2/src
+scramv1 p -n CMSSW_7_2_0 CMSSW CMSSW_7_2_0
+cd CMSSW_7_2_0/src
 cmsenv
 git clone git@github.com:cmstas/NtupleMaker.git CMS3/NtupleMaker
 cd CMS3/NtupleMaker
