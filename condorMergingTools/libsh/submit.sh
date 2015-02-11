@@ -81,10 +81,10 @@ use_glidein=1
 unique_identifier="UserJob"
 submit_log=submit_log_`date "+%m_%d_%Y"`
 executable=
-desired_sites="\"UCSD\""
+desired_sites="\"T2_US_UCSD,T2_US_Nebraska,T2_US_Wisconsin\""
 arguments=
 input_files=
-universe="vanilla"
+universe="grid"
 log=/data/tmp/${USER}/condor_log/uselesslog-${USER}.log
 std_log_dir=/data/tmp/${USER}/std_logs/
 
@@ -165,6 +165,10 @@ log_dir=${log%/$log_name}
 
 cat > $submit_file <<@EOF
 universe=$universe
+grid_resource = condor cmssubmit-r1.t2.ucsd.edu glidein-collector.t2.ucsd.edu
++remote_DESIRED_Sites=$desired_sites 
+request_memory = 199
+request_disk=1000000
 executable=$executable
 arguments=$arguments
 transfer_executable=True
@@ -172,7 +176,6 @@ when_to_transfer_output = ON_EXIT
 #the actual executable to run is not transfered by its name.
 #In fact, some sites may do weird things like renaming it and such.
 transfer_input_files=$input_files
-+DESIRED_Sites=$desired_sites 
 +Owner = undefined 
 log=$log
 output=${std_log_dir}/1e.\$(Cluster).\$(Process).out
