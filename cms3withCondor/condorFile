@@ -1,9 +1,11 @@
-universe = vanilla
-+DESIRED_Sites="UCSD"
-Requirements = Memory >= 199 &&OpSys == "LINUX"&& (Arch != "DUMMY" )&& Disk > 1000000
+universe = grid
+grid_resource = condor cmssubmit-r1.t2.ucsd.edu glidein-collector.t2.ucsd.edu
++remote_DESIRED_Sites="T2_US_UCSD,T2_US_Wisconsin,T2_US_Nebraska"
+request_memory = 199
+request_disk = 1000000
 Should_Transfer_Files = YES
 WhenToTransferOutput = ON_EXIT
-Transfer_Input_Files = RecoEgamma.tar,private/FILENAME
+Transfer_Input_Files = RecoEgamma.tar,1500_condor_files/FILENAME
 Output = outputLog.stdout
 Error = errorLog.stderr
 Log = condorLog.log
@@ -13,5 +15,5 @@ x509userproxy = /tmp/x509up_u31093
 
 Executable = condorExecutable.sh
 Transfer_executable = True
-arguments = FILENAME
+arguments = FILENAME NUMBER FILEDIR
 Queue 1

@@ -1,25 +1,40 @@
 #!/bin/bash
 
+#User input
+#List files you want to ntuplize here:
+files=/home/users/cgeorge/CMS3/CMSSW_7_2_0/src/CMS3/NtupleMaker/1500_samples.txt
+#Give name for directory to receives files on hadoop
+filedir="13TeV_T5qqqqWW_Gl1500_Chi800_LSP100"
+#We will create new directory for submission files.  Invent a name for it here
+subfiles=1500_condor_files
+#The input file you want to run on
 inputfile=MCProduction2015_NoFilter_cfg.py
-files=/home/users/cgeorge/CMS3/CMSSW_7_2_0/src/CMS3/NtupleMaker/files.txt
+
+
+
+##################---HERE THERE BE DRAGONS---################################
+number=1
+
+sed -i "8s/.*/Transfer_Input_Files = RecoEgamma.tar,$subfiles\/FILENAME/g" condorFile
 
 while read line
 do
-  filename=$line
-  filedir=${filename%.MINI*root}
-  number=`echo $filename | rev | cut -c 6-7 | rev`
-  configFile=MCProduction2015_${filedir}_${number}_cfg.py
-  outputfile=ntuple_${filedir}_${number}.root
-  condorFile=condorFile_${filedir}_${number}
+  let "number=$number+1"
+  filename=`echo $line | rev | cut -c 1 --complement | rev`
+  configFile=MCProduction2015_${number}_cfg.py
+  outputfile=ntuple_${number}.root
+  condorFile=condorFile_${number}
   
-  cp $inputfile private/$configFile
+  cp $inputfile $subfiles/$configFile
   
-  sed -i "9s,.*,\'root://cmsxrootd.fnal.gov//store/cmst3/group/susy/gpetrucc/13TeV/Phys14DR/MINIAODSIM/$filedir/$filename\'," private/$configFile
-  sed -i "15s/.*/   fileName     = cms.untracked.string\(\'$outputfile\'\),/" private/$configFile
+  sed -i "9s,.*,$filename," $subfiles/$configFile
+  sed -i "15s/.*/   fileName     = cms.untracked.string\(\'$outputfile\'\),/" $subfiles/$configFile
   
-  cp condorFile private/$condorFile
-  sed -i "s/FILENAME/$configFile/g" private/$condorFile
+  cp condorFile $subfiles/$condorFile
+  sed -i "s/FILENAME/$configFile/g" $subfiles/$condorFile
+  sed -i "s/NUMBER/$number/g" $subfiles/$condorFile
+  sed -i "s/FILEDIR/$filedir/g" $subfiles/$condorFile
 
-  condor_submit private/$condorFile
+  condor_submit $subfiles/$condorFile
   
 done < $files

@@ -13,10 +13,9 @@ export PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH
 
 #This to get the file name
 configFile=$1
-number=`echo $configFile | rev | cut -c 8-9 | rev`
-filedir=`echo $configFile | cut -c 1-17 --complement | rev | cut -c 1-10 --complement | rev`
-condorFile=condorFile_${filedir}_${number}
-OUTPUT=ntuple_${filedir}_${number}.root
+number=$2
+filedir=$3
+OUTPUT=ntuple_${number}.root
 
 #Specify name of output file and name of directory in /hadoop/.../cgeorge/condor
 export DIRNAME=privateSignals
