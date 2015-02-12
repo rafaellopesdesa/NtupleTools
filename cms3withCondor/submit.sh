@@ -2,24 +2,51 @@
 
 #User input
 #List files you want to ntuplize here:
-files=/home/users/cgeorge/CMS3/CMSSW_7_2_0/src/CMS3/NtupleMaker/1500_samples.txt
+files=/home/users/cgeorge/CMS3/CMSSW_7_2_0/src/CMS3/NtupleMaker/1200_samples.txt
 #Give name for directory to receives files on hadoop
-filedir="13TeV_T5qqqqWW_Gl1500_Chi800_LSP100"
+filedir="13TeV_T5qqqqWW_Gl1200_Chi1000_LSP800"
 #We will create new directory for submission files.  Invent a name for it here
-subfiles=1500_condor_files
+subfiles=1200_condor_files
 #The input file you want to run on
 inputfile=MCProduction2015_NoFilter_cfg.py
 
 
-
 ##################---HERE THERE BE DRAGONS---################################
-number=1
 
-sed -i "8s/.*/Transfer_Input_Files = RecoEgamma.tar,$subfiles\/FILENAME/g" condorFile
+#Figure out which jobs to redo
+NUMOFLINES=$(wc -l < "$files")
+redoFile=${subfiles}_redo
+if [ -d "/hadoop/cms/store/user/cgeorge/condor/privateSignals/$filedir" ]
+then
+  here=`pwd`
+  PATH=$PATH:$here
+  pushd /hadoop/cms/store/user/cgeorge/condor/privateSignals/$filedir
+  whichMissingCondorSubmissions $NUMOFLINES > /home/users/cgeorge/CMS3/CMSSW_7_2_0/src/CMS3/NtupleMaker/$redoFile
+else
+  redoFile=
+fi
+popd
+if [[ -e $redoFile ]] 
+then
+  for ((i = 1; i < $NUMOFLINES; i++)); do NEEDSDONE[i]=0; done
+  while read line
+  do
+    NEEDSDONE[$line]=1
+  done < $redoFile
+else
+  for ((i = 1; i < $NUMOFLINES; i++)); do NEEDSDONE[i]=1; done
+  echo "Submitting all jobs!"
+fi
 
+#Init
+number=0
+sed -i "6s/.*/Transfer_Input_Files = RecoEgamma.tar,$subfiles\/FILENAME/g" condorFile
+
+#Submit jobs
 while read line
 do
   let "number=$number+1"
+  if [ ${NEEDSDONE[$number]} == 0 ]; then continue; fi
   filename=`echo $line | rev | cut -c 1 --complement | rev`
   configFile=MCProduction2015_${number}_cfg.py
   outputfile=ntuple_${number}.root

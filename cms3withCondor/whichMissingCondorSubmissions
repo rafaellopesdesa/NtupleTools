@@ -1,0 +1,20 @@
+#!/bin/bash
+
+i=1
+blah=$1
+
+while [ $i -le $1 ] 
+  do
+   ls -l ntuple_${i}.root &>/dev/null
+    if [ "$?" -eq "0" ] 
+    then
+      :
+    else
+      ls -l merged_ntuple_${i}.root &>/dev/null
+      if [ ! "$?" -eq "0" ] 
+      then
+        echo "$i"
+      fi
+    fi
+    let i=i+1
+  done

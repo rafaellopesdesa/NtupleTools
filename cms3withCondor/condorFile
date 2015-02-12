@@ -1,18 +1,15 @@
 universe = grid
 grid_resource = condor cmssubmit-r1.t2.ucsd.edu glidein-collector.t2.ucsd.edu
-+remote_DESIRED_Sites="T2_US_UCSD,T2_US_Wisconsin,T2_US_Nebraska"
-request_memory = 199
-request_disk = 1000000
++remote_DESIRED_Sites="T2_US_Nebraska,T2_US_Wisconsin,T2_US_UCSD"
 Should_Transfer_Files = YES
 WhenToTransferOutput = ON_EXIT
 Transfer_Input_Files = RecoEgamma.tar,1500_condor_files/FILENAME
-Output = outputLog.stdout
-Error = errorLog.stderr
+Output = log/outputLog_NUMBER.stdout
+Error = log/errorLog_NUMBER.stderr
 Log = condorLog.log
 +Owner = undefined
 notify_user = cag51@FNAL.GOV
 x509userproxy = /tmp/x509up_u31093
-
 Executable = condorExecutable.sh
 Transfer_executable = True
 arguments = FILENAME NUMBER FILEDIR

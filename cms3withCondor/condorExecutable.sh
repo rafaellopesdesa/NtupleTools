@@ -5,8 +5,8 @@ HOME=`pwd`
 #This stuff to get it to run
 export CMS_PATH=/code/osgcode/cmssoft/cms
 export SCRAM_ARCH=slc6_amd64_gcc481
-source /code/osgcode/cmssoft/cmsset_default.sh
-source /code/osgcode/fgolf/5.30-patches/bin/thisroot.sh
+source /cvmfs/cms.cern.ch/cmsset_default.sh
+source /cvmfs/cms.cern.ch/slc6_amd64_gcc481/lcg/root/5.34.18/bin/thisroot.sh
 export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH:$PWD:${_CONDOR_SCRATCH_DIR}
 export PATH=$ROOTSYS/bin:$PATH:${_CONDOR_SCRATCH_DIR}
 export PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH
@@ -16,6 +16,10 @@ configFile=$1
 number=$2
 filedir=$3
 OUTPUT=ntuple_${number}.root
+
+#Tell us where we're running
+echo "host: " 
+hostname
 
 #Specify name of output file and name of directory in /hadoop/.../cgeorge/condor
 export DIRNAME=privateSignals
