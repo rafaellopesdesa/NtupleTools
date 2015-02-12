@@ -20,14 +20,15 @@ if [ -d "/hadoop/cms/store/user/cgeorge/condor/privateSignals/$filedir" ]
 then
   here=`pwd`
   PATH=$PATH:$here
-  pushd /hadoop/cms/store/user/cgeorge/condor/privateSignals/$filedir
+  pushd /hadoop/cms/store/user/cgeorge/condor/privateSignals/$filedir > /dev/null
   whichMissingCondorSubmissions $NUMOFLINES > /home/users/cgeorge/CMS3/CMSSW_7_2_0/src/CMS3/NtupleMaker/$redoFile
+  popd > /dev/null
 else
   redoFile=
 fi
-popd
 if [[ -e $redoFile ]] 
 then
+  if [[ ! -s $redoFile ]]; then echo "No files need to be resubmitted!"; return; fi
   for ((i = 1; i < $NUMOFLINES; i++)); do NEEDSDONE[i]=0; done
   while read line
   do
