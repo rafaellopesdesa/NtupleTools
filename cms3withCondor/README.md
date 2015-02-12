@@ -4,7 +4,7 @@ Instructions:
   - To set up, just modify the options at the top of submit.sh
   - To submit jobs, just type ". submit.sh".  
   - To resubmit jobs, just wait until all the jobs have finished running ("condor_q username" to check), then reissue step 2.  It automatically checks to see which ones have finished.  
-  - To post-process jobs....
+  - To post-process jobs, use the condor_process.py file.  All the options are present at the top (only for gluino and stop right now).
 
 Options:
   - The MCProduction2015_NoFilter_cfg.py is the macro that will be run.  You can change it directly.

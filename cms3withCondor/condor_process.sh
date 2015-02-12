@@ -1,29 +1,27 @@
 #!/bin/bash
 
-files=files.txt
+#User input
+#Directory where the babies are stored
+dir=/hadoop/cms/store/user/cgeorge/condor/privateSignals/13TeV_T5qqqqWW_Gl1500_Chi800_LSP100
+#Nice name for sample
+name=13TeV_T5qqqqWW_Gl1500_Chi800_LSP100
+#Sparm class -- GLUINO, STOP, or OTHER
+SPARM_CLASS=GLUINO
+#Sparm mass
+SPARM_MASS=1500
 
-while read line
-do
-  filedir=$line
-  temp=`root -b -l -q getSparm.C\(\"$filedir\"\)`
-  sparm_shit=`echo $temp | awk '{ print $NF }' | cut -c 1-5 --complement`
-  sparm_class=`echo $sparm_shit | cut -c 1-2`
-  sparm=`echo $sparm_shit | cut -c 1-2 --complement`
-  sparm=$(expr $sparm + 0)
-  
-  if [ $sparm_class == "10" ] 
-  then
-    temp2=`root -l -b -q go_xsec.C\($sparm\)` 
-  elif [ $sparm_class == "20" ]
-  then
-    temp2=`root -l -b -q stop_xsec.C\($sparm\)` 
-  else
-    echo "ERROR!  Only gluinos are supported!" 
-    return;
-  fi
-  
-  xsec=`echo $temp2 | awk '{ print $NF }' | cut -c 1-7 --complement`
-  
-  echo "cross section for $filedir is $xsec"
-  python makeListsForMergingCrab3.py -d /hadoop/cms/store/user/$USER/condor/privateSignals/$filedir -o /hadoop/cms/store/user/$USER/condor/privateSignals/$filedir/merged/ -s $filedir -k 1 -e 1 -x $xsec --overrideCrab 
-done < $files
+#####----- HERE THERE BE DRAGONS --------#####
+if [ $SPARM_CLASS == "GLUINO" ] 
+then
+  temp2=`root -l -b -q go_xsec.C\($SPARM_MASS\)` 
+elif [ $SPARM_CLASS == "STOP" ]
+then
+  temp2=`root -l -b -q stop_xsec.C\($SPARM_MASS\)` 
+else
+  echo "ERROR!  Only gluinos and stops are supported!" 
+  return;
+fi
+
+xsec=`echo $temp2 | awk '{ print $NF }' | cut -c 1-7 --complement`
+
+python makeListsForMergingCrab3.py -d $dir -o $dir/merged/ -s $name -k 1 -e 1 -x $xsec --overrideCrab 
