@@ -33,19 +33,12 @@ int mergeScript(const string& fileList, const string& outFile ){
   while (file){
 	ntupleLocation = "";
 	file>>ntupleLocation;
-	// cout<<ntupleLocation.empty()<<endl;
-	if(ntupleLocation.empty()){
-	  // cout<<"line is empty"<<endl;
-	  continue;
-	}else{
-      cout << "AG!!" << endl;
-      cout << ntupleLocation.c_str() << endl;
-      cout << (ntupleLocation.substr(11)).c_str() << endl;
+	if (ntupleLocation.empty()) continue;
+	else{
       cout << ("root://cmsxrootd.fnal.gov///" + ntupleLocation.substr(11)).c_str() << endl;
       ch1.Add( ("root://cmsxrootd.fnal.gov///" + ntupleLocation.substr(11)).c_str() );
 	}
   }
-
 
   unsigned int nEntries = ch1.GetEntries();
   
