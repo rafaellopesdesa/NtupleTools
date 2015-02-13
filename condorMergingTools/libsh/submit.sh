@@ -81,7 +81,7 @@ use_glidein=1
 unique_identifier="UserJob"
 submit_log=submit_log_`date "+%m_%d_%Y"`
 executable=
-desired_sites="\"T2_US_UCSD,T2_US_Nebraska,T2_US_Wisconsin\""
+desired_sites="\"T2_US_NEBRASKA,T2_US_WISCONSIN,T2_US_UCSD\""
 arguments=
 input_files=
 universe="grid"
@@ -167,8 +167,6 @@ cat > $submit_file <<@EOF
 universe=$universe
 grid_resource = condor cmssubmit-r1.t2.ucsd.edu glidein-collector.t2.ucsd.edu
 +remote_DESIRED_Sites=$desired_sites 
-request_memory = 199
-request_disk=1000000
 executable=$executable
 arguments=$arguments
 transfer_executable=True
@@ -178,8 +176,8 @@ when_to_transfer_output = ON_EXIT
 transfer_input_files=$input_files
 +Owner = undefined 
 log=$log
-output=${std_log_dir}/1e.\$(Cluster).\$(Process).out
-error =${std_log_dir}/1e.\$(Cluster).\$(Process).err
+output=mergelog/stdout.txt
+error=mergelog/stderr.txt
 notification=Never
 #x509userproxy=$ENV(X509_USER_PROXY)	
 x509userproxy=$user_proxy
@@ -187,6 +185,8 @@ should_transfer_files = yes
 queue
 	
 @EOF
+#output=${std_log_dir}/1e.\$(Cluster).\$(Process).out
+#error =${std_log_dir}/1e.\$(Cluster).\$(Process).err
 
 
 ## PRINT INFO FOR LOGGING

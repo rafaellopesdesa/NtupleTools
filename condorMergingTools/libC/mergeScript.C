@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "TChain.h"
+#include <string>
 
 using namespace std;
 
@@ -37,11 +38,14 @@ int mergeScript(const string& fileList, const string& outFile ){
 	  // cout<<"line is empty"<<endl;
 	  continue;
 	}else{
-	  cout<<Form("Running Command:ch1.Add(\"%s\");",ntupleLocation.c_str())<<endl;
-	  ch1.Add(ntupleLocation.c_str());
+      cout << "AG!!" << endl;
+      cout << ntupleLocation.c_str() << endl;
+      cout << (ntupleLocation.substr(11)).c_str() << endl;
+      cout << ("root://cmsxrootd.fnal.gov///" + ntupleLocation.substr(11)).c_str() << endl;
+      ch1.Add( ("root://cmsxrootd.fnal.gov///" + ntupleLocation.substr(11)).c_str() );
 	}
   }
-  
+
 
   unsigned int nEntries = ch1.GetEntries();
   

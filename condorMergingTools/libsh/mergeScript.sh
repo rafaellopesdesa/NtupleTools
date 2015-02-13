@@ -23,14 +23,23 @@ echo "Attempting to merge files from $inputList"
 mData=`basename $mData`
 echo "using metadata file: $mData"
 
-# set up golf-type environment (standalone root, no CMSSW)
-#  Dominick was having problems with lcg-cp after setting up CMSSW env..
-export CMS_PATH=/code/osgcode/cmssoft/cms
-export SCRAM_ARCH=slc5_amd64_gcc462
-source /code/osgcode/cmssoft/cms/cmsset_default.sh > /dev/null 2>&1
-source /code/osgcode/fgolf/5.30-patches/bin/thisroot.sh
-export LD_LIBRARY_PATH=$PWD:$LD_LIBRARY_PATH
+# Environment
+export CMS_PATH=/cvmfs/cms.cern.ch
+export SCRAM_ARCH=slc6_amd64_gcc481
+source /cvmfs/cms.cern.ch/cmsset_default.sh
+source /cvmfs/cms.cern.ch/slc6_amd64_gcc481/lcg/root/5.34.18/bin/thisroot.sh
+export LD_LIBRARY_PATH=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/lcg/root/5.34.18/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/gcc/4.8.1/lib:/home/users/cgeorge:/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/external/gcc/4.8.1/lib64:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/cms/cmssw-patch/CMSSW_7_2_0_patch1/external/slc6_amd64_gcc481/lib
+export PATH=$ROOTSYS/bin:$PATH:${_CONDOR_SCRATCH_DIR}
 export PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH
+
+echo "scramarch is $SCRAM_ARCH"
+
+#Debugging
+echo "host is: " 
+hostname
+
+echo "slc6 v. slc5: "
+cat /etc/redhat-release
 
 #sets variable for stageout later
 localdir=`pwd`

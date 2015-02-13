@@ -2,8 +2,8 @@
 
 inputFile=$1
 
-CMSSWRelease=CMSSW_5_3_2_patch4
-CMS2Tag=V05-03-18
+CMSSWRelease=CMSSW_5_7_2_0
+CMS2Tag=V07-02-05
 
 mkdir tempdir
 cd tempdir
@@ -15,8 +15,8 @@ inputDir=`dirname $inputFile`
 inputFileName=`basename $inputFile`
 outputDir="${inputDir}_slim/"
 
-source /code/osgcode/cmssoft/cms/cmsset_default.sh > /dev/null 2>&1
-export SCRAM_ARCH=slc5_amd64_gcc462
+source /cvmfs/cms.cern.ch/cmsset_default.sh > /dev/null 2>&1
+export SCRAM_ARCH=slc6_amd64_gcc481
 echo $SCRAM_ARCH
 
 scram project -n ${CMSSWRelease}_$CMS2Tag CMSSW $CMSSWRelease

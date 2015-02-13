@@ -10,9 +10,9 @@ mData=$2
 #output
 outputDir=$3
 
-CMSSWRelease=CMSSW_5_3_2_patch4
-CMS2Tag=V05-03-18
-CMS2Tar=CMSSW_5_3_2_patch4_V05-03-18.tgz
+CMSSWRelease=CMSSW_7_2_0
+CMS3Tag=V07-02-05
+CMS3Tar=CMSSW_7_2_0_V07-02-05.tgz
 
 mkdir tempdir
 cd tempdir
@@ -24,16 +24,16 @@ echo "Attempting to merge files from $inputList"
 mData=`basename $mData`
 echo "using metadata file: $mData"
 
-source /code/osgcode/cmssoft/cms/cmsset_default.sh > /dev/null 2>&1
-export SCRAM_ARCH=slc5_amd64_gcc462
+source source /cvmfs/cms.cern.ch/cmsset_default.sh > /dev/null 2>&1
+export SCRAM_ARCH=slc6_amd64_gcc481
 echo $SCRAM_ARCH
 
 scram list
-scram project -n ${CMSSWRelease}_$CMS2Tag CMSSW $CMSSWRelease
+scram project -n ${CMSSWRelease}_$CMS3Tag CMSSW $CMSSWRelease
 # scramv1 p -n CMSSW_5_3_2_patch4 CMSSW CMSSW_5_3_2_patch4
-mv $CMS2Tar ${CMSSWRelease}_$CMS2Tag/
-cd ${CMSSWRelease}_$CMS2Tag
-tar -xzf $CMS2Tar #this is an overkill for now. we can experiment with dropping parts of it.
+mv $CMS3Tar ${CMSSWRelease}_$CMS3Tag/
+cd ${CMSSWRelease}_$CMS3Tag
+tar -xzf $CMS3Tar #this is an overkill for now. we can experiment with dropping parts of it.
 eval `scram runtime -sh`
 cd -
 
