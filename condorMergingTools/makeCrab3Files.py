@@ -35,6 +35,7 @@ def makeCrab3Config():
     outFile.write('config = Configuration()\n')
     outFile.write('config.section_(\'General\')\n')
     outFile.write('config.General.transferOutputs = True\n')
+    outFile.write('config.General.transferLogs = True\n')
     outFile.write('config.General.requestName = \'%s\'\n' % outFileName)
     outFile.write('\n')
     outFile.write('config.section_(\'JobType\')\n')
