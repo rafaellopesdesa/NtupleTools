@@ -1,9 +1,9 @@
 # DataTuple
 
 ####General Outline
-  User updates samples we want to check here: /nfs-7/userdata/dataTuple/input.txt
-  List of samples we have completed is here: /nfs-7/userdata/dataTuple/completedList.txt
-  Every 3 minutes, the below workflow begins again:
+  + User updates samples we want to check here: /nfs-7/userdata/dataTuple/input.txt
+  + List of samples we have completed is here: /nfs-7/userdata/dataTuple/completedList.txt
+  + Every 3 minutes, the below workflow begins again:
 
 ####Workflow
   1. DBS query to generate masterList with files on input.txt (JASON)
