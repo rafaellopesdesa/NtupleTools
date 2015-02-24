@@ -12,6 +12,6 @@
   4. Cycle through files on notDoneList.  
     1. See if each job is on submitList.  If no, submit it, update the submit list, and we're done.  
     2. Otherwise, it's on the submitList.  Get the jobID from there and see if the job is running. 
-    3. If job is on run list, check time.  If has been running for more than 24 hours, kill it.
+    3. If job is on run list, check time.  If has been running for more than 24 hours, kill it, submit it, update the submit list, and we're done.
     4. If not on run list, check if it's done.  If not done, submit it, update the submit list, and we're done.
     5. If job is done, do quality checks.  If fails, delete the output and we're done. If passes, then update the done list and we're done.  (JASON)  
