@@ -8,7 +8,7 @@
 ####Workflow
   1. DBS query to generate masterList with files on input.txt (JASON)
   2. Diff between masterList and completedList to make notDoneList.  (DONE.  makeNotDoneList.sh)
-  3. condor_q makes runningList and heldList.  Jobs on the heldList are killed.  
+  3. condor_q makes runningList and heldList.  Jobs on the heldList are killed.  (DONE.  checkStatus.sh)
   4. Cycle through files on notDoneList.  
     1. See if each job is on submitList.  If no, submit it, update the submit list, and we're done.  
     2. Otherwise, it's on the submitList.  Get the jobID from there and see if the job is running. 
