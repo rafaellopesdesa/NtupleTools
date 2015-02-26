@@ -11,7 +11,7 @@
   3. condor_q makes runningList and heldList.  Jobs on the heldList are killed.  (DONE.  checkStatus.sh)
   4. Cycle through files on notDoneList.  (DONE.  master.sh) 
     1. See if each job is on submitList.  If no, mark job for submission and on to step 5. (DONE. isOnSubmitList.sh)
-    2. Otherwise, it's on the submitList.  Get the jobID from there and see if the job is running. 
+    2. Otherwise, it's on the submitList.  Get the jobID from there and see if the job is running. (DONE.)
     3. If job is on run list, check time.  If has been running for more than 24 hours, kill it, mark for submission, and on to step 5.
     4. If not on run list, check if it's done.  If not done, mark for submission and on to step 5.
     5. If job is done, do quality checks.  If fails, delete the output, mark for submission, and on to step 5. (JASON)

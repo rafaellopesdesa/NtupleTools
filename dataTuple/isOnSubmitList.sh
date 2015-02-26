@@ -5,12 +5,15 @@
 while read line
 do
   name=`echo $line | awk '{ print $1 }'`
+  jobid=`echo $line | awk '{ print $2 }'`
+  starttime=`echo $line | awk '{ print $3 }'`
+  nTries=`echo $line | awk '{ print $4 }'`
   if [ $name == $1 ] 
   then
-    exit 1
+    return 1
   else
-    exit 2
+    return 2
   fi
 done < submitList.txt
 
-exit 3
+return 3
