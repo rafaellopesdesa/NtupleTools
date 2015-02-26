@@ -22,7 +22,7 @@ echo "host: "
 hostname
 
 #Specify name of output file and name of directory in /hadoop/.../cgeorge/condor
-export DIRNAME=privateSignals
+export DIRNAME=dataNtupling
 
 #This stuff to get output back
 export COPYDIR=/hadoop/cms/store/user/cgeorge/condor/${DIRNAME}/${filedir}
