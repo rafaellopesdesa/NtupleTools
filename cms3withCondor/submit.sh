@@ -1,14 +1,22 @@
 #!/bin/bash
 
-#User input
-#List files you want to ntuplize here:
-files=/home/users/cgeorge/CMS3/CMSSW_7_2_0/src/CMS3/NtupleMaker/1200_samples.txt
-#Give name for directory to receives files on hadoop
-filedir="13TeV_T5qqqqWW_Gl1200_Chi1000_LSP800"
-#We will create new directory for submission files.  Invent a name for it here
-subfiles=1200_condor_files
-#The input file you want to run on
-inputfile=MCProduction2015_NoFilter_cfg.py
+#User input.  these can be passed or manually set.  
+if [ $# == 4 ]
+then
+  files=$1
+  filedir=$2
+  subfiles=$3
+  inputfile=$4
+else
+  #List files you want to ntuplize here:
+  files=/home/users/cgeorge/CMS3/CMSSW_7_2_0/src/CMS3/NtupleMaker/1200_samples.txt
+  #Give name for directory to receives files on hadoop
+  filedir="13TeV_T5qqqqWW_Gl1200_Chi1000_LSP800"
+  #We will create new directory for submission files.  Invent a name for it here
+  subfiles=1200_condor_files
+  #The input file you want to run on
+  inputfile=MCProduction2015_NoFilter_cfg.py
+fi
 
 
 ##################---HERE THERE BE DRAGONS---################################
@@ -55,7 +63,7 @@ do
   
   cp $inputfile $subfiles/$configFile
   
-  sed -i "9s,.*,$filename," $subfiles/$configFile
+  sed -i "9s,.*,\'$filename\'," $subfiles/$configFile
   sed -i "15s/.*/   fileName     = cms.untracked.string\(\'$outputfile\'\),/" $subfiles/$configFile
   
   cp condorFile $subfiles/$condorFile
