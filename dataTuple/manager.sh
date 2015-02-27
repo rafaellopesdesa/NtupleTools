@@ -21,15 +21,17 @@ fi
 rm filesToSubmit.txt 2> /dev/null
 while read line
 do
+  currentFile=$line
   #a. See if each job is on submitList. If no, mark the job for submission and on to step 5. (DONE)
-  . isOnSubmitList.sh $line
+  . isOnSubmitList.sh $currentFile
   if [ $? != 1 ] 
   then
-    echo $line >> filesToSubmit.txt
+    echo $currentFile >> filesToSubmit.txt
     continue
   fi
 
   #b. Otherwise, it's on the submitList. Get the jobID from there and see if the job is running.
+  echo $jobid
   condor_q $jobid > temp.txt
   sed -i '1,4d' temp.txt
   if [ -s temp.txt ]; then isRunning=true; else isRunning=false; fi
@@ -41,7 +43,7 @@ do
     if [ $tooMuchTime == "true" ]
     then
       condor_rm $jobid
-      echo $line >> filesToSubmit.txt
+      echo $currentFile >> filesToSubmit.txt
       continue
     fi
   fi
@@ -51,7 +53,7 @@ do
   then
     if [ ! -e /hadoop/cms/store/user/$USER/condor/dataNtupling/dataTuple/ntuple_${number}.root ] 
     then
-      echo $line >> filesToSubmit.txt
+      echo `echo $currentFile | awk ' { print $1 }'` >> filesToSubmit.txt
       continue
     else
       . checkFile.sh /hadoop/cms/store/user/$USER/condor/dataNtupling/dataTuple/ntuple_${number}.root
@@ -68,24 +70,30 @@ if [ -e filesToSubmit.txt ]
 then 
   while read line
   do
+    currentLine=$line
     let "counter=$counter+1"
     #a. Submit them
     mkdir cms3withCondor/$currentTime
-    . submit.sh filesToSubmit.txt $currentTime
+    outputName=$(python getFileName.py $currentLine 2>&1)
+    . submit.sh filesToSubmit.txt $currentTime $outputName
     #b. Verify all jobs submitted properly (??)
 
     #c. Update submitted list
     . getJobNumber.sh $counter $currentTime
-    . isOnSubmitList.sh $line
+    . isOnSubmitList.sh $currentLine
     if [ $? != 1 ] 
     then
-      echo "$line $jobid $currentTime 1" >> submitList.sh
+      . getJobNumber.sh $counter $currentTime
+      echo "currentLine"
+      echo $currentLine
+      echo "$currentLine $jobid $currentTime 1" >> submitList.txt
       continue
     else
-      line_escaped=`echo $line | sed 's,/,\\/,g'`
-      sed -i "/$line_escaped/d" submitList.sh
+      . getJobNumber.sh $counter $currentTime
+      currentLine_escaped=`echo $currentLine | sed 's,/,\\/,g'`
+      sed -i "/$currentLine_escaped/d" submitList.txt
       let "nTries=$nTries+1"
-      echo "$line $jobid $currentTime $nTries" >> submitList.sh
+      echo "$currentLine $jobid $currentTime $nTries" >> submitList.txt
       continue
     fi
   done < filesToSubmit.txt
