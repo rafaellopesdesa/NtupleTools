@@ -1,14 +1,16 @@
 #!/bin/bash
 
 #User input.  these can be passed or manually set.  
-if [ $# == 5 ]
+if [ $# == 6 ]
 then
   files=$1
   filedir=$2
   subfiles=$3
   inputfile=$4
   logdir=$5
+  outputName=$6
 else
+  echo "ELSE!"
   #List files you want to ntuplize here:
   files=/home/users/cgeorge/CMS3/CMSSW_7_2_0/src/CMS3/NtupleMaker/1200_samples.txt
   #Give name for directory to receives files on hadoop
@@ -19,6 +21,8 @@ else
   inputfile=MCProduction2015_NoFilter_cfg.py
   #The place you want to dump the logs
   logdir=logdir
+  #OutputName (default is ntuple_i)
+  outputName="ntuple_i"
 fi
 
 
@@ -66,9 +70,14 @@ while read line
 do
   let "number=$number+1"
   if [ ${NEEDSDONE[$number]} == 0 ]; then continue; fi
-  filename=`echo $line | rev | cut -c 1 --complement | rev`
+  filename=$line
   configFile=MCProduction2015_${number}_cfg.py
-  outputfile=ntuple_${number}.root
+  if [ $outputName == "ntuple_i" ] 
+  then
+    outputfile=ntuple_${number}.root
+  else
+    outputfile=$outputName
+  fi
   condorFile=condorFile_${number}
   
   cp $inputfile $subfiles/$configFile
