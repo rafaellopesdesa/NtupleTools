@@ -1,12 +1,13 @@
 #!/bin/bash
 
 #User input.  these can be passed or manually set.  
-if [ $# == 4 ]
+if [ $# == 5 ]
 then
   files=$1
   filedir=$2
   subfiles=$3
   inputfile=$4
+  logdir=$5
 else
   #List files you want to ntuplize here:
   files=/home/users/cgeorge/CMS3/CMSSW_7_2_0/src/CMS3/NtupleMaker/1200_samples.txt
@@ -16,6 +17,8 @@ else
   subfiles=1200_condor_files
   #The input file you want to run on
   inputfile=MCProduction2015_NoFilter_cfg.py
+  #The place you want to dump the logs
+  logdir=logdir
 fi
 
 
@@ -77,6 +80,7 @@ do
   sed -i "s/FILENAME/$configFile/g" $subfiles/$condorFile
   sed -i "s/NUMBER/$number/g" $subfiles/$condorFile
   sed -i "s/FILEDIR/$filedir/g" $subfiles/$condorFile
+  sed -i "s/LOGDIR/$logdir/g" $subfiles/$condorFile
 
   condor_submit $subfiles/$condorFile
   

@@ -9,16 +9,16 @@ then
 fi
 
 #1. DBS query to generate masterList with files on input.txt (DONE. GenerateMasterList.sh)
-. GenerateMasterList.sh
+#. GenerateMasterList.sh
 
 #2. Diff between masterList and completedList to make notDoneList. (DONE. makeNotDoneList.sh)
-. makeNotDoneList.sh
+#. makeNotDoneList.sh
 
 #3. condor_q makes runningList and heldList. Jobs on the heldList are killed. (DONE. checkStatus.sh)
 . checkStatus.sh
 
 #4. Cycle through files on notDoneList. (DONE)
-rm filesToSubmit.txt &> /dev/null
+rm filesToSubmit.txt 2> /dev/null
 while read line
 do
   #a. See if each job is on submitList. If no, mark the job for submission and on to step 5. (DONE)
@@ -63,21 +63,19 @@ done < notDoneList.txt
 
 #5. Submit all the jobs that have been marked for submission
 counter=0;
+currentTime=`date +%s`
 if [ -e filesToSubmit.txt ] 
 then 
   while read line
   do
-    let "countter=$counter+1"
+    let "counter=$counter+1"
     #a. Submit them
-    . submit.sh filesToSubmit.txt
-
+    mkdir cms3withCondor/$currentTime
+    . submit.sh filesToSubmit.txt $currentTime
     #b. Verify all jobs submitted properly (??)
 
     #c. Update submitted list
-    currentTime=`date +%s`
-    #look on cms3withCondor/condorLog_i to get the jobID for each job
-    echo "Warning! Job ID not known!  Write this part!  Manager.sh line 79"
-    #jobid=
+    . getJobNumber.sh $counter $currentTime
     . isOnSubmitList.sh $line
     if [ $? != 1 ] 
     then
@@ -90,6 +88,6 @@ then
       echo "$line $jobid $currentTime $nTries" >> submitList.sh
       continue
     fi
-  done < filesToSubmit.sh
+  done < filesToSubmit.txt
 
 fi

@@ -8,7 +8,7 @@ do
   jobid=`echo $line | awk '{ print $2 }'`
   starttime=`echo $line | awk '{ print $3 }'`
   nTries=`echo $line | awk '{ print $4 }'`
-  if [ $name == $1 ] 
+  if [ "$name" == "$1" ] 
   then
     return 1
   else
