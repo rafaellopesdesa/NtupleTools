@@ -54,7 +54,7 @@ do
       echo $line >> filesToSubmit.txt
       continue
     else
-      . checkFile.sh
+      . checkFile.sh /hadoop/cms/store/user/$USER/condor/dataNtupling/dataTuple/ntuple_${number}.root
       continue
     fi
   fi
