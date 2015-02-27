@@ -51,12 +51,12 @@ do
   #d. If not on run list, check if it's done. If not done, mark for submission and on to step 5.
   if [ $isRunning == false ] 
   then
-    if [ ! -e /hadoop/cms/store/user/$USER/condor/dataNtupling/dataTuple/ntuple_${number}.root ] 
+    if [ ! -e /hadoop/cms/store/user/$USER/condor/dataNtupling/dataTuple/$currentFile ] 
     then
       echo `echo $currentFile | awk ' { print $1 }'` >> filesToSubmit.txt
       continue
     else
-      . checkFile.sh /hadoop/cms/store/user/$USER/condor/dataNtupling/dataTuple/ntuple_${number}.root
+      . checkFile.sh /hadoop/cms/store/user/$USER/condor/dataNtupling/dataTuple/$currentFile
       continue
     fi
   fi
