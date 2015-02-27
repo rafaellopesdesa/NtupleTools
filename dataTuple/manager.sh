@@ -53,9 +53,7 @@ do
     then
       echo $line >> filesToSubmit.txt
       continue
-    fi
-    if [ -e /hadoop/cms/store/user/$USER/condor/dataNtupling/dataTuple/ntuple_${number}.root ] 
-    then
+    else
       . checkFile.sh
       continue
     fi
