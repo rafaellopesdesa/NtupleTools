@@ -8,6 +8,11 @@ then
   cp -r ../cms3withCondor .
 fi
 
+if [ ! -e submitList.txt ] 
+then
+  touch submitList.txt
+fi
+
 #1. DBS query to generate masterList with files on input.txt (DONE. GenerateMasterList.sh)
 #. GenerateMasterList.sh
 
