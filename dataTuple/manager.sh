@@ -61,10 +61,6 @@ do
     fi
   fi
 
-  #e. If job is done, do quality checks. If fails, delete the output, mark for submission, and on to step 5. (JASON)
-
-  #f. If passes quality checks, then update the done list and we're done. (JASON)
-
 done < notDoneList.txt
 
 #5. Submit all the jobs that have been marked for submission
