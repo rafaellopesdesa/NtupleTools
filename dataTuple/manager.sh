@@ -8,7 +8,8 @@ then
   cp -r ../cms3withCondor .
 fi
 
-#1. DBS query to generate masterList with files on input.txt (JASON)
+#1. DBS query to generate masterList with files on input.txt (DONE. GenerateMasterList.sh)
+. GenerateMasterList.sh
 
 #2. Diff between masterList and completedList to make notDoneList. (DONE. makeNotDoneList.sh)
 . makeNotDoneList.sh
@@ -51,6 +52,11 @@ do
     if [ ! -e /hadoop/cms/store/user/$USER/condor/dataNtupling/dataTuple/ntuple_${number}.root ] 
     then
       echo $line >> filesToSubmit.txt
+      continue
+    fi
+    if [ -e /hadoop/cms/store/user/$USER/condor/dataNtupling/dataTuple/ntuple_${number}.root ] 
+    then
+      . checkFile.sh
       continue
     fi
   fi
