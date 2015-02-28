@@ -36,7 +36,6 @@ do
   fi
 
   #b. Otherwise, it's on the submitList. Get the jobID from there and see if the job is running.
-  echo $jobid
   condor_q $jobid > temp.txt
   sed -i '1,4d' temp.txt
   if [ -s temp.txt ]; then isRunning=true; else isRunning=false; fi
@@ -79,6 +78,7 @@ then
     let "counter=$counter+1"
     #a. Submit them
     mkdir cms3withCondor/$currentTime
+    echo "outputName=$(python getFileName.py $currentLine 2>&1)"
     outputName=$(python getFileName.py $currentLine 2>&1)
     . submit.sh filesToSubmit.txt $currentTime $outputName
     #b. Verify all jobs submitted properly (??)
@@ -95,7 +95,8 @@ then
       continue
     else
       . getJobNumber.sh $counter $currentTime
-      currentLine_escaped=`echo $currentLine | sed 's,/,\\/,g'`
+      echo "here"
+      currentLine_escaped=`echo $currentLine | sed 's,/,\\\/,g'`
       sed -i "/$currentLine_escaped/d" submitList.txt
       let "nTries=$nTries+1"
       echo "$currentLine $jobid $currentTime $nTries" >> submitList.txt
