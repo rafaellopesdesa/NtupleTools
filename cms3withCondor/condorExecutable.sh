@@ -25,7 +25,7 @@ hostname
 export DIRNAME=dataNtupling
 
 #This stuff to get output back
-export COPYDIR=/hadoop/cms/store/user/cgeorge/condor/${DIRNAME}/${filedir}
+export COPYDIR=/hadoop/cms/store/user/$USER/condor/${DIRNAME}/${filedir}
 
 #Set tags
 gtag="PHYS14_25_V2::All"
