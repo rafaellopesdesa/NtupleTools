@@ -15,7 +15,8 @@ export PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH
 configFile=$1
 number=$2
 filedir=$3
-OUTPUT=ntuple_${number}.root
+username=$4
+OUTPUT=$5
 
 #Tell us where we're running
 echo "host: " 
@@ -25,7 +26,7 @@ hostname
 export DIRNAME=dataNtupling
 
 #This stuff to get output back
-export COPYDIR=/hadoop/cms/store/user/$USER/condor/${DIRNAME}/${filedir}
+export COPYDIR=/hadoop/cms/store/user/$username/condor/${DIRNAME}/${filedir}
 
 #Set tags
 gtag="PHYS14_25_V2::All"

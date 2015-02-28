@@ -12,5 +12,5 @@ notify_user = cag51@FNAL.GOV
 x509userproxy = /tmp/x509up_u31093
 Executable = condorExecutable.sh
 Transfer_executable = True
-arguments = FILENAME NUMBER FILEDIR
+arguments = FILENAME NUMBER FILEDIR USERNAME OUTPUTFILE
 Queue 1

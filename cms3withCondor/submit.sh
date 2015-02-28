@@ -90,6 +90,8 @@ do
   sed -i "s/NUMBER/$number/g" $subfiles/$condorFile
   sed -i "s/FILEDIR/$filedir/g" $subfiles/$condorFile
   sed -i "s/LOGDIR/$logdir/g" $subfiles/$condorFile
+  sed -i "s/USERNAME/$USER/g" $subfiles/$condorFile
+  sed -i "s/OUTPUTFILE/$outputfile/g" $subfiles/$condorFile
 
   condor_submit $subfiles/$condorFile
   
