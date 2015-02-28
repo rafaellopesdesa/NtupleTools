@@ -28,6 +28,13 @@ fi
 
 ##################---HERE THERE BE DRAGONS---################################
 
+#get a proxy if you don't have one
+while  ! voms-proxy-info -exist
+do echo "No Proxy found issuing \"voms-proxy-init -voms cms\""
+   voms-proxy-init -hours 168 -voms cms 
+done
+
+
 #make subfiles dir if it does not exist
 echo $subfiles
 if [ ! -d $subfiles ]
@@ -84,14 +91,15 @@ do
   
   sed -i "9s,.*,\'$filename\'," $subfiles/$configFile
   sed -i "15s/.*/   fileName     = cms.untracked.string\(\'$outputfile\'\),/" $subfiles/$configFile
-  
+
   cp condorFile $subfiles/$condorFile
   sed -i "s/FILENAME/$configFile/g" $subfiles/$condorFile
   sed -i "s/NUMBER/$number/g" $subfiles/$condorFile
   sed -i "s/FILEDIR/$filedir/g" $subfiles/$condorFile
   sed -i "s/LOGDIR/$logdir/g" $subfiles/$condorFile
-  sed -i "s/USERNAME/$USER/g" $subfiles/$condorFile
+  sed -i "s/USERNAME/${USER}/g" $subfiles/$condorFile
   sed -i "s/OUTPUTFILE/$outputfile/g" $subfiles/$condorFile
+  sed -i "s.USERPROXY.$(voms-proxy-info -path).g" $subfiles/$condorFile #proxy string has a "/" in it, so use "." as delimiter
 
   condor_submit $subfiles/$condorFile
   
