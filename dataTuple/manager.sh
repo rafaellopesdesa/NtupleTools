@@ -3,13 +3,17 @@
 #This is the manager that calls all the other pieces.  This should itself be called every N minutes.  
 
 #Don't allow more than one instance to run
-if [ $dataTupleCronJobIsRunning == 1 ] 
+if [ "$dataTupleCronJobIsRunning" == "1" ] 
 then
+  echo "here1"
   return 0
 else
   dataTupleCronJobIsRunning=1
+  echo "here2"
+  sleep 300
 fi
 
+echo "here3"
 #Make sure cms3withCondor exists
 if [ ! -d cms3withCondor ] 
 then
