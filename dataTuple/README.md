@@ -22,5 +22,7 @@
     3. Update submit list
 
 ####To Do:
-  1. Right now, all ntuples go to the same directory and are called ntuple_$number.py, where $number is the position on the submitList.  This is obviusly suboptimal, should change directory structure.  
+  1. Right now, all ntuples go to the same directory, should change directory structure.  
   2.  "Step 5b" has not been assigned
+  3. Make sure only one instance of manager can run at a time.
+  4. Add ability to run on multiple UAFs in case one goes down.
