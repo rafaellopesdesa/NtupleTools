@@ -10,7 +10,6 @@ then
 else
   dataTupleCronJobIsRunning=1
   echo "here2"
-  sleep 300
 fi
 
 echo "here3"
