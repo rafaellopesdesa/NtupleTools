@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [[ ":$PATH:" != *":$PWD:"* ]]; then
+    PATH="${PATH:+"$PATH:"}$PWD"
+fi
+
+cd $PWD
+
 #This is the manager that calls all the other pieces.  This should itself be called every N minutes.  
 
 #Don't allow more than one instance to run
@@ -18,6 +24,12 @@ if [ ! -d cms3withCondor ]
 then
   cp -r ../cms3withCondor .
 fi
+
+cd cms3withCondor
+if [[ ":$PATH:" != *":$PWD:"* ]]; then
+    PATH="${PATH:+"$PATH:"}$PWD"
+fi
+cd ..
 
 if [ ! -e submitList.txt ] 
 then
@@ -93,7 +105,7 @@ then
     mkdir cms3withCondor/$currentTime
     echo "outputName=$(python getFileName.py $currentLine 2>&1)"
     outputName=$(python getFileName.py $currentLine 2>&1)
-    . submit.sh filesToSubmit.txt $currentTime $outputName
+    . submitJob.sh filesToSubmit.txt $currentTime $outputName
     #b. Verify all jobs submitted properly (??)
 
     #c. Update submitted list
