@@ -105,7 +105,8 @@ then
     mkdir cms3withCondor/$currentTime
     echo "outputName=$(python getFileName.py $currentLine 2>&1)"
     outputName=$(python getFileName.py $currentLine 2>&1)
-    . submitJob.sh filesToSubmit.txt $currentTime $outputName
+    #. submitJob.sh filesToSubmit.txt $currentTime $outputName
+    . submitJob.sh filesToSubmit.txt $outputName
     #b. Verify all jobs submitted properly (??)
 
     #c. Update submitted list
