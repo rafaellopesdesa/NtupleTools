@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [[ ":$PATH:" != *":$PWD:"* ]]; then
+    PATH="${PATH:+"$PATH:"}$PWD"
+fi
+
+cd $PWD
+
 #This is the manager that calls all the other pieces.  This should itself be called every N minutes.  
 
 #Don't allow more than one instance to run
@@ -19,10 +25,18 @@ then
   cp -r ../cms3withCondor .
 fi
 
+cd cms3withCondor
+if [[ ":$PATH:" != *":$PWD:"* ]]; then
+    PATH="${PATH:+"$PATH:"}$PWD"
+fi
+cd ..
+
 if [ ! -e submitList.txt ] 
 then
   touch submitList.txt
 fi
+
+outputPath="/hadoop/cms/store/user/$USER/condor/dataNtupling/dataTuple"
 
 #1. DBS query to generate masterList with files on input.txt (DONE. GenerateMasterList.sh)
 #. GenerateMasterList.sh
@@ -67,13 +81,13 @@ do
   if [ $isRunning == false ] 
   then
     tempName=$(python getFileName.py $currentFile 2>&1)
-    if [ ! -e /hadoop/cms/store/user/$USER/condor/dataNtupling/dataTuple/$tempName ] 
+    if [ ! -e $outputPath/$tempName ] 
     then
       echo "$currentFile"
       echo `echo $currentFile | awk ' { print $1 }'` >> filesToSubmit.txt
       continue
     else
-      . checkFile.sh /hadoop/cms/store/user/$USER/condor/dataNtupling/dataTuple/$tempName
+      . checkFile.sh $outputPath/$tempName
       continue
     fi
   fi
@@ -81,34 +95,31 @@ do
 done < notDoneList.txt
 
 #5. Submit all the jobs that have been marked for submission
-counter=0;
-currentTime=`date +%s`
+#currentTime=`date +%s`
+currentTime=`date +%m%d%y_%s`
 if [ -e filesToSubmit.txt ] 
 then 
   while read line
   do
     currentLine=$line
-    let "counter=$counter+1"
     #a. Submit them
-    mkdir cms3withCondor/$currentTime
     echo "outputName=$(python getFileName.py $currentLine 2>&1)"
     outputName=$(python getFileName.py $currentLine 2>&1)
-    . submit.sh filesToSubmit.txt $currentTime $outputName
+    . submitJob.sh filesToSubmit.txt $currentTime $outputPath $outputName
     #b. Verify all jobs submitted properly (??)
 
     #c. Update submitted list
-    . getJobNumber.sh $counter $currentTime
+    . getJobNumber.sh $currentTime
     . isOnSubmitList.sh $currentLine
     if [ $? != 1 ] 
     then
-      . getJobNumber.sh $counter $currentTime
-      echo "currentLine"
+      . getJobNumber.sh $currentTime
+      echo "currentLine:"
       echo $currentLine
       echo "$currentLine $jobid $currentTime 1" >> submitList.txt
       continue
     else
-      . getJobNumber.sh $counter $currentTime
-      echo "here"
+      . getJobNumber.sh $currentTime
       currentLine_escaped=`echo $currentLine | sed 's,/,\\\/,g'`
       sed -i "/$currentLine_escaped/d" submitList.txt
       let "nTries=$nTries+1"
