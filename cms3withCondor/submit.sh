@@ -22,7 +22,7 @@ LOG="${SUBMITLOGDIR}/condor_`date "+%m_%d_%Y"`.log"
 OUT="${JOBLOGDIR}/1e.\$(Cluster).\$(Process).out"
 ERR="${JOBLOGDIR}/1e.\$(Cluster).\$(Process).err"
 
-if [ -e /nfs-7/userdata/libCMS3/lib_${CMS3_TAG}.tar.gz]
+if [ -e "/nfs-7/userdata/libCMS3/lib_${CMS3_TAG}.tar.gz" ]
 then
   libCMS3=/nfs-7/userdata/libCMS3/lib_${CMS3_TAG}.tar.gz
   echo "Using existing libCMS3 file: $libCMS3"
@@ -53,13 +53,15 @@ do
 
   INPUT_FILE_NAME=$line
 
-  if (( $# == 2 )) && ["$DO_NTUPLE_NUMBER" == "true"]; 
+  if (( $# == 2 )) && ["$DO_NTUPLE_NUMBER" == "true"]
   then
     OUTPUT_FILE_NAME="ntuple_$number.root"
-  elif (( $# == 2 )) && ["$DO_NTUPLE_NUMBER" != "true"]; 
+  elif (( $# == 2 )) && ["$DO_NTUPLE_NUMBER" != "true"]
+  then
     echo "Need to supply OUTPUT_FILE_NAME argument or set DO_NTUPLE_NUMBER = true"
     return 1
-  elif (( $# == 3 )) && ["$DO_NTUPLE_NUMBER" == "true"]; 
+  elif (( $# == 3 )) && ["$DO_NTUPLE_NUMBER" == "true"]
+  then
     echo "Error: If passing OUTPUT_FILE_NAME argument, must set DO_NTUPLE_NUMBER = false"
     return 1
   else
