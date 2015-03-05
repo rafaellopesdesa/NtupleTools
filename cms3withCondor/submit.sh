@@ -1,5 +1,8 @@
 #!/bin/bash
 
+files=$1
+DO_NTUPLE_NUMBER=$2
+
 CMS3_TAG="CMS3_V07-02-06"
 GLOBAL_TAG="PHYS14_25_V2::All"
 
@@ -37,6 +40,21 @@ while read line
 do
 
   let "number=$number+1"
+
+  INPUT_FILE_NAME=$line
+
+  if (( $# == 2 )) && ["$DO_NTUPLE_NUMBER" == "true"]; 
+  then
+    OUTPUT_FILE_NAME="ntuple_$number.root"
+  elif (( $# == 2 )) && ["$DO_NTUPLE_NUMBER" != "true"]; 
+    echo "Need to supply OUTPUT_FILE_NAME argument or set DO_NTUPLE_NUMBER = true"
+    return 1
+  elif (( $# == 3 )) && ["$DO_NTUPLE_NUMBER" == "true"]; 
+    echo "Error: If passing OUTPUT_FILE_NAME argument, must set DO_NTUPLE_NUMBER = false"
+    return 1
+  else
+    OUTPUT_FILE_NAME=$3
+  fi
 
   echo "
   universe=grid
