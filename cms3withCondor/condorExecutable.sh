@@ -8,25 +8,15 @@ fi
 HOME=`pwd`
 
 configFile=$1
-number=$2
-filedir=$3
-username=$4
-OUTPUT=$5
-libCMS3=$6
+libCMS3=$2
+GLOBAL_TAG=$3
+INPUT_FILE_NAME=$4
+OUTPUT_DIR=$5
+OUTPUT_FILE_NAME=$6
 
 #Tell us where we're running
 echo "host: " 
 hostname
-
-#Specify name of output file and name of directory in /hadoop/.../cgeorge/condor
-export DIRNAME=dataNtupling
-
-#This stuff to get output back
-export COPYDIR=/hadoop/cms/store/user/$username/condor/${DIRNAME}/${filedir}
-
-#Set tags
-gtag="PHYS14_25_V2::All"
-tag="master"
 
 #untar tarball containing CMS3 libraries and python files
 if [ -e $libCMS3 ]
@@ -53,8 +43,12 @@ export LD_LIBRARY_PATH=$PWD/lib/slc6_amd64_gcc481:$LD_LIBRARY_PATH
 export PATH=$PWD:$PATH
 export PYTHONPATH=$PWD/python:$PYTHONPATH
 
+sed -i "s/SUPPLY_GLOBAL_TAG/${GLOBAL_TAG}/g" $configFile
+sed -i "s/SUPPLY_INPUT_FILE_NAME/${INPUT_FILE_NAME}/g" $configFile
+sed -i "s/SUPPLY_OUTPUT_FILE_NAME/${OUTPUT_FILE_NAME}/g" $configFile
+
 #Run it
 cmsRun $configFile
 
 #Copy the output
-lcg-cp -b -D srmv2 --vo cms --connect-timeout 2400 --verbose file://`pwd`/${OUTPUT} srm://bsrm-3.t2.ucsd.edu:8443/srm/v2/server?SFN=${COPYDIR}/${OUTPUT}
+lcg-cp -b -D srmv2 --vo cms --connect-timeout 2400 --verbose file://`pwd`/${OUTPUT_FILE_NAME} srm://bsrm-3.t2.ucsd.edu:8443/srm/v2/server?SFN=${OUTPUT_DIR}/${OUTPUT_FILE_NAME}
