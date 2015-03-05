@@ -19,12 +19,14 @@ echo "host: "
 hostname
 
 #untar tarball containing CMS3 libraries and python files
+echo "libCMS3 = "
+echo $libCMS3
 if [ -e $libCMS3 ]
 then
   tar -xzvf $libCMS3
 else
   echo "libCMS3 missing!"
-  return 1
+  exit 1
 fi
 
 #Set environment
@@ -43,8 +45,10 @@ export LD_LIBRARY_PATH=$PWD/lib/slc6_amd64_gcc481:$LD_LIBRARY_PATH
 export PATH=$PWD:$PATH
 export PYTHONPATH=$PWD/python:$PYTHONPATH
 
+#INPUT_FILE_NAME_ESCAPED=`echo $INPUT_FILE_NAME | sed 's,/,\\\/,g'
+
 sed -i "s/SUPPLY_GLOBAL_TAG/${GLOBAL_TAG}/g" $configFile
-sed -i "s/SUPPLY_INPUT_FILE_NAME/${INPUT_FILE_NAME}/g" $configFile
+sed -i "s,SUPPLY_INPUT_FILE_NAME,${INPUT_FILE_NAME},g" $configFile
 sed -i "s/SUPPLY_OUTPUT_FILE_NAME/${OUTPUT_FILE_NAME}/g" $configFile
 
 #Run it

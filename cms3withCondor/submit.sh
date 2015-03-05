@@ -13,6 +13,17 @@ do echo "No Proxy found issuing \"voms-proxy-init -voms cms\""
    voms-proxy-init -hours 168 -voms cms 
 done
 
+if [ -e "/nfs-7/userdata/libCMS3/lib_${CMS3_TAG}.tar.gz" ]
+then
+  cp /nfs-7/userdata/libCMS3/lib_${CMS3_TAG}.tar.gz .
+  libCMS3=lib_${CMS3_TAG}.tar.gz
+  echo "Using existing libCMS3 file: /nfs-7/userdata/libCMS3/$libCMS3"
+else
+  echo "libCMS3 file does not exist, will make on the fly."
+  echo "Need to implement this feature, exit for now."
+  exit 1
+fi
+
 PSET="MCProduction2015_NoFilter_cfg.py"
 INPUT="$PSET, $libCMS3"
 SITE="T2_US_UCSD,T2_US_Nebraska,T2_US_Wisconsin,T2_US_MIT,T2_US_FLORIDA"
@@ -24,17 +35,6 @@ JOBCFGDIR="${PWD}/job_cfg/$TIME"
 LOG="${SUBMITLOGDIR}/condor_$TIME.log"
 OUT="${JOBLOGDIR}/1e.\$(Cluster).\$(Process).out"
 ERR="${JOBLOGDIR}/1e.\$(Cluster).\$(Process).err"
-
-if [ -e "/nfs-7/userdata/libCMS3/lib_${CMS3_TAG}.tar.gz" ]
-then
-  libCMS3=/nfs-7/userdata/libCMS3/lib_${CMS3_TAG}.tar.gz
-  echo "Using existing libCMS3 file: $libCMS3"
-else
-  echo "libCMS3 file does not exist, will make on the fly."
-  echo "Need to implement this feature, exit for now."
-  return 1
-fi
-
 
 if [ ! -d "${SUBMITLOGDIR}" ]; then
     mkdir -p ${SUBMITLOGDIR}
@@ -62,11 +62,11 @@ do
   elif (( $# == 4 )) && [ "$DO_NTUPLE_NUMBER" != "true" ]
   then
     echo "Need to supply OUTPUT_FILE_NAME argument or set DO_NTUPLE_NUMBER = true"
-    return 1
+    exit 1
   elif (( $# == 5 )) && [ "$DO_NTUPLE_NUMBER" == "true" ]
   then
     echo "Error: If passing OUTPUT_FILE_NAME argument, must set DO_NTUPLE_NUMBER = false"
-    return 1
+    exit 1
   else
     OUTPUT_FILE_NAME=$5
   fi
