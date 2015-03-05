@@ -12,7 +12,6 @@ do echo "No Proxy found issuing \"voms-proxy-init -voms cms\""
 done
 
 PSET="MCProduction2015_NoFilter_cfg.py"
-libCMS3=lib_${CMS3_TAG}.tar.gz
 INPUT="$PSET, $libCMS3"
 SITE="T2_US_UCSD,T2_US_Nebraska,T2_US_Wisconsin,T2_US_MIT,T2_US_FLORIDA"
 PROXY=$(voms-proxy-info -path)
@@ -22,6 +21,17 @@ JOBCFGDIR="${PWD}/job_cfg/`date "+%m%d%y_%s"`"
 LOG="${SUBMITLOGDIR}/condor_`date "+%m_%d_%Y"`.log"
 OUT="${JOBLOGDIR}/1e.\$(Cluster).\$(Process).out"
 ERR="${JOBLOGDIR}/1e.\$(Cluster).\$(Process).err"
+
+if [ -e /nfs-7/userdata/libCMS3/lib_${CMS3_TAG}.tar.gz]
+then
+  libCMS3=/nfs-7/userdata/libCMS3/lib_${CMS3_TAG}.tar.gz
+  echo "Using existing libCMS3 file: $libCMS3"
+else
+  echo "libCMS3 file does not exist, will make on the fly."
+  echo "Need to implement this feature, exit for now."
+  return 1
+fi
+
 
 if [ ! -d "${SUBMITLOGDIR}" ]; then
     mkdir -p ${SUBMITLOGDIR}
