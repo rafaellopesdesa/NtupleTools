@@ -1,7 +1,9 @@
 #!/bin/bash
 
 files=$1
-DO_NTUPLE_NUMBER=$2
+TIME=$2
+OUTPUT_DIR=$3
+DO_NTUPLE_NUMBER=$4
 
 CMS3_TAG="CMS3_V07-02-06"
 GLOBAL_TAG="PHYS14_25_V2::All"
@@ -17,8 +19,9 @@ SITE="T2_US_UCSD,T2_US_Nebraska,T2_US_Wisconsin,T2_US_MIT,T2_US_FLORIDA"
 PROXY=$(voms-proxy-info -path)
 SUBMITLOGDIR="${PWD}/submit_logs"
 JOBLOGDIR="${PWD}/job_logs"
-JOBCFGDIR="${PWD}/job_cfg/`date "+%m%d%y_%s"`"
-LOG="${SUBMITLOGDIR}/condor_`date "+%m_%d_%Y"`.log"
+#JOBCFGDIR="${PWD}/job_cfg/`date "+%m%d%y_%s"`"
+JOBCFGDIR="${PWD}/job_cfg/$TIME"
+LOG="${SUBMITLOGDIR}/condor_$TIME.log"
 OUT="${JOBLOGDIR}/1e.\$(Cluster).\$(Process).out"
 ERR="${JOBLOGDIR}/1e.\$(Cluster).\$(Process).err"
 
@@ -53,19 +56,19 @@ do
 
   INPUT_FILE_NAME=$line
 
-  if (( $# == 2 )) && ["$DO_NTUPLE_NUMBER" == "true"]
+  if (( $# == 4 )) && [ "$DO_NTUPLE_NUMBER" == "true" ]
   then
     OUTPUT_FILE_NAME="ntuple_$number.root"
-  elif (( $# == 2 )) && ["$DO_NTUPLE_NUMBER" != "true"]
+  elif (( $# == 4 )) && [ "$DO_NTUPLE_NUMBER" != "true" ]
   then
     echo "Need to supply OUTPUT_FILE_NAME argument or set DO_NTUPLE_NUMBER = true"
     return 1
-  elif (( $# == 3 )) && ["$DO_NTUPLE_NUMBER" == "true"]
+  elif (( $# == 5 )) && [ "$DO_NTUPLE_NUMBER" == "true" ]
   then
     echo "Error: If passing OUTPUT_FILE_NAME argument, must set DO_NTUPLE_NUMBER = false"
     return 1
   else
-    OUTPUT_FILE_NAME=$3
+    OUTPUT_FILE_NAME=$5
   fi
 
   echo "
