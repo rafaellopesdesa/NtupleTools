@@ -22,7 +22,13 @@ else
   echo "libCMS3 file does not exist, will make on the fly."
   chmod 744 make_libCMS3.sh
   ./make_libCMS3.sh $CMS3_TAG
-  libCMS3=lib_${CMS3_TAG}.tar.gz
+  if [ -e "libCMS3=lib_${CMS3_TAG}.tar.gz" ]
+  then
+    libCMS3=lib_${CMS3_TAG}.tar.gz
+  else
+    echo "Failed to make libCMS3 tarball on the fly!"
+    exit 1
+  fi
 fi
 
 PSET="MCProduction2015_NoFilter_cfg.py"
