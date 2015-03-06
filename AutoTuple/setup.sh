@@ -13,6 +13,11 @@ export SCRAM_ARCH=slc6_amd64_gcc481
 scramv1 p -n CMSSW_7_2_0 CMSSW CMSSW_7_2_0
 cd CMSSW_7_2_0
 cmsenv
+if [ ! -e /nfs-7/userdata/libCMS3/lib_$tag.tar.gz ]
+then
+  echo "FATAL ERROR!!!  THE PIRATE SHIP SUNK!!! YOUR TARBALL DOES NOT EXIST!!! ABANDON SHIP!!! ABANDON SHIP!!!" 
+  return 1
+fi
 cp /nfs-7/userdata/libCMS3/lib_$tag.tar.gz . 
 tar -xzvf lib_$tag.tar.gz
 scram b -j 10
