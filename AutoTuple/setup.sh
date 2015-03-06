@@ -11,15 +11,11 @@ export PATH=$PATH:`pwd`
 source /cvmfs/cms.cern.ch/crab3/crab.sh
 export SCRAM_ARCH=slc6_amd64_gcc481
 scramv1 p -n CMSSW_7_2_0 CMSSW CMSSW_7_2_0
-cd CMSSW_7_2_0/src
+cd CMSSW_7_2_0
 cmsenv
-git clone git@github.com:cmstas/NtupleMaker.git CMS3/NtupleMaker
-cd CMS3/NtupleMaker
-git checkout $tag
-source setup/patchesToSource.sh
-cd $CMSSW_BASE/src
+cp /nfs-7/userdata/libCMS3/lib_$tag.tar.gz . 
+tar -xzvf lib_$tag.tar.gz
 scram b -j 10
-cd ..
 mkdir crab
 cd crab
 cp -r ../../../condorMergingTools/* ${CMSSW_BASE}/crab/
