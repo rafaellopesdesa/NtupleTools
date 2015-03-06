@@ -10,6 +10,6 @@ do
   then
     process=`echo $line | awk '{ print $3 }'`
   fi
-done < cms3withCondor/$2/condorLog_$1.log 
+done < cms3withCondor/submit_logs/condor_$1.log 
 
 jobid=$cluster.$process
