@@ -20,8 +20,15 @@ then
   echo "Using existing libCMS3 file: /nfs-7/userdata/libCMS3/$libCMS3"
 else
   echo "libCMS3 file does not exist, will make on the fly."
-  echo "Need to implement this feature, exit for now."
-  exit 1
+  chmod 744 make_libCMS3.sh
+  ./make_libCMS3.sh $CMS3_TAG
+  if [ -e "libCMS3=lib_${CMS3_TAG}.tar.gz" ]
+  then
+    libCMS3=lib_${CMS3_TAG}.tar.gz
+  else
+    echo "Failed to make libCMS3 tarball on the fly!"
+    exit 1
+  fi
 fi
 
 PSET="MCProduction2015_NoFilter_cfg.py"
@@ -30,7 +37,6 @@ SITE="T2_US_UCSD,T2_US_Nebraska,T2_US_Wisconsin,T2_US_MIT,T2_US_FLORIDA"
 PROXY=$(voms-proxy-info -path)
 SUBMITLOGDIR="${PWD}/submit_logs"
 JOBLOGDIR="${PWD}/job_logs"
-#JOBCFGDIR="${PWD}/job_cfg/`date "+%m%d%y_%s"`"
 JOBCFGDIR="${PWD}/job_cfg/$TIME"
 LOG="${SUBMITLOGDIR}/condor_$TIME.log"
 OUT="${JOBLOGDIR}/1e.\$(Cluster).\$(Process).out"
