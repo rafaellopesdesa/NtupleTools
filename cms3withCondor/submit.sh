@@ -31,7 +31,7 @@ else
   fi
 fi
 
-PSET="MCProduction2015_NoFilter_cfg.py"
+PSET="pset.py"
 INPUT="$PSET, $libCMS3"
 SITE="T2_US_UCSD,T2_US_Nebraska,T2_US_Wisconsin,T2_US_MIT,T2_US_FLORIDA"
 PROXY=$(voms-proxy-info -path)
