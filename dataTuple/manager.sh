@@ -57,11 +57,11 @@ while read line
 do
   currentFile=$line
 
-  #aa.  See if job is on failure list.  If yes, continue
+  #a.  See if job is on failure list.  If yes, continue
   . isOnFailureList.sh $currentFile
   if [ "$?" -eq "1" ]; then continue; fi
  
-  #a. See if each job is on submitList. If no, mark the job for submission and on to step 5. (DONE)
+  #b. See if each job is on submitList. If no, mark the job for submission and on to step 5. (DONE)
   . isOnSubmitList.sh $currentFile
   if [ $? != 1 ] 
   then
@@ -69,12 +69,12 @@ do
     continue
   fi
 
-  #b. Otherwise, it's on the submitList. Get the jobID from there and see if the job is running.
+  #c. Otherwise, it's on the submitList. Get the jobID from there and see if the job is running.
   condor_q $jobid > temp.txt
   sed -i '1,4d' temp.txt
   if [ -s temp.txt ]; then isRunning=true; else isRunning=false; fi
 
-  #c. If job is on run list, check time. If has been running for more than 24 hours, kill it, mark for submission, and on to step 5.
+  #d. If job is on run list, check time. If has been running for more than 24 hours, kill it, mark for submission, and on to step 5.
   if [ $isRunning == true ] 
   then
     tooMuchTime=$(python checkTime.py $starttime 2>&1)
@@ -86,7 +86,7 @@ do
     fi
   fi
 
-  #d. If not on run list, check if it's done. If not done, mark for submission and on to step 5.
+  #e. If not on run list, check if it's done. If not done, mark for submission and on to step 5.
   if [ $isRunning == false ] 
   then
     tempName=$(python getFileName.py $currentFile 2>&1)
