@@ -11,14 +11,11 @@ cd $PWD
 #Don't allow more than one instance to run
 if [ "$dataTupleCronJobIsRunning" == "1" ] 
 then
-  echo "here1"
   return 0
 else
   dataTupleCronJobIsRunning=1
-  echo "here2"
 fi
 
-echo "here3"
 #Make sure cms3withCondor exists
 if [ ! -d cms3withCondor ] && [ -d ../cms3withCondor ]
 then
@@ -43,7 +40,9 @@ fi
 outputPath="/hadoop/cms/store/user/$USER/condor/dataNtupling/dataTuple"
 
 #1. DBS query to generate masterList with files on input.txt (DONE. GenerateMasterList.sh)
+echo "Populating masterList.txt with files for datasets in /nfs-7/userdata/dataTuple/input.txt"
 . GenerateMasterList.sh
+echo "masterList.txt written"
 
 #2. Diff between masterList and completedList to make notDoneList. (DONE. makeNotDoneList.sh)
 . makeNotDoneList.sh
