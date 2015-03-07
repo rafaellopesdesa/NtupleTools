@@ -119,7 +119,7 @@ then
       continue
     elif [ "$nTries" -eq "35" ] 
     then
-      echo "DataTupleError!  File $currentLine has failed many times." | /bin/mail -s "[dataTuple] error report!" "george@physics.ucsb.edu, jgran@physics.ucsb.edu" 
+      echo "DataTupleError!  File $currentLine has failed many times." | /bin/mail -s "[dataTuple] error report\!" "george@physics.ucsb.edu, jgran@physics.ucsb.edu" 
       $currentLine > failure.txt
     fi
 
