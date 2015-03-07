@@ -59,6 +59,7 @@ do
 
   #aa.  See if job is on failure list.  If yes, continue
   . isOnFailureList.sh $currentFile
+  continue
  
   #a. See if each job is on submitList. If no, mark the job for submission and on to step 5. (DONE)
   . isOnSubmitList.sh $currentFile
