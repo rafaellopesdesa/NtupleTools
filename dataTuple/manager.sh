@@ -121,6 +121,7 @@ then
     then
       echo "DataTupleError!  File $currentLine has failed many times." | /bin/mail -r "george@physics.ucsb.edu" -s "[dataTuple] error report" "george@physics.ucsb.edu, jgran@physics.ucsb.edu" 
       $currentLine > failure.txt
+      continue
     fi
 
     #b. Submit them
