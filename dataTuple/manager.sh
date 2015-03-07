@@ -23,7 +23,8 @@ echo "here3"
 if [ ! -d cms3withCondor ] && [ -d ../cms3withCondor ]
 then
   cp -r ../cms3withCondor .
-else
+elif [ ! -d cms3withCondor ]
+then
   echo "Cannot find cms3withCondor"
   exit 1
 fi
