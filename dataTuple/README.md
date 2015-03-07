@@ -18,8 +18,8 @@
     6. If job is done, do quality checks.  If fails, delete the output, mark for submission, and on to step 5. (JASON)
     7. If passes quality checks, then update the done list and we're done. (JASON)
   5. Submit all jobs marked for submission. 
-    1. Submit them
-    2. Verify jobs submitted properly
+    1. Update failure list if needed
+    2. Submit them
     3. Update submit list
 
 ####To Do:
