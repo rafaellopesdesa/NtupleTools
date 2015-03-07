@@ -43,10 +43,10 @@ fi
 outputPath="/hadoop/cms/store/user/$USER/condor/dataNtupling/dataTuple"
 
 #1. DBS query to generate masterList with files on input.txt (DONE. GenerateMasterList.sh)
-#. GenerateMasterList.sh
+. GenerateMasterList.sh
 
 #2. Diff between masterList and completedList to make notDoneList. (DONE. makeNotDoneList.sh)
-#. makeNotDoneList.sh
+. makeNotDoneList.sh
 
 #3. condor_q makes runningList and heldList. Jobs on the heldList are killed. (DONE. checkStatus.sh)
 . checkStatus.sh
