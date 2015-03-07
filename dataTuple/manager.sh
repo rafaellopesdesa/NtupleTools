@@ -56,6 +56,10 @@ rm filesToSubmit.txt 2> /dev/null
 while read line
 do
   currentFile=$line
+
+  #aa.  See if job is on failure list.  If yes, continue
+  . isOnFailureList.sh $currentFile
+ 
   #a. See if each job is on submitList. If no, mark the job for submission and on to step 5. (DONE)
   . isOnSubmitList.sh $currentFile
   if [ $? != 1 ] 
@@ -106,11 +110,23 @@ then
   while read line
   do
     currentLine=$line
-    #a. Submit them
+ 
+    #a. Check number of times submitted
+    . isOnSubmitList.sh $currentLine
+    if [ "$nTries" -gt "10" ] && [ "$nTries" -lt "30" ];
+    then
+      let "nTries=$nTries+1"
+      continue
+    elif [ "$nTries" -eq "35" ] 
+    then
+      echo "DataTupleError!  File $currentLine has failed many times." | /bin/mail -s "[dataTuple] error report!" "george@physics.ucsb.edu, jgran@physics.ucsb.edu" 
+      $currentLine > failure.txt
+    fi
+
+    #b. Submit them
     echo "outputName=$(python getFileName.py $currentLine 2>&1)"
     outputName=$(python getFileName.py $currentLine 2>&1)
     . submitJob.sh filesToSubmit.txt $currentTime $outputPath $outputName
-    #b. Verify all jobs submitted properly (??)
 
     #c. Update submitted list
     . getJobNumber.sh $currentTime
