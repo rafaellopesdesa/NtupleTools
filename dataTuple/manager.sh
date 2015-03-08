@@ -85,6 +85,7 @@ do
   echo "step 4d"
   if [ $isRunning == true ] 
   then
+    echo "starttime: $starttime"
     tooMuchTime=$(python checkTime.py $starttime 2>&1)
     if [ $tooMuchTime == true ]
     then
@@ -115,8 +116,8 @@ do
 done < notDoneList.txt
 
 #5. Submit all the jobs that have been marked for submission
-#currentTime=`date +%s`
-currentTime=`date +%m%d%y_%s`
+currentTime=`date +%s`
+#currentTime=`date +%m%d%y_%s`  <--this is not OK as is, causes problems with time check.
 lineno=0
 if [ -e filesToSubmit.txt ] 
 then 
