@@ -4,6 +4,10 @@
 
 while read line
 do
+  if [ ! -e submitList.txt ] 
+  then
+    return 2 
+  fi
   name=`echo $line | awk '{ print $1 }'`
   jobid=`echo $line | awk '{ print $2 }'`
   starttime=`echo $line | awk '{ print $3 }'`
@@ -11,8 +15,6 @@ do
   if [ "$name" == "$1" ] 
   then
     return 1
-  else
-    return 2
   fi
 done < submitList.txt
 
