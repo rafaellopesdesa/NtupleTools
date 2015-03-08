@@ -32,7 +32,7 @@ if [[ ":$PATH:" != *":$PWD:"* ]]; then
 fi
 cd ..
 
-if [ ! -e submitList.txt ] 
+if [ -e submitList.txt ] 
 then
   touch submitList.txt
 fi
@@ -57,41 +57,53 @@ do
   currentFile=$line
 
   #a.  See if job is on failure list.  If yes, continue
+  echo "step 4a"
   . isOnFailureList.sh $currentFile
   if [ "$?" -eq "1" ]; then continue; fi
  
   #b. See if each job is on submitList. If no, mark the job for submission and on to step 5. (DONE)
+  echo "step 4b"
   . isOnSubmitList.sh $currentFile
-  if [ $? != 1 ] 
+  isOnSubmitList=$?
+  echo "current file: $currentFile"
+  if [ $isOnSubmitList != 1 ] 
   then
+    echo "Not on submit list, submitting"
     echo $currentFile >> filesToSubmit.txt
     continue
   fi
 
   #c. Otherwise, it's on the submitList. Get the jobID from there and see if the job is running.
+  echo "step 4c"
+  echo "job id: $jobid"
   condor_q $jobid > temp.txt
   sed -i '1,4d' temp.txt
   if [ -s temp.txt ]; then isRunning=true; else isRunning=false; fi
+  echo "isRunning: $isRunning"
 
   #d. If job is on run list, check time. If has been running for more than 24 hours, kill it, mark for submission, and on to step 5.
+  echo "step 4d"
   if [ $isRunning == true ] 
   then
     tooMuchTime=$(python checkTime.py $starttime 2>&1)
-    if [ $tooMuchTime == "true" ]
+    if [ $tooMuchTime == true ]
     then
       condor_rm $jobid
+      echo "too much time, submitting"
       echo $currentFile >> filesToSubmit.txt
       continue
     fi
   fi
 
   #e. If not on run list, check if it's done. If not done, mark for submission and on to step 5.
+  echo "step 4e"
   if [ $isRunning == false ] 
   then
     tempName=$(python getFileName.py $currentFile 2>&1)
     if [ ! -e $outputPath/$tempName ] 
     then
       echo "$currentFile"
+      echo "not running or done, submitting"
       echo `echo $currentFile | awk ' { print $1 }'` >> filesToSubmit.txt
       continue
     else
@@ -105,31 +117,41 @@ done < notDoneList.txt
 #5. Submit all the jobs that have been marked for submission
 #currentTime=`date +%s`
 currentTime=`date +%m%d%y_%s`
+lineno=0
 if [ -e filesToSubmit.txt ] 
 then 
   while read line
   do
+  let "lineno=$lineno+1"
     currentLine=$line
  
     #a. Check number of times submitted
+    echo "step 5a"
     . isOnSubmitList.sh $currentLine
-    if [ "$nTries" -gt "10" ] && [ "$nTries" -lt "30" ];
+    isOnSubmitList=$?
+    if [ "$isOnSubmitList" -eq "1"  ] 
     then
-      let "nTries=$nTries+1"
-      continue
-    elif [ "$nTries" -eq "35" ] 
-    then
-      echo "DataTupleError!  File $currentLine has failed many times." | /bin/mail -r "george@physics.ucsb.edu" -s "[dataTuple] error report" "george@physics.ucsb.edu, jgran@physics.ucsb.edu" 
-      $currentLine > failure.txt
-      continue
+      echo "nTries: $nTries" 
+      if [ "$nTries" -gt "10" ] && [ "$nTries" -lt "30" ]
+      then
+        let "nTries=$nTries+1"
+        continue
+      elif [ "$nTries" -eq "35" ] 
+      then
+        echo "DataTupleError!  File $currentLine has failed many times." | /bin/mail -r "george@physics.ucsb.edu" -s "[dataTuple] error report" "george@physics.ucsb.edu, jgran@physics.ucsb.edu" 
+        $currentLine > failure.txt
+        continue
+      fi
     fi
 
-    #b. Submit them
+    #5b. Submit them
+    echo "step 5b"
     echo "outputName=$(python getFileName.py $currentLine 2>&1)"
     outputName=$(python getFileName.py $currentLine 2>&1)
-    . submitJob.sh filesToSubmit.txt $currentTime $outputPath $outputName
+    . submitJob.sh filesToSubmit.txt $currentTime $outputPath $outputName $lineno
 
     #c. Update submitted list
+    echo "step 5c"
     . getJobNumber.sh $currentTime
     . isOnSubmitList.sh $currentLine
     if [ $? != 1 ] 
