@@ -73,7 +73,6 @@ echo "Getting list of files that are on masterList but not on completedList"
 . makeNotDoneList.sh
 echo "notDoneList.txt written"
 
-
 #3. condor_q makes runningList and heldList. Jobs on the heldList are killed. (DONE. checkStatus.sh)
 echo "Using condor_q to get see which jobs are running"
 . checkStatus.sh
@@ -141,7 +140,7 @@ do
       whenFinish=`awk -v var="$lineNo" 'NR==var {print $NF}' notDoneList.txt`
       #If job is allegedly still running, update it
       timeSinceEpoch=`date +%s`
-      if [ "$whenFinish" -eq "0" ]
+      if [ "$whenFinish" == "0" ]
       then
         sed -i "${lineNo}s/0$/$timeSinceEpoch/g" notDoneList.txt 
         continue
