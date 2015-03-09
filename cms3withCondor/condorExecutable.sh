@@ -15,15 +15,13 @@ OUTPUT_DIR=$5
 OUTPUT_FILE_NAME=$6
 
 #Tell us where we're running
-echo "host: " 
-hostname
+echo "host: `hostname`" 
 
 #untar tarball containing CMS3 libraries and python files
-echo "libCMS3 = "
-echo $libCMS3
+echo "libCMS3 = $libCMS3"
 if [ -e $libCMS3 ]
 then
-  tar -xzvf $libCMS3
+  tar -xzvf $libCMS3 >
 else
   echo "libCMS3 missing!"
   exit 1
@@ -51,8 +49,14 @@ sed -i "s/SUPPLY_GLOBAL_TAG/${GLOBAL_TAG}/g" $configFile
 sed -i "s,SUPPLY_INPUT_FILE_NAME,${INPUT_FILE_NAME},g" $configFile
 sed -i "s/SUPPLY_OUTPUT_FILE_NAME/${OUTPUT_FILE_NAME}/g" $configFile
 
+echo "ls -lrth"
+ls -lrth
+
 #Run it
 cmsRun $configFile
+
+echo "ls -lrth"
+ls -lrth
 
 #Copy the output
 lcg-cp -b -D srmv2 --vo cms --connect-timeout 2400 --verbose file://`pwd`/${OUTPUT_FILE_NAME} srm://bsrm-3.t2.ucsd.edu:8443/srm/v2/server?SFN=${OUTPUT_DIR}/${OUTPUT_FILE_NAME}
