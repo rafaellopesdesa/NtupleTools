@@ -11,7 +11,7 @@ do
   fi
   if [ "$i" == "FileIsNotValid" ]; then
     rm $1
-    echo $1 >> filesToSubmit.txt
+    echo $2 >> filesToSubmit.txt
     break;
   fi
 done
