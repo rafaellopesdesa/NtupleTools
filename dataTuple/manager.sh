@@ -19,6 +19,9 @@ else
   echo "PID = $$"
 fi
 
+#setup root
+source /cvmfs/cms.cern.ch/slc6_amd64_gcc481/lcg/root/5.34.18/bin/thisroot.sh
+
 if [[ ":$PATH:" != *":$PWD:"* ]]; then
     PATH="${PATH:+"$PATH:"}$PWD"
 fi
