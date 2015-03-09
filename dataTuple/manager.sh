@@ -145,7 +145,7 @@ do
         sed -i "${lineNo}s/0$/$timeSinceEpoch/g" submitList.txt 
         continue
       #If it's been less than 20 minutes, don't resubmit
-      elif [ `echo $(( $timeSinceEpoch - $whenFinish)) < 1200` == 1 ]
+      elif [ `echo $(( ($timeSinceEpoch - $whenFinish) < 1200))` == 1 ]
       then
         continue
       fi
