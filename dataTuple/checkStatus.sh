@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #Run condor_q to get list of running jobs
-condor_q $USER > temp.txt
-sed -i '1,4d' temp.txt
-sed -i '$d' temp.txt
-sed -i '$d' temp.txt
+condor_q $USER > temp_status.txt
+sed -i '1,4d' temp_status.txt
+sed -i '$d' temp_status.txt
+sed -i '$d' temp_status.txt
 
 #Delete old test files
 rm runningList.txt 2>/dev/null
@@ -26,7 +26,9 @@ do
   then
     echo `echo $line | awk '{ print $1 }'` >> heldList.txt
   fi
-done < temp.txt
+done < temp_status.txt
+
+rm temp_status.txt
 
 #Delete held jobs
 if [ -e heldList.txt ]
