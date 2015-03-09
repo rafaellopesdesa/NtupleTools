@@ -1,23 +1,22 @@
 #!/bin/bash
 
+#This is the manager that calls all the other pieces.  This should itself be called every N minutes.  
+
+#Don't allow more than one instance to run
+if [ -e /nfs-7/userdata/dataTuple/running.pid ] 
+then
+  exit 1
+else
+  echo "Current time is: `date`" > /nfs-7/userdata/dataTuple/running.pid
+  echo "manager running on `hostname`" >> /nfs-7/userdata/dataTuple/running.pid
+  echo "PID = $$" >> /nfs-7/userdata/dataTuple/running.pid
+fi
+
 if [[ ":$PATH:" != *":$PWD:"* ]]; then
     PATH="${PATH:+"$PATH:"}$PWD"
 fi
 
 cd $PWD
-
-#This is the manager that calls all the other pieces.  This should itself be called every N minutes.  
-
-#Don't allow more than one instance to run
-if [ "$dataTupleCronJobIsRunning" == "1" ] 
-then
-  return 0
-else
-  dataTupleCronJobIsRunning=1
-fi
-
-echo "Current time is: `date`"
-echo "manager running on `hostname`"
 
 #Make sure cms3withCondor exists
 if [ ! -d cms3withCondor ] && [ -d ../cms3withCondor ]
@@ -185,4 +184,4 @@ then
 
 fi
 
-dataTupleCronJobIsRunning=0
+#rm /nfs-7/userdata/dataTuple/running.pid
