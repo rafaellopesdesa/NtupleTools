@@ -76,10 +76,12 @@ do
   #c. Otherwise, it's on the submitList. Get the jobID from there and see if the job is running.
   echo "step 4c"
   echo "job id: $jobid"
-  condor_q $jobid > temp.txt
-  sed -i '1,4d' temp.txt
-  if [ -s temp.txt ]; then isRunning=true; else isRunning=false; fi
+  condor_q $jobid > temp_isRunning.txt
+  sed -i '1,4d' temp_isRunning.txt
+  if [ -s temp_isRunning.txt ]; then isRunning=true; else isRunning=false; fi
   echo "isRunning: $isRunning"
+  rm temp_isRunning.txt
+
 
   #d. If job is on run list, check time. If has been running for more than 24 hours, kill it, mark for submission, and on to step 5.
   echo "step 4d"
