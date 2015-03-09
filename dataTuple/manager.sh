@@ -145,7 +145,7 @@ do
       then
         sed -i "${lineNo}s/0$/$timeSinceEpoch/g" notDoneList.txt 
         continue
-      #Otherwise, don't do anything if time is too long
+      #If it's been less than 20 minutes, don't resubmit
       elif [ `echo $(( $timeSinceEpoch - $whenFinish)) < 1200` == 1 ]
       then
         continue
