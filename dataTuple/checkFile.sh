@@ -6,7 +6,7 @@ readarray -t results < validFileOutput.txt
 for i in "${results[@]}"
 do
   if [ "$i" == "FileIsValid" ]; then
-    echo $1 >> /nfs-7/userdata/dataTuple/completedList.txt
+    echo $2 >> /nfs-7/userdata/dataTuple/completedList.txt
     break;
   fi
   if [ "$i" == "FileIsNotValid" ]; then

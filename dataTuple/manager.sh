@@ -126,7 +126,7 @@ do
       echo `echo $currentFile | awk ' { print $1 }'` >> filesToSubmit.txt
       continue
     else
-      . checkFile.sh $outputPath/$tempName
+      . checkFile.sh $outputPath/$tempName $currentFile
       continue
     fi
   fi
