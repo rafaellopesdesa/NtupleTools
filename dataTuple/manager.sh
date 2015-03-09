@@ -5,6 +5,7 @@
 #Don't allow more than one instance to run
 if [ -e /nfs-7/userdata/dataTuple/running.pid ] 
 then
+  echo "An instance of manager is already running"
   exit 1
 else
   echo "Current time is: `date`" > /nfs-7/userdata/dataTuple/running.pid
