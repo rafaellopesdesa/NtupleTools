@@ -6,7 +6,7 @@
 if [ -e /nfs-7/userdata/dataTuple/running.pid ] 
 then
   echo "An instance of manager is already running"
-  exit 1
+#  exit 1
 else
   #store process info in pid file
   echo "Current time is: `date`" > /nfs-7/userdata/dataTuple/running.pid
@@ -125,6 +125,21 @@ do
     tempName=$(python getFileName.py $currentFile 2>&1)
     if [ ! -e $outputPath/$tempName ] 
     then
+      #See when job finished
+      currentLine_escaped=`echo $currentLine | sed 's,/,\\\/,g'`
+      lineNo=`sed -n /$currentLine_escaped/= notDoneList.txt`
+      whenFinish=`awk -v var="$lineNo" 'NR==var {print $NF}' notDoneList.txt`
+      #If job is allegedly still running, update it
+      timeSinceEpoch=`date +%s`
+      if [ "$whenFinish" -eq "0" ]
+      then
+        sed -i "${lineNo}s/0$/$timeSinceEpoch/g" notDoneList.txt 
+        continue
+      #Otherwise, don't do anything if time is too long
+      elif [ `echo $(( $timeSinceEpoch - $whenFinish)) < 1200` == 1 ]
+      then
+        continue
+      fi
       echo "$currentFile"
       echo "not running or done, submitting"
       echo `echo $currentFile | awk ' { print $1 }'` >> filesToSubmit.txt
@@ -182,14 +197,13 @@ then
       . getJobNumber.sh $currentTime
       echo "currentLine:"
       echo $currentLine
-      echo "$currentLine $jobid $currentTime 1" >> submitList.txt
+      echo "$currentLine $jobid $currentTime 1 0" >> submitList.txt
       continue
     else
       . getJobNumber.sh $currentTime
-      currentLine_escaped=`echo $currentLine | sed 's,/,\\\/,g'`
       sed -i "/$currentLine_escaped/d" submitList.txt
       let "nTries=$nTries+1"
-      echo "$currentLine $jobid $currentTime $nTries" >> submitList.txt
+      echo "$currentLine $jobid $currentTime $nTries 0" >> submitList.txt
       continue
     fi
   done < filesToSubmit.txt
