@@ -16,6 +16,9 @@ else
   dataTupleCronJobIsRunning=1
 fi
 
+echo "Current time is: `date`"
+echo "manager running on `hostname`"
+
 #Make sure cms3withCondor exists
 if [ ! -d cms3withCondor ] && [ -d ../cms3withCondor ]
 then
@@ -45,12 +48,18 @@ echo "Populating masterList.txt with files for datasets in /nfs-7/userdata/dataT
 echo "masterList.txt written"
 
 #2. Diff between masterList and completedList to make notDoneList. (DONE. makeNotDoneList.sh)
+echo "Getting list of files that are on masterList but not on completedList"
 . makeNotDoneList.sh
+echo "notDoneList.txt written"
+
 
 #3. condor_q makes runningList and heldList. Jobs on the heldList are killed. (DONE. checkStatus.sh)
+echo "Using condor_q to get see which jobs are running"
 . checkStatus.sh
+echo "runningList.txt and heldList.txt written"
 
 #4. Cycle through files on notDoneList. (DONE)
+echo "Cycling through notDoneList.txt"
 rm filesToSubmit.txt 2> /dev/null
 while read line
 do
