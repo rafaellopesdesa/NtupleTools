@@ -36,6 +36,7 @@ then
 fi
 
 cd cms3withCondor
+rm *.root #to prevent storing files that stageout in home area
 if [[ ":$PATH:" != *":$PWD:"* ]]; then
     PATH="${PATH:+"$PATH:"}$PWD"
 fi
