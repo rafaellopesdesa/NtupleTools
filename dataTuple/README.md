@@ -26,3 +26,4 @@
   1. Right now, all ntuples go to the same directory, should change directory structure.  
   2. Make sure only one instance of manager can run at a time.
   3. Add ability to run on multiple UAFs in case one goes down.
+  4. Once on completed list, don't check if valid again.
