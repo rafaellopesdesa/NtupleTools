@@ -21,7 +21,7 @@ echo "host: `hostname`"
 echo "libCMS3 = $libCMS3"
 if [ -e $libCMS3 ]
 then
-  tar -xzvf $libCMS3 >
+  tar -xzvf $libCMS3
 else
   echo "libCMS3 missing!"
   exit 1
