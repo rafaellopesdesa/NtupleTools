@@ -6,4 +6,4 @@ sort /nfs-7/userdata/dataTuple/completedList.txt > temp_completedList.txt
 mv temp_completedList.txt /nfs-7/userdata/dataTuple/completedList.txt
 diff masterList.txt /nfs-7/userdata/dataTuple/completedList.txt > notDoneList.txt 
 sed -i 's/<\ //g' notDoneList.txt
-sed -i '1d' notDoneList.txt
+sed -i '/root/!d' notDoneList.txt
