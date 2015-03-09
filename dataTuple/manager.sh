@@ -35,13 +35,17 @@ then
   exit 1
 fi
 
+#Delete files that stageout in home area
 cd cms3withCondor
-rm *.root #to prevent storing files that stageout in home area
+rm *.root 2> /dev/null 
+
+#Set PATH
 if [[ ":$PATH:" != *":$PWD:"* ]]; then
     PATH="${PATH:+"$PATH:"}$PWD"
 fi
 cd ..
 
+#Create submit list
 if [ -e submitList.txt ] 
 then
   touch submitList.txt
