@@ -8,9 +8,15 @@ then
   echo "An instance of manager is already running"
   exit 1
 else
+  #store process info in pid file
   echo "Current time is: `date`" > /nfs-7/userdata/dataTuple/running.pid
   echo "manager running on `hostname`" >> /nfs-7/userdata/dataTuple/running.pid
   echo "PID = $$" >> /nfs-7/userdata/dataTuple/running.pid
+
+  #also store info in log file that catches output
+  echo "Current time is: `date`"
+  echo "manager running on `hostname`"
+  echo "PID = $$"
 fi
 
 if [[ ":$PATH:" != *":$PWD:"* ]]; then
