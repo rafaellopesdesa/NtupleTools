@@ -151,7 +151,7 @@ do
         continue
       fi
       echo "$currentFile"
-      echo "not running or done, submitting"
+      echo "not running or done or recently finished running, submitting"
       echo `echo $currentFile | awk ' { print $1 }'` >> filesToSubmit.txt
       continue
     else
