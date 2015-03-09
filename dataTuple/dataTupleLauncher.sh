@@ -10,5 +10,6 @@ then
 fi
 crontab -l > mycron
 echo "* * * * * cd ${PWD} && /bin/sh ${PWD}/manager.sh >> ${PWD}/cron_log.log" >> mycron
+#echo "* * * * * cd ${PWD} && /bin/sh ${PWD}/manager.sh >> /nfs-7/userdata/dataTuple/dataTuple.log" >> mycron
 crontab mycron
 rm mycron
