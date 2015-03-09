@@ -185,4 +185,4 @@ then
 
 fi
 
-#rm /nfs-7/userdata/dataTuple/running.pid
+rm /nfs-7/userdata/dataTuple/running.pid
