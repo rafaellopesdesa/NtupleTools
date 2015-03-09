@@ -19,8 +19,15 @@ else
   echo "PID = $$"
 fi
 
-#setup root
+#Set environment
+export CMS_PATH=/cvmfs/cms.cern.ch
+export SCRAM_ARCH=slc6_amd64_gcc481
+source /cvmfs/cms.cern.ch/cmsset_default.sh
 source /cvmfs/cms.cern.ch/slc6_amd64_gcc481/lcg/root/5.34.18/bin/thisroot.sh
+pushd .
+cd /cvmfs/cms.cern.ch/slc6_amd64_gcc481/cms/cmssw/CMSSW_7_2_0/src/
+eval `scramv1 runtime -sh`
+popd
 
 if [[ ":$PATH:" != *":$PWD:"* ]]; then
     PATH="${PATH:+"$PATH:"}$PWD"
