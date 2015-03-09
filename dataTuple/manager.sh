@@ -165,8 +165,6 @@ then
         $currentLine > failure.txt
         continue
       fi
-      else
-        echo "Too many jobs for this file have failed. Skipping $currentLine"
     fi
 
     #5b. Submit them
