@@ -136,13 +136,13 @@ do
     then
       #See when job finished
       currentLine_escaped=`echo $currentLine | sed 's,/,\\\/,g'`
-      lineNo=`sed -n /$currentLine_escaped/= notDoneList.txt`
-      whenFinish=`awk -v var="$lineNo" 'NR==var {print $NF}' notDoneList.txt`
+      lineNo=`sed -n /$currentLine_escaped/= submitList.txt`
+      whenFinish=`awk -v var="$lineNo" 'NR==var {print $NF}' submitList.txt`
       #If job is allegedly still running, update it
       timeSinceEpoch=`date +%s`
       if [ "$whenFinish" == "0" ]
       then
-        sed -i "${lineNo}s/0$/$timeSinceEpoch/g" notDoneList.txt 
+        sed -i "${lineNo}s/0$/$timeSinceEpoch/g" submitList.txt 
         continue
       #If it's been less than 20 minutes, don't resubmit
       elif [ `echo $(( $timeSinceEpoch - $whenFinish)) < 1200` == 1 ]
