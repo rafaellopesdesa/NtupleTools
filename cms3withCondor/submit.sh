@@ -93,8 +93,8 @@ do
   transfer_executable=True
   arguments=$PSET $libCMS3 $GLOBAL_TAG $INPUT_FILE_NAME $OUTPUT_DIR $OUTPUT_FILE_NAME
   queue
-  " > ${JOBCFGDIR}/condor_$number.cmd
+  " > ${JOBCFGDIR}/condor_$OUTPUT_FILE_NAME.cmd
   
-  condor_submit ${JOBCFGDIR}/condor_$number.cmd
+  condor_submit ${JOBCFGDIR}/condor_$OUTPUT_FILE_NAME.cmd
 
 done < $files
