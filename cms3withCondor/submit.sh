@@ -82,6 +82,7 @@ do
   Grid_Resource=condor cmssubmit-r1.t2.ucsd.edu glidein-collector.t2.ucsd.edu
   when_to_transfer_output = ON_EXIT
   transfer_input_files=${INPUT}
+  transfer_output_files = /dev/null
   +DESIRED_Sites=\"${SITE}\"
   +Owner = undefined
   log=${LOG}
