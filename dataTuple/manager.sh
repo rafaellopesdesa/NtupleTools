@@ -213,6 +213,7 @@ then
       continue
     else
       . getJobNumber.sh $currentTime
+      currentLine_escaped=`echo $currentLine | sed 's,/,\\\/,g'`
       sed -i "/$currentLine_escaped/d" submitList.txt
       let "nTries=$nTries+1"
       echo "$currentLine $jobid $currentTime $nTries 0" >> submitList.txt
