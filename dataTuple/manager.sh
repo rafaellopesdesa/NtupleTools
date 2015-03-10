@@ -135,8 +135,8 @@ do
     if [ ! -e $outputPath/$tempName ] 
     then
       #See when job finished
-      currentLine_escaped=`echo $currentLine | sed 's,/,\\\/,g'`
-      lineNo=`sed -n /$currentLine_escaped/= submitList.txt`
+      currentFile_escaped=`echo $currentFile | sed 's,/,\\\/,g'`
+      lineNo=`sed -n /$currentFile_escaped/= submitList.txt`
       whenFinish=`awk -v var="$lineNo" 'NR==var {print $NF}' submitList.txt`
       #If job is allegedly still running, update it
       timeSinceEpoch=`date +%s`
@@ -145,6 +145,7 @@ do
         sed -i "${lineNo}s/0$/$timeSinceEpoch/g" submitList.txt 
         continue
       #If it's been less than 20 minutes, don't resubmit
+      #This allows for delay in transfer of output
       elif [ `echo $(( ($timeSinceEpoch - $whenFinish) < 1200))` == 1 ]
       then
         continue
