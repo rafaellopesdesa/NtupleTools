@@ -127,19 +127,22 @@ do
     fi
   fi
 
-  #e. If not on run list, check if it's done. If not done, mark for submission and on to step 5.
+  #e. If not on run list, check if the output file is present and valid. If not present and valid, mark for submission and on to step 5.
   echo "step 4e"
   if [ $isRunning == false ] 
   then
     tempName=$(python getFileName.py $currentFile 2>&1)
+    #Check for file in hadoop
+    #If file not in hadoop, allow 20 mins for transfer.
+    #If file is in hadoop, check that it is valid
     if [ ! -e $outputPath/$tempName ] 
     then
       #See when job finished
       currentFile_escaped=`echo $currentFile | sed 's,/,\\\/,g'`
       lineNo=`sed -n /$currentFile_escaped/= submitList.txt`
       whenFinish=`awk -v var="$lineNo" 'NR==var {print $NF}' submitList.txt`
-      #If job is allegedly still running, update it
       timeSinceEpoch=`date +%s`
+      #add finish time to submit list
       if [ "$whenFinish" == "0" ]
       then
         sed -i "${lineNo}s/0$/$timeSinceEpoch/g" submitList.txt 
@@ -149,11 +152,12 @@ do
       elif [ `echo $(( ($timeSinceEpoch - $whenFinish) < 1200))` == 1 ]
       then
         continue
+      else
+        echo "No job running in the last 20 mins and no output file for $currentFile"
+        echo "Submitting a new job"
+        echo `echo $currentFile | awk ' { print $1 }'` >> filesToSubmit.txt
+        continue
       fi
-      echo "$currentFile"
-      echo "not running or done or recently finished running, submitting"
-      echo `echo $currentFile | awk ' { print $1 }'` >> filesToSubmit.txt
-      continue
     else
       . checkFile.sh $outputPath/$tempName $currentFile
       continue
