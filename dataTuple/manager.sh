@@ -146,17 +146,15 @@ do
       if [ "$whenFinish" == "0" ]
       then
         sed -i "${lineNo}s/0$/$timeSinceEpoch/g" submitList.txt 
-        continue
       #If it's been less than 20 minutes, don't resubmit
       #This allows for delay in transfer of output
       elif [ `echo $(( ($timeSinceEpoch - $whenFinish) < 1200))` == 1 ]
       then
-        continue
+        echo "Job finished within the last 20 mins for $currentFile but output is missing. Waiting."
       else
         echo "No job running in the last 20 mins and no output file for $currentFile"
         echo "Submitting a new job"
         echo `echo $currentFile | awk ' { print $1 }'` >> filesToSubmit.txt
-        continue
       fi
     else
       . checkFile.sh $outputPath/$tempName $currentFile
