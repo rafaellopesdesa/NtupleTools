@@ -61,7 +61,17 @@ then
   touch submitList.txt
 fi
 
+#Set Output Path
 outputPath="/hadoop/cms/store/user/$USER/condor/dataNtupling/dataTuple"
+
+#0. Check Proxy
+. checkProxy.sh $nEmails
+if [ "$?" == 1 ] 
+then
+  echo "Aborting -- you don't have a proxy"
+  let "nEmails=$nEmails+1"
+  exit 1
+fi
 
 #1. DBS query to generate masterList with files on input.txt (DONE. GenerateMasterList.sh)
 echo "Populating masterList.txt with files for datasets in /nfs-7/userdata/dataTuple/input.txt"
