@@ -17,11 +17,11 @@ echo "" >> $OUT
 while read line
 do
   DATASET=$line
-  NTOTAL=`cat ../masterList.txt | grep $line | wc -l`
+  NTOTAL=`cat masterList.txt | grep $line | wc -l`
   NCOMPLETED=`cat /nfs-7/userdata/dataTuple/completedList.txt | grep $line | wc -l`
-  NJOBS=`cat ../submitList.txt | grep $line | wc -l`
+  NJOBS=`cat submitList.txt | grep $line | wc -l`
   echo "Dataset: $DATASET" >> $OUT
-  echo "Number of available files: $NTOTAL" >> $OUT
+  echo "Number of files in dataset: $NTOTAL" >> $OUT
   echo "Number of files processed: $NCOMPLETED" >> $OUT
   echo "Number of jobs running: $NJOBS" >> $OUT
   echo "" >> $OUT
