@@ -144,9 +144,13 @@ do
     fi
   fi
 
-  #set Output path
+  #set Output path, make sure it exists
   outputDir=$(python getDirName.py $currentFile 2>&1)
   echo "outputDir: $outputDir"
+  if [ ! -d $outputPath/$outputDir ]
+  then
+    mkdir $outputPath/$outputDir
+  fi
 
   #e. If not on run list, check if the output file is present and valid. If not present and valid, mark for submission and on to step 5.
   echo "step 4e"
