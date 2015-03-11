@@ -17,7 +17,7 @@ do
   DATASET=$line
   NTOTAL=`cat ../masterList.txt | grep $line | wc -l`
   NCOMPLETED=`cat /nfs-7/userdata/dataTuple/completedList.txt | grep $line | wc -l`
-  NJOBS=`cat ../submitList.txt | grep $line | wc -l > numberOfJobsRunning_$line.txt`
+  NJOBS=`cat ../submitList.txt | grep $line | wc -l`
   echo "Dataset: $DATASET" >> $OUT
   echo "Number of available files: $NTOTAL" >> $OUT
   echo "Number of files processed: $NCOMPLETED" >> $OUT
