@@ -64,13 +64,14 @@ then
   touch submitList.txt
 fi
 
+#Create completed list
 if [ -e /nfs-7/userdata/dataTuple/completedList.txt ] 
 then
   touch /nfs-7/userdata/dataTuple/completedList.txt
 fi
 
 #Set Output Path
-outputPath="/hadoop/cms/store/user/$USER/condor/dataNtupling/dataTuple"
+outputPath="/hadoop/cms/store/user/$USER/condor/dataNtupling"
 
 #0. Check Proxy
 . checkProxy.sh $nEmails
@@ -143,15 +144,18 @@ do
     fi
   fi
 
+  #set Output path
+  outputDir=$(python getDirName.py $currentFile 2>&1)
+
   #e. If not on run list, check if the output file is present and valid. If not present and valid, mark for submission and on to step 5.
   echo "step 4e"
   if [ $isRunning == false ] 
   then
-    tempName=$(python getFileName.py $currentFile 2>&1)
+    fileName=$(python getFileName.py $currentFile 2>&1)
     #Check for file in hadoop
     #If file not in hadoop, allow 20 mins for transfer.
     #If file is in hadoop, check that it is valid
-    if [ ! -e $outputPath/$tempName ] 
+    if [ ! -e $outputPath/$outputDir/$fileName ] 
     then
       #See when job finished
       currentFile_escaped=`echo $currentFile | sed 's,/,\\\/,g'`
@@ -175,7 +179,7 @@ do
         echo `echo $currentFile | awk ' { print $1 }'` >> filesToSubmit.txt
       fi
     else
-      . checkFile.sh $outputPath/$tempName $currentFile
+      . checkFile.sh $outputPath/$outputDir/$fileName $currentFile
       continue
     fi
   fi
@@ -213,9 +217,9 @@ then
 
     #5b. Submit them
     echo "step 5b"
-    echo "outputName=$(python getFileName.py $currentLine 2>&1)"
     outputName=$(python getFileName.py $currentLine 2>&1)
-    . submitJob.sh filesToSubmit.txt $currentTime $outputPath $outputName $lineno
+    echo "outputName=$outputName"
+    . submitJob.sh filesToSubmit.txt $currentTime $outputPath/$outputDir $outputName $lineno
 
     #c. Update submitted list
     echo "step 5c"
