@@ -17,7 +17,6 @@ if [ -e "/nfs-7/userdata/libCMS3/lib_${CMS3_TAG}.tar.gz" ]
 then
   cp /nfs-7/userdata/libCMS3/lib_${CMS3_TAG}.tar.gz .
   libCMS3=lib_${CMS3_TAG}.tar.gz
-  echo "Using existing libCMS3 file: /nfs-7/userdata/libCMS3/$libCMS3"
 else
   echo "libCMS3 file does not exist, will make on the fly."
   chmod 744 make_libCMS3.sh

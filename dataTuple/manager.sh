@@ -221,7 +221,7 @@ then
     #5b. Submit them
     echo "step 5b"
     outputName=$(python getFileName.py $currentLine 2>&1)
-    outputDir=$(python getDirName.py $currentFile 2>&1)
+    outputDir=$(python getDirName.py $currentLine 2>&1)
     . submitJob.sh filesToSubmit.txt $currentTime $outputPath/$outputDir $outputName $lineno
 
     #c. Update submitted list
@@ -231,8 +231,6 @@ then
     if [ $? != 1 ] 
     then
       . getJobNumber.sh $currentTime
-      echo "currentLine:"
-      echo $currentLine
       echo "$currentLine $jobid $currentTime 1 0" >> submitList.txt
       continue
     else
