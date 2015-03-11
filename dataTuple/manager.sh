@@ -61,6 +61,11 @@ then
   touch submitList.txt
 fi
 
+if [ -e /nfs-7/userdata/dataTuple/completedList.txt ] 
+then
+  touch /nfs-7/userdata/dataTuple/completedList.txt
+fi
+
 #Set Output Path
 outputPath="/hadoop/cms/store/user/$USER/condor/dataNtupling/dataTuple"
 
@@ -155,7 +160,9 @@ do
       #add finish time to submit list
       if [ "$whenFinish" == "0" ]
       then
-        sed -i "${lineNo}s/0$/$timeSinceEpoch/g" submitList.txt 
+      echo "lineNo: $lineNo timeSinceEpoch $timeSinceEpoch"
+      echo `sed -n ${lineNo} submitList.txt | head 1`
+      sed -i "${lineNo}s/0$/$timeSinceEpoch/g" submitList.txt 
       #If it's been less than 20 minutes, don't resubmit
       #This allows for delay in transfer of output
       elif [ `echo $(( ($timeSinceEpoch - $whenFinish) < 1200))` == 1 ]
@@ -176,7 +183,6 @@ done < notDoneList.txt
 
 #5. Submit all the jobs that have been marked for submission
 currentTime=`date +%s`
-#currentTime=`date +%m%d%y_%s`  <--this is not OK as is, causes problems with time check.
 lineno=0
 if [ -e filesToSubmit.txt ] 
 then 
