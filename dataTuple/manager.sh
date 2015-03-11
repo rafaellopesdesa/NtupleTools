@@ -148,8 +148,13 @@ do
     fi
   fi
 
-  #set Output path
+  #set Output path, make sure it exists
   outputDir=$(python getDirName.py $currentFile 2>&1)
+  echo "outputDir: $outputDir"
+  if [ ! -d $outputPath/$outputDir ]
+  then
+    mkdir $outputPath/$outputDir
+  fi
 
   #e. If not on run list, check if the output file is present and valid. If not present and valid, mark for submission and on to step 5.
   echo "step 4e"
@@ -169,8 +174,6 @@ do
       #add finish time to submit list
       if [ "$whenFinish" == "0" ]
       then
-      echo "lineNo: $lineNo timeSinceEpoch $timeSinceEpoch"
-      echo `sed -n ${lineNo} submitList.txt | head 1`
       sed -i "${lineNo}s/0$/$timeSinceEpoch/g" submitList.txt 
       #If it's been less than 20 minutes, don't resubmit
       #This allows for delay in transfer of output
@@ -222,7 +225,7 @@ then
     #5b. Submit them
     echo "step 5b"
     outputName=$(python getFileName.py $currentLine 2>&1)
-    echo "outputName=$outputName"
+    outputDir=$(python getDirName.py $currentLine 2>&1)
     . submitJob.sh filesToSubmit.txt $currentTime $outputPath/$outputDir $outputName $lineno
 
     #c. Update submitted list
@@ -232,8 +235,6 @@ then
     if [ $? != 1 ] 
     then
       . getJobNumber.sh $currentTime
-      echo "currentLine:"
-      echo $currentLine
       echo "$currentLine $jobid $currentTime 1 0" >> submitList.txt
       continue
     else
