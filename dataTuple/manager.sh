@@ -77,7 +77,7 @@ outputPath="/hadoop/cms/store/user/$USER/condor/dataNtupling/dataTuple"
 if [ "$?" == 1 ] 
 then
   echo "Aborting -- you don't have a proxy"
-  let "nEmails=$nEmails+1"
+  nEmails=$(( $nEmails+1 ))
   exit 1
 fi
 
