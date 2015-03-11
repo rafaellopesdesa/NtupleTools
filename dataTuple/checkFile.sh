@@ -17,5 +17,5 @@ do
 done
 
 #remove file from submitList.txt
-filename_escaped=`echo $1 | sed 's,/,\\\/,g'`
+filename_escaped=`echo $2 | sed 's,/,\\\/,g'`
 sed -i "/$filename_escaped/d" submitList.txt

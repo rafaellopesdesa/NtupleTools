@@ -19,6 +19,9 @@ else
   echo "PID = $$"
 fi
 
+chmod 777 /nfs-7/userdata/dataTuple/*.txt
+chmod 777 /nfs-7/userdata/dataTuple/*.log
+
 #Set environment
 export CMS_PATH=/cvmfs/cms.cern.ch
 export SCRAM_ARCH=slc6_amd64_gcc481
