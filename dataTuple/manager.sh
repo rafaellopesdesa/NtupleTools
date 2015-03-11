@@ -233,4 +233,7 @@ then
 
 fi
 
+cd monitoring
+source monitor.sh
+
 rm /nfs-7/userdata/dataTuple/running.pid
