@@ -82,23 +82,26 @@ then
   exit 1
 fi
 
-#1. DBS query to generate masterList with files on input.txt (DONE. GenerateMasterList.sh)
+#1. DBS query to generate masterList with files on input.txt.
 echo "Populating masterList.txt with files for datasets in /nfs-7/userdata/dataTuple/input.txt"
 . GenerateMasterList.sh
 echo "masterList.txt written"
 
-#2. Diff between masterList and completedList to make notDoneList. (DONE. makeNotDoneList.sh)
+#2. Diff between masterList and completedList to make notDoneList.
 echo "Getting list of files that are on masterList but not on completedList.  Output in notDoneList.txt"
 comm -13 <(sort /nfs-7/userdata/dataTuple/completedList.txt) <(sort masterList.txt) > notDoneList.txt
 
-#3. condor_q makes runningList and heldList. Jobs on the heldList are killed. (DONE. checkStatus.sh)
+#3. Use condor_q to make heldList. Jobs on the heldList are killed.
 echo "Using condor_q to get see which jobs are running"
-. checkStatus.sh
+. removeHeldJobs.sh
 echo "runningList.txt and heldList.txt written"
 
 #4. Cycle through files on notDoneList. (DONE)
 echo "Cycling through notDoneList.txt"
 rm filesToSubmit.txt 2> /dev/null
+rm runningList.txt 2> /dev/null
+rm idleList.txt 2> /dev/null
+rm heldList.txt 2> /dev/null
 while read line
 do
   currentFile=$line
@@ -128,6 +131,7 @@ do
   if [ -s temp_isRunning.txt ]; then isRunning=true; else isRunning=false; fi
   echo "isRunning: $isRunning"
   rm temp_isRunning.txt
+  . checkStatus.sh $currentFile $jobid
 
   #d. If job is on run list, check time. If has been running for more than 24 hours, kill it, mark for submission, and on to step 5.
   echo "step 4d"
