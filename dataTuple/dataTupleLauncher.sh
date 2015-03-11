@@ -17,8 +17,6 @@ then
   voms-proxy-init -valid 120:00
 fi
 
-nEmails=0
-
 #Submit
 crontab -l > mycron 2>/dev/null
 #echo "* * * * * cd ${PWD} && /bin/sh ${PWD}/manager.sh >> ${PWD}/cron_log.log" >> mycron

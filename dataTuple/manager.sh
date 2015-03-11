@@ -19,9 +19,6 @@ else
   echo "PID = $$"
 fi
 
-chmod 777 /nfs-7/userdata/dataTuple/*.txt
-chmod 777 /nfs-7/userdata/dataTuple/*.log
-
 #Set environment
 export CMS_PATH=/cvmfs/cms.cern.ch
 export SCRAM_ARCH=slc6_amd64_gcc481
@@ -37,6 +34,9 @@ if [[ ":$PATH:" != *":$PWD:"* ]]; then
 fi
 
 cd $PWD
+
+#Initialize "nEmails"
+if [ "$nEmails" == "" ]; then nEmails=0; fi
 
 #Make sure cms3withCondor exists
 if [ ! -d cms3withCondor ] && [ -d ../cms3withCondor ]
