@@ -87,9 +87,8 @@ echo "Populating masterList.txt with files for datasets in /nfs-7/userdata/dataT
 echo "masterList.txt written"
 
 #2. Diff between masterList and completedList to make notDoneList. (DONE. makeNotDoneList.sh)
-echo "Getting list of files that are on masterList but not on completedList"
-. makeNotDoneList.sh
-echo "notDoneList.txt written"
+echo "Getting list of files that are on masterList but not on completedList.  Output in notDoneList.txt"
+comm -13 <(sort /nfs-7/userdata/dataTuple/completedList.txt) <(sort masterList.txt) > notDoneList.txt
 
 #3. condor_q makes runningList and heldList. Jobs on the heldList are killed. (DONE. checkStatus.sh)
 echo "Using condor_q to get see which jobs are running"
@@ -128,7 +127,6 @@ do
   if [ -s temp_isRunning.txt ]; then isRunning=true; else isRunning=false; fi
   echo "isRunning: $isRunning"
   rm temp_isRunning.txt
-
 
   #d. If job is on run list, check time. If has been running for more than 24 hours, kill it, mark for submission, and on to step 5.
   echo "step 4d"
