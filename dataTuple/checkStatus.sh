@@ -6,8 +6,6 @@ JOB=$2
 #Run condor_q to get status of job
 condor_q $JOB > temp_status.txt
 sed -i '1,4d' temp_status.txt
-sed -i '$d' temp_status.txt
-sed -i '$d' temp_status.txt
 
 #Read condor_q output to fill lists.  
 while read line
