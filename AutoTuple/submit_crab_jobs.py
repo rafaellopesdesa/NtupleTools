@@ -36,7 +36,7 @@ while (lnum <= inFile_size):
   lumi_parts = lumi_line.split()
   numLumiPerJob = lumi_parts[0]
   print numLumiPerJob
-  command = 'python makeCrab3Files.py -CMS2cfg skeleton_cfg.py -d ' + parts[0] + ' -t ' + tag + ' -gtag ' + gtag + ' -isData ' + parts[3] + ' -lumisPerJob ' + numLumiPerJob
+  command = 'python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d ' + parts[0] + ' -t ' + tag + ' -gtag ' + gtag + ' -isData ' + parts[3] + ' -lumisPerJob ' + numLumiPerJob
   if len(parts) > 4:
     command += ' -sParms ' + parts[4]
   print command
