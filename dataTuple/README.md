@@ -6,6 +6,7 @@
   + Every 3 minutes, manager.py is called and the below workflow begins again.
 
 ####Workflow
+  0. Check proxy; renew it if it's low.
   1. DBS query to generate masterList with files on input.txt (JASON)
   2. Diff between masterList and completedList to make notDoneList.  
   3. condor_q makes runningList and heldList.  Jobs on the heldList are killed.  
@@ -23,7 +24,5 @@
     3. Update submit list
 
 ####To Do:
-  1. Right now, all ntuples go to the same directory, should change directory structure.  
-  2. Make sure only one instance of manager can run at a time.
-  3. Add ability to run on multiple UAFs in case one goes down.
-  4. Once on completed list, don't check if valid again.
+  1. Add ability to run on multiple UAFs in case one goes down.
+  2. Once on completed list, don't check if valid again.
