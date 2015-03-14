@@ -129,9 +129,9 @@ def checkConventions():
 if len(sys.argv) < 9 :
     print 'Usage: makeCrabFiles.py [OPTIONS]'
     print '\nWhere the required options are: '
-    print '\t-CMS2cfg\tname of the skeleton CMS2 config file '
+    print '\t-CMS3cfg\tname of the skeleton CMS3 config file '
     print '\t-d\t\tname of dataset'
-    print '\t-t\t\tCMS2 tag'
+    print '\t-t\t\tCMS3 tag'
     print '\t-gtag\t\tglobal tag'
     print '\nOptional arguments:'
     print '\t-isData\t\tFlag to specify if you are running on data.'
@@ -149,7 +149,7 @@ if len(sys.argv) < 9 :
 
 
 for i in range(0, len(sys.argv)):
-    if sys.argv[i] == '-CMS2cfg':
+    if sys.argv[i] == '-CMS3cfg':
         cmsswSkelFile = sys.argv[i+1]
     if sys.argv[i] == '-d':
         dataSet = sys.argv[i+1]
