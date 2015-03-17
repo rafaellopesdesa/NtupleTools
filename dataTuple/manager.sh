@@ -70,6 +70,11 @@ fi
 #Make sure you're not running too many jobs
 . nJobsRunning.sh
 
+#Check the cycle number
+if [ -e cycleNumber.txt ]; then cycleNumber=`more cycleNumber.txt`; fi
+let "cycleNumber=$cycleNumber+1"
+echo "$cycleNumber" > cycleNumber.txt
+
 #Set Output Path
 outputPath="/hadoop/cms/store/user/$USER/condor/dataNtupling"
 
@@ -105,10 +110,13 @@ while read line
 do
   currentFile=$line
 
-  #a.  See if job is on failure list.  If yes, continue
+  #a.  See if job is on failure list.  If yes, continue (unless this is a N%5000 = 0 run).  
   echo "step 4a"
-  . isOnFailureList.sh $currentFile
-  if [ "$?" -eq "1" ]; then continue; fi
+  if [ "$(( $cycleNumber%5000 ))" -eq "0" ]
+  then 
+    . isOnFailureList.sh $currentFile
+    if [ "$?" -eq "1" ]; then continue; fi
+  fi
  
   #b. See if each job is on submitList. If no, mark the job for submission and on to step 5. (DONE)
   echo "step 4b"
@@ -215,11 +223,11 @@ then
     if [ "$isOnSubmitList" -eq "1"  ] 
     then
       echo "nTries: $nTries" 
-      if [ "$nTries" -gt "10" ] && [ "$nTries" -lt "30" ]
+      if [ "$nTries" -gt "10" ] && [ "$nTries" -lt "130" ]
       then
         let "nTries=$nTries+1"
         continue
-      elif [ "$nTries" -eq "35" ] 
+      elif [ "$nTries" -eq "135" ] 
       then
         echo "DataTupleError!  File $currentLine has failed many times." | /bin/mail -r "george@physics.ucsb.edu" -s "[dataTuple] error report" "george@physics.ucsb.edu, jgran@physics.ucsb.edu" 
         $currentLine > failure.txt

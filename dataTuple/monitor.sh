@@ -31,7 +31,6 @@ do
   echo "Number of files processed: $NCOMPLETED" >> $OUT
   echo "Number of jobs running: $NJOBSRUNNING" >> $OUT
   echo "Number of jobs idle: $NJOBSIDLE" >> $OUT
-  echo "Number of jobs held: $NJOBSHELD" >> $OUT
   echo "" >> $OUT
 done < listOfDatasets.txt
 
