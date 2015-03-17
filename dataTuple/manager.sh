@@ -35,9 +35,6 @@ fi
 
 cd $PWD
 
-#Initialize "nEmails"
-if [ "$nEmails" == "" ]; then nEmails=0; fi
-
 #Make sure cms3withCondor exists
 if [ ! -d cms3withCondor ] && [ -d ../cms3withCondor ]
 then
@@ -74,11 +71,10 @@ fi
 outputPath="/hadoop/cms/store/user/$USER/condor/dataNtupling"
 
 #0. Check Proxy
-. checkProxy.sh $nEmails
+. checkProxy.sh
 if [ "$?" == 1 ] 
 then
   echo "Aborting -- you don't have a proxy"
-  nEmails=$(( $nEmails+1 ))
   exit 1
 fi
 

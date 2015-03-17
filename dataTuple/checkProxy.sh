@@ -4,10 +4,11 @@ voms-proxy-info --all &> voms_status.txt
 
 if grep "Couldn't find a valid proxy." voms_status.txt &>/dev/null
 then 
-  if [ $nEmails == 0 ]
+  if [ ! -e emailAboutProxy.txt ]
   then
     echo "Error!! $USER doesn't have a proxy!!" | /bin/mail -r "george@physics.ucsb.edu" -s "[dataTuple] error report" "george@physics.ucsb.edu, jgran@physics.ucsb.edu" 
     echo "Error!! $USER doesn't have a proxy!! Sending e-mail...."
+    touch emailAboutProxy.txt
   else
     echo "Error!! $USER still doesn't have a proxy!! Already e-mailed"
   fi
