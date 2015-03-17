@@ -158,7 +158,7 @@ int main(int argc, char** argv) {
       /* check tree */
       /****************/
       if (tree_name != "") {
-         TTree* tree = f->Get(tree_name.c_str());
+         TTree* tree = (TTree*)f->Get(tree_name.c_str());
          if (tree->GetEntriesFast() > 0) {
            TH1F* h_pfmet = new TH1F("h_pfmet", "h_pfmet", 1000, 0, 1000);
            tree->Draw("evt_pfmet >> h_pfmet");
