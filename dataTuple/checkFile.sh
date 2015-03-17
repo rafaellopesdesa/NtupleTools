@@ -1,6 +1,6 @@
 #/bin/bash
 
-root -b -q "isValidFile.C(\"$1\")" > validFileOutput.txt 2>&1
+./sweepRoot -t Events $1
 
 readarray -t results < validFileOutput.txt
 for i in "${results[@]}"

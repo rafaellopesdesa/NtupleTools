@@ -186,6 +186,12 @@ do
         echo `echo $currentFile | awk ' { print $1 }'` >> filesToSubmit.txt
       fi
     else
+      if [ ! -e sweepRoot.o ] 
+      then
+        cp ../condorMergingTools/libC/sweepRoot.C . 
+        cp ../condorMergingTools/makeFile . 
+        make
+      fi
       . checkFile.sh $outputPath/$outputDir/$fileName $currentFile
       continue
     fi
