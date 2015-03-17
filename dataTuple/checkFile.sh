@@ -1,6 +1,6 @@
 #/bin/bash
 
-./sweepRoot -t Events $1
+./sweepRoot -o Events -t Events $1
 
 readarray -t results < validFileOutput.txt
 for i in "${results[@]}"
@@ -19,3 +19,6 @@ done
 #remove file from submitList.txt
 filename_escaped=`echo $2 | sed 's,/,\\\/,g'`
 sed -i "/$filename_escaped/d" submitList.txt
+
+#And also remove it from failure list
+sed -i "/$filename_escaped/d" failureList.txt
