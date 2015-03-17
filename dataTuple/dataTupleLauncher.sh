@@ -19,6 +19,11 @@ then
   rm emailAboutProxy.txt
 fi 
 
+if [ -e cycleNumber.txt ] 
+then 
+  rm cycleNumber.txt
+fi 
+
 #Check Proxy
 voms-proxy-info --all &> voms_status.txt
 if grep "Couldn't find a valid proxy." voms_status.txt &>/dev/null

@@ -25,4 +25,6 @@
 
 ####To Do:
   1. Add ability to run on multiple UAFs in case one goes down.
-  2. Once on completed list, don't check if valid again.
+  2. Improve logs
+  3. Write script for LxPlus to check that this is running
+  4. Gather

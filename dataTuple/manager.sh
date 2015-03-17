@@ -29,6 +29,7 @@ cd /cvmfs/cms.cern.ch/slc6_amd64_gcc481/cms/cmssw/CMSSW_7_2_0/src/
 eval `scramv1 runtime -sh`
 popd
 
+#Set PATH
 if [[ ":$PATH:" != *":$PWD:"* ]]; then
     PATH="${PATH:+"$PATH:"}$PWD"
 fi
@@ -49,10 +50,6 @@ fi
 cd cms3withCondor
 rm *.root 2> /dev/null 
 
-#Set PATH
-if [[ ":$PATH:" != *":$PWD:"* ]]; then
-    PATH="${PATH:+"$PATH:"}$PWD"
-fi
 cd ..
 
 #Create submit list
@@ -71,9 +68,17 @@ fi
 . nJobsRunning.sh
 
 #Check the cycle number
-if [ -e cycleNumber.txt ]; then cycleNumber=`more cycleNumber.txt`; fi
-let "cycleNumber=$cycleNumber+1"
-echo "$cycleNumber" > cycleNumber.txt
+if [ -s cycleNumber.txt ]
+then 
+  while read line
+  do
+    cycleNumber=$line
+  done < cycleNumber.txt
+else
+  cycleNumber=0
+fi
+rm cycleNumber.txt
+echo $(( $cycleNumber+1 )) > cycleNumber.txt
 
 #Set Output Path
 outputPath="/hadoop/cms/store/user/$USER/condor/dataNtupling"
@@ -93,7 +98,17 @@ echo "masterList.txt written"
 
 #2. Diff between masterList and completedList to make notDoneList.
 echo "Getting list of files that are on masterList but not on completedList.  Output in notDoneList.txt"
-comm -13 <(sort /nfs-7/userdata/dataTuple/completedList.txt) <(sort masterList.txt) > notDoneList.txt
+echo $PATH
+
+echo "first sort"
+temp33=`sort /nfs-7/userdata/dataTuple/completedList.txt`
+
+echo "second sort" 
+temp32=`sort $PWD/masterList.txt`
+
+comm -13 $temp33 $temp32 > notDoneList.txt
+#comm -13 <(sort /nfs-7/userdata/dataTuple/completedList.txt) <(sort $PWD/masterList.txt) > notDoneList.txt
+echo "done."
 
 #3. Use condor_q to make heldList. Jobs on the heldList are killed.
 echo "Using condor_q to get see which jobs are running"
@@ -265,3 +280,5 @@ fi
 . monitor.sh
 
 rm /nfs-7/userdata/dataTuple/running.pid
+
+echo "done!"

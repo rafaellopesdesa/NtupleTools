@@ -1,24 +1,21 @@
 #/bin/bash
 
-./sweepRoot -o Events -t Events $1
+./sweepRoot -o Events -t Events $1 > validFileOutput.txt
 
 readarray -t results < validFileOutput.txt
 for i in "${results[@]}"
 do
-  if [ "$i" == "FileIsValid" ]; then
+  if [ "$i" == "SUMMARY: 0 bad, 1 good" ]; then
     echo $2 >> /nfs-7/userdata/dataTuple/completedList.txt
+    filename_escaped=`echo $2 | sed 's,/,\\\/,g'`
+    sed -i "/$filename_escaped/d" submitList.txt
+    sed -i "/$filename_escaped/d" failureList.txt
     break;
   fi
-  if [ "$i" == "FileIsNotValid" ]; then
+  if [ "$i" == "SUMMARY: 1 bad, 0 good" ]; then
     rm $1
     echo $2 >> filesToSubmit.txt
     break;
   fi
 done
 
-#remove file from submitList.txt
-filename_escaped=`echo $2 | sed 's,/,\\\/,g'`
-sed -i "/$filename_escaped/d" submitList.txt
-
-#And also remove it from failure list
-sed -i "/$filename_escaped/d" failureList.txt

@@ -1,7 +1,9 @@
 notDoneList.txt
 Makefile
-sweepRoot.*
+sweepRoot*
 runningList.txt
 temp.txt
 submitList.txt
 cms3withCondor
+cycleNumber.txt
+voms_status.txt
