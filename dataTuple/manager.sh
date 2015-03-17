@@ -67,6 +67,9 @@ then
   touch /nfs-7/userdata/dataTuple/completedList.txt
 fi
 
+#Make sure you're not running too many jobs
+. nJobsRunning.sh
+
 #Set Output Path
 outputPath="/hadoop/cms/store/user/$USER/condor/dataNtupling"
 
