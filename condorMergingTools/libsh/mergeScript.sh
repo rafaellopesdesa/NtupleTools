@@ -52,7 +52,7 @@ fi
 
 #runs merging script, and if it fails tries one more time.
 root -b -q -l "mergeScript.C (\"$inputList\",\"merged_ntuple.root\")"
-./sweepRoot -o "Events" merged_ntuple.root
+./sweepRoot -o "Events" -t "Events" merged_ntuple.root 
 didMerge=$?
 
 if [ $didMerge != 0 ]; then
@@ -65,7 +65,7 @@ if [ $didMerge != 0 ]; then
 	fi
 
 	root -b -q -l "mergeScript.C (\"$inputList\",\"merged_ntuple.root\")"
-	./sweepRoot -o "Events" merged_ntuple.root
+	./sweepRoot -o "Events" -t "Events" merged_ntuple.root
 	didMerge=$?	
 fi
 	
@@ -89,7 +89,7 @@ echo "outfile name = $outFileName"
 
 #Adds cms2 branches to the file. If it fails, it tries again.
 root -b -q -l "addBranches.C (\"$mData\",\"merged_ntuple.root\",\"$outFileName\")"
-./sweepRoot -o "Events" `pwd`/$outFileName
+./sweepRoot -o "Events" -t "Events" `pwd`/$outFileName
 didAddBranches=$?
 
 if [ $didAddBranches != 0 ]; then
@@ -103,7 +103,7 @@ if [ $didAddBranches != 0 ]; then
 	fi
 
 	root -b -q -l "addBranches.C (\"$mData\",\"merged_ntuple.root\",\"$outFileName\")"
-	./sweepRoot -o "Events" `pwd`/$outFileName
+	./sweepRoot -o "Events" -t "Events" `pwd`/$outFileName
 	didAddBranches=$?
 
 fi
