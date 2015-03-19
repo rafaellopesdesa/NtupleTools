@@ -11,7 +11,7 @@ using namespace std;
 
 int addBranches(string mData, string inFileName, string outFileName);
 
-int addCMS2Branches(TString infname, TString outfile, unsigned int events, 
+int addCMS3Branches(TString infname, TString outfile, ULong64_t events, 
 					Float_t xsec, Float_t kfactor,
 					Float_t filt_eff, bool SortBasketsByEntry = false);
 
@@ -26,7 +26,7 @@ int addBranches(string mData, string inFileName, string outFileName){
   	return 3;
   }
 
-  unsigned int nEvents = 0;
+  ULong64_t nEvents = 0;
   float kFactor = 0;
   float filtEff = 0;
   float xSect = 0;
@@ -58,13 +58,13 @@ int addBranches(string mData, string inFileName, string outFileName){
 	  
   }
 
-  addCMS2Branches(inFileName, outFileName, nEvents, xSect, kFactor, filtEff );
+  addCMS3Branches(inFileName, outFileName, nEvents, xSect, kFactor, filtEff );
 
   return 0;
 
 }
 
-int addCMS2Branches(TString infname, TString outfile, unsigned int events, 
+int addCMS3Branches(TString infname, TString outfile, ULong64_t events, 
 		      Float_t xsec, Float_t kfactor,
 		      Float_t filt_eff, bool SortBasketsByEntry ) {
   
@@ -82,13 +82,20 @@ int addCMS2Branches(TString infname, TString outfile, unsigned int events,
     return 2;
   }
         
-  const bool isdata = (Int_t)t->GetMaximum("int_eventMaker_evtisRealData_CMS2.obj");
+  bool isdata = false;
+  // check for CMS3 first then CMS2
+  if (t->GetBranch("int_eventMaker_evtisRealData_CMS3.obj") != 0) {
+    isdata = (Int_t)t->GetMaximum("int_eventMaker_evtisRealData_CMS3.obj");
+  }
+  else if (t->GetBranch("int_eventMaker_evtisRealData_CMS2.obj") != 0) {
+    isdata = (Int_t)t->GetMaximum("int_eventMaker_evtisRealData_CMS2.obj");
+  }
   
   //-------------------------------------------------------------
-  // Removes all non *_CMS2.* branches
+  // Removes all non *_CMS*.* branches
   //-------------------------------------------------------------`
   t->SetBranchStatus("*", 0);
-  t->SetBranchStatus("*_CMS2.*", 1);
+  t->SetBranchStatus("*_CMS*.*", 1);
 
   // Removes the branches (if they exist) that we want to replace
   //evt_xsec_excl
@@ -150,7 +157,7 @@ int addCMS2Branches(TString infname, TString outfile, unsigned int events,
   //-------------------------------------------------------------
 
   //Calculate scaling factor and put variables into tree 
-  Float_t scale1fb = xsec*kfactor*1000*filt_eff/(Float_t)events;
+  Float_t scale1fb = xsec*kfactor*1000*filt_eff/(Double_t)events;
 
   if(isdata){
 
@@ -165,7 +172,7 @@ int addCMS2Branches(TString infname, TString outfile, unsigned int events,
   TBranch* b2 = clone->Branch("evtxsecexcl", &xsec, "evt_xsec_excl/F");
   TBranch* b3 = clone->Branch("evtxsecincl", &xsec, "evt_xsec_incl/F");
   TBranch* b4 = clone->Branch("evtkfactor", &kfactor, "evt_kfactor/F");
-  TBranch* b5 = clone->Branch("evtnEvts", &events, "evt_nEvts/I");
+  TBranch* b5 = clone->Branch("evtnEvts", &events, "evt_nEvts/l");
   TBranch* b6 = clone->Branch("evtfilteff", &filt_eff, "evt_filt_eff/F");
    
   clone->SetAlias("evt_scale1fb",  "evtscale1fb");
