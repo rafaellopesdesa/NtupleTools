@@ -2,11 +2,14 @@
 
 #This is the manager that calls all the other pieces.  This should itself be called every N minutes.  
 
+#Alive
+echo "DataTupler is alive"
+
 #Don't allow more than one instance to run
 if [ -e /nfs-7/userdata/dataTuple/running.pid ] 
 then
   echo "An instance of manager is already running"
-#  exit 1
+  exit 1
 else
   #store process info in pid file
   echo "Current time is: `date`" > /nfs-7/userdata/dataTuple/running.pid
