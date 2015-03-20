@@ -39,7 +39,7 @@ fi
 
 #Submit
 crontab -l > mycron 2>/dev/null
-echo "*/30 * * * * cd ${PWD} && /bin/sh ${PWD}/manager.sh >> /nfs-7/userdata/dataTuple/dataTuple.log" >> mycron;
+echo "*/30 * * * * cd ${PWD} && /bin/sh ${PWD}/manager.sh >> /nfs-7/userdata/dataTuple/dataTuple.log 2>&1" >> mycron;
 echo "*/5 * * * * cd ${PWD} && /bin/sh suicide.sh" >> mycron
 crontab mycron
 rm mycron
