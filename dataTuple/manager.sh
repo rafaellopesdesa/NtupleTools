@@ -49,9 +49,15 @@ then
   exit 1
 fi
 
-#Delete files that stageout in home area
 cd cms3withCondor
+
+#Delete files that stageout in home area
 rm *.root 2> /dev/null 
+
+#Set PATH to run scripts in here
+if [[ ":$PATH:" != *":$PWD:"* ]]; then
+    PATH="${PATH:+"$PATH:"}$PWD"
+fi
 
 cd ..
 
@@ -80,7 +86,7 @@ then
 else
   cycleNumber=0
 fi
-rm cycleNumber.txt
+rm cycleNumber.txt > /dev/null
 echo $(( $cycleNumber+1 )) > cycleNumber.txt
 
 #Set Output Path
@@ -103,14 +109,17 @@ echo "masterList.txt written"
 echo "Getting list of files that are on masterList but not on completedList.  Output in notDoneList.txt"
 echo $PATH
 
-echo "first sort"
-temp33=`sort /nfs-7/userdata/dataTuple/completedList.txt`
+#echo "first sort"
+#temp33=`sort /nfs-7/userdata/dataTuple/completedList.txt`
+sort /nfs-7/userdata/dataTuple/completedList.txt > temp33.txt
 
-echo "second sort" 
-temp32=`sort $PWD/masterList.txt`
+#echo "second sort" 
+#temp32=`sort $PWD/masterList.txt`
+sort $PWD/masterList.txt > temp32.txt
 
-comm -13 $temp33 $temp32 > notDoneList.txt
+#comm -13 $temp33 $temp32 > notDoneList.txt
 #comm -13 <(sort /nfs-7/userdata/dataTuple/completedList.txt) <(sort $PWD/masterList.txt) > notDoneList.txt
+comm -13 temp33.txt temp32.txt > notDoneList.txt
 echo "done."
 
 #3. Use condor_q to make heldList. Jobs on the heldList are killed.
@@ -120,7 +129,7 @@ echo "runningList.txt and heldList.txt written"
 
 #4. Cycle through files on notDoneList. (DONE)
 echo "Cycling through notDoneList.txt"
-rm filesToSubmit.txt 2> /dev/null
+#rm filesToSubmit.txt 2> /dev/null
 rm runningList.txt 2> /dev/null
 rm idleList.txt 2> /dev/null
 rm heldList.txt 2> /dev/null
