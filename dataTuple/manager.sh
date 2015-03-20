@@ -68,7 +68,7 @@ then
 fi
 
 #Create completed list
-if [ -e /nfs-7/userdata/dataTuple/completedList.txt ] 
+if [ ! -e /nfs-7/userdata/dataTuple/completedList.txt ] 
 then
   touch /nfs-7/userdata/dataTuple/completedList.txt
 fi
@@ -121,6 +121,9 @@ sort $PWD/masterList.txt > temp32.txt
 #comm -13 <(sort /nfs-7/userdata/dataTuple/completedList.txt) <(sort $PWD/masterList.txt) > notDoneList.txt
 comm -13 temp33.txt temp32.txt > notDoneList.txt
 echo "done."
+
+rm temp33.txt
+rm temp32.txt
 
 #3. Use condor_q to make heldList. Jobs on the heldList are killed.
 echo "Using condor_q to get see which jobs are running"
@@ -223,7 +226,7 @@ do
       if [ ! -e sweepRoot.o ] 
       then
         cp ../condorMergingTools/libC/sweepRoot.C . 
-        cp ../condorMergingTools/makeFile . 
+        cp ../condorMergingTools/Makefile . 
         make
       fi
       . checkFile.sh $outputPath/$outputDir/$fileName $currentFile
