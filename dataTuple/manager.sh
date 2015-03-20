@@ -73,6 +73,9 @@ then
   touch /nfs-7/userdata/dataTuple/completedList.txt
 fi
 
+#change permissions on nfs-7 text files
+chmod 777 /nfs-7/userdata/dataTuple/* > /dev/null 2>&1 
+
 #Make sure you're not running too many jobs
 . nJobsRunning.sh
 
