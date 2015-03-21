@@ -95,7 +95,7 @@ def makeCMSSWConfig(cmsswSkelFile):
         if (i.find('cms.Path') != -1 and foundcmsPath == False ):
             foundcmsPath = True            
             outFile.write('process.eventMaker.datasetName                   = cms.string(\"' + dataSet+'\")\n')
-            outFile.write('process.eventMaker.CMS2tag                       = cms.string(\"' + tag+'\")\n')
+            outFile.write('process.eventMaker.CMS3tag                       = cms.string(\"' + tag+'\")\n')
 
         outFile.write(i)
         if iline < nlines:
