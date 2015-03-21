@@ -15,8 +15,9 @@ cd CMSSW_7_2_0
 cmsenv
 if [ ! -e /nfs-7/userdata/libCMS3/lib_$tag.tar.gz ]
 then
-  echo "FATAL ERROR!!!  THE PIRATE SHIP SUNK!!! YOUR TARBALL DOES NOT EXIST!!! ABANDON SHIP!!! ABANDON SHIP!!!" 
-  return 1
+  echo "Trying to make this on the fly.  Might not work......"
+  source ../../cms3withCondor/make_libCMS3.sh $tag
+  mv lib_$tag.tar.gz /nfs-7/userdata/libCMS3/lib_$tag.tar.gz
 fi
 cp /nfs-7/userdata/libCMS3/lib_$tag.tar.gz . 
 tar -xzvf lib_$tag.tar.gz
