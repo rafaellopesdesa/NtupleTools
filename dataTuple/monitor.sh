@@ -9,6 +9,9 @@ sed 's./. .g' /nfs-7/userdata/dataTuple/input.txt | awk '{print $1}' > listOfDat
 echo "Last updated: `date`" > $OUT
 echo "" >> $OUT
 
+echo "User running the cron job: $USER" >> $OUT
+echo "" >> $OUT
+
 echo "List of datasets being processed:" >> $OUT
 cat listOfDatasets.txt >> $OUT
 
