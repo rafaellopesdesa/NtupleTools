@@ -297,6 +297,6 @@ fi
 
 . monitor.sh
 
-rm /nfs-7/userdata/dataTuple/running.pid
+rm -f /nfs-7/userdata/dataTuple/running.pid > /dev/null 2>&1 
 
 echo "done!"

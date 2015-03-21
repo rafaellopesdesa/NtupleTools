@@ -14,6 +14,6 @@ then
     done < /nfs-7/userdata/dataTuple/running.pid
   fi
 
-  rm /nfs-7/userdata/dataTuple/running.pid
+  rm -r /nfs-7/userdata/dataTuple/running.pid > /dev/null 2>&1
   crontab -r 
 fi
