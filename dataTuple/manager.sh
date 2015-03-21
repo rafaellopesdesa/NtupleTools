@@ -135,7 +135,7 @@ echo "runningList.txt and heldList.txt written"
 
 #4. Cycle through files on notDoneList. (DONE)
 echo "Cycling through notDoneList.txt"
-#rm filesToSubmit.txt 2> /dev/null
+rm filesToSubmit.txt 2> /dev/null
 rm runningList.txt 2> /dev/null
 rm idleList.txt 2> /dev/null
 rm heldList.txt 2> /dev/null
