@@ -26,7 +26,7 @@ fi
 
 if [ -e /nfs-7/userdata/dataTuple/suicide.txt ]
 then
-  rm /nfs-7/userdata/dataTuple/suicide.txt
+  rm -f /nfs-7/userdata/dataTuple/suicide.txt
 fi
 
 #Check Proxy
