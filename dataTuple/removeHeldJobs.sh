@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Run condor_q to get list of running jobs
-condor_q $USER > temp_status.txt
+condor_q $USER -const 'isDataTupleCMS3flagged=="true"' > temp_status.txt
 sed -i '1,4d' temp_status.txt
 sed -i '$d' temp_status.txt
 sed -i '$d' temp_status.txt

@@ -1,6 +1,6 @@
 #!/bin/bash 
 
-condor_q $USER > jobsRunning.txt
+condor_q $USER -const 'isDataTupleCMS3flagged=="true"' > jobsRunning.txt
 nJobsRunning=`awk 'END{print $1}' jobsRunning.txt`
 if [ "$nJobsRunning" -gt "2000" ]
 then

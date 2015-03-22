@@ -43,6 +43,7 @@ cd $PWD
 if [ ! -d cms3withCondor ] && [ -d ../cms3withCondor ]
 then
   cp -r ../cms3withCondor .
+  sed -i s/isDataTupleCMS3flagged=\"false\"/isDataTupleCMS3flagged=\"true\"/g cms3withCondor/submit.sh
 elif [ ! -d cms3withCondor ]
 then
   echo "Cannot find cms3withCondor"
