@@ -27,3 +27,5 @@ AutoTupler development -- to do list:
   - Support for "Error during task injection" errors -- have it attempt to resubmit N times. 
   - Seem to frequently get a "PhedEx" error which requires full delete-and-redo after ~1 h, should support this
   - Add cooloff, transferred, submitted, unsubmitted to status list?
+  - Should support non-unitary filter efficiencies.  This will require the below.
+  - Should look at logs to get nEvents
