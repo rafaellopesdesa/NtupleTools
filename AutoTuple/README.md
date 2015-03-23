@@ -8,10 +8,10 @@ Instructions:
   5. When all jobs finished, copy to hadoop.  You can do this manually or with ". copy.sh /SAMPLENAME/foo/bar CMS3_V07-0X-YY" (the latter way will tell you the location and the nEvents copied).  
 
 To restart:
-  If you interrupt it, can restart monitoring with ". monitor.sh insturctions.txt" (no quotes)
+  - If you interrupt it, can restart monitoring with ". monitor.sh insturctions.txt" (no quotes)
 
 To post-process by itself
-  If you just want to post-process, you can do "python process.py instructions.py 4" where 4 is the line number on the instructions file that you want to post-process.  This will only work if you made the original crab jobs using the AutoTupler (or you used the same directory structure that the AutoTupler uses).  
+  - If you just want to post-process, you can do "python process.py instructions.py 4" where 4 is the line number on the instructions file that you want to post-process.  This will only work if you made the original crab jobs using the AutoTupler (or you used the same directory structure that the AutoTupler uses).  
 
 Awesome trick: Making the instructions.txt file is a little bit painful.  Here is an easy way:
   1. Check the twiki.  Make sure that ALL columns are filled in for your samples EXCEPT the numEvtsOut and the CMS3 location (you will have to modify step 3 below if this is not true).
