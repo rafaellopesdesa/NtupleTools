@@ -7,6 +7,9 @@ Instructions:
   4. Monitor it fairly closely for ~30 mins or so (until the AutoTupleHQ page is available); it may ask for passwords, proxies, etc.  You can find the status page at http://uaf-7.t2.ucsd.edu/~USER/AutoTupleHQ.html, where USER is your username on the uaf
   5. When all jobs finished, copy to hadoop.  You can do this manually or with ". copy.sh /SAMPLENAME/foo/bar CMS3_V07-0X-YY" (the latter way will tell you the location and the nEvents copied).  
 
+To restart:
+  If you interrupt it, can restart monitoring with ". monitor.sh insturctions.txt" (no quotes)
+
 Awesome trick: Making the instructions.txt file is a little bit painful.  Here is an easy way:
   1. Check the twiki.  Make sure that ALL columns are filled in for your samples EXCEPT the numEvtsOut and the CMS3 location (you will have to modify step 3 below if this is not true).
   2. "Select All" on the twiki; copy and paste into a new document, we'll call it twiki.txt
@@ -15,11 +18,9 @@ Awesome trick: Making the instructions.txt file is a little bit painful.  Here i
   5. Add two lines to the top of the instructions.txt file: the first contains the global tag, the second contains the CMS3 tag
 
 AutoTupler development -- to do list:
-  - Automatic copying to hadoop
   - Automatic making of instructions file from twiki
-  - Directory structure in hadoop could be cleaned up, lots of long names
   - Status page is not perfect; should rethink how/when status page updated
   - Asks for grid pass phrase at beginning, bad.  Also, need to add protection for if pass phrase entered incorrectly
   - Support for "Error during task injection" errors -- have it attempt to resubmit N times. 
   - Seem to frequently get a "PhedEx" error which requires full delete-and-redo after ~1 h, should support this
-  - Add cooloff, transferred, submitted to status list?
+  - Add cooloff, transferred, submitted, unsubmitted to status list?

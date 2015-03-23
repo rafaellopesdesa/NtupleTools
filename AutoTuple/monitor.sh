@@ -1,8 +1,20 @@
 #!/bin/bash
 
 file=$1
-gtag=$2
-tag=$3
+
+#Get Tag, Global Tag
+lineno=0
+while read line
+do
+  let "lineno=$lineno+1"
+  if [ "$lineno" == "1" ]
+  then
+    gtag=$line
+  elif [ "$lineno" == "2" ]
+  then
+    tag=$line
+  fi
+done < $file
 
 #Environment
 eval `scramv1 runtime -sh`

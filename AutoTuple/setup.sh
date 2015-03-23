@@ -41,4 +41,4 @@ cp ../../crabPic.png .
 cp ../../copy.sh .
 cp ../../numEventsROOT.C .
 python submit_crab_jobs.py $1 $gtag $tag
-. monitor.sh $1 $gtag $tag
+. monitor.sh $1 
