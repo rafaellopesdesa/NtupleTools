@@ -2,8 +2,15 @@ from sys import argv
 import linecache
 import sys
 import os
+import sys
+import datetime
+import getpass
+import fileinput
 
-script, inFile, gtag, tag = argv
+script, inFile = argv
+lines = [ line.strip() for line in open(inFile)]
+gtag = lines[0]
+tag = lines[1]
 
 #pirate stuff
 f = open('pirate.txt', 'r')

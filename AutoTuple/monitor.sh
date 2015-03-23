@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo " " 
+echo " " 
+echo "All quiet, cap'n!  Monitoring has begun....."
+
 file=$1
 
 #Get Tag, Global Tag

@@ -40,5 +40,5 @@ cp ../../web_autoTuple .
 cp ../../crabPic.png .
 cp ../../copy.sh .
 cp ../../numEventsROOT.C .
-python submit_crab_jobs.py $1 $gtag $tag
+python submit_crab_jobs.py $1
 . monitor.sh $1 
