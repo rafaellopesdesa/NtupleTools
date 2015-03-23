@@ -13,8 +13,10 @@ echo "shortName $shortName"
 
 if [ ! -e /hadoop/cms/store/group/snt/phys14/$longName/$myDir ]
 then
+  echo "Make dir /hadoop/cms/store/group/snt/phys14/$longName//$myDir"
   mkdir /hadoop/cms/store/group/snt/phys14/$longName
   mkdir /hadoop/cms/store/group/snt/phys14/$longName/$myDir
+  echo "mv /hadoop/cms/store/user/$USER/$shortName/crab_$longName/$CMS3tag/merged/*.root /hadoop/cms/store/group/snt/phys14/$longName/$myDir/"
   mv /hadoop/cms/store/user/$USER/$shortName/crab_$longName/$CMS3tag/merged/*.root /hadoop/cms/store/group/snt/phys14/$longName/$myDir/
 fi
 
