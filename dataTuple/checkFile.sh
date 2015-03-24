@@ -18,8 +18,5 @@ do
     rm $1
     echo $2 >> filesToSubmit.txt
     break;
-  else 
-    echo "Warning!  Neither good nor bad."
-    break;
   fi
 done
