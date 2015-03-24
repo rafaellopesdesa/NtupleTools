@@ -5,7 +5,7 @@ TIME=$2
 OUTPUT_DIR=$3
 DO_NTUPLE_NUMBER=$4
 
-CMS3_TAG="CMS3_V07-02-06"
+CMS3_TAG="CMS3_V07-02-07"
 GLOBAL_TAG="PHYS14_25_V2::All"
 
 while  ! voms-proxy-info -exist
