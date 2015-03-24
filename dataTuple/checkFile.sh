@@ -6,6 +6,7 @@ readarray -t results < validFileOutput.txt
 for i in "${results[@]}"
 do
   if [ "$i" == "SUMMARY: 0 bad, 1 good" ]; then
+    echo $1 >> /nfs-7/userdata/dataTuple/fileLists/`date +%F`.txt
     echo $2 >> /nfs-7/userdata/dataTuple/completedList.txt
     filename_escaped=`echo $2 | sed 's,/,\\\/,g'`
     sed -i "/$filename_escaped/d" submitList.txt
@@ -13,11 +14,12 @@ do
       sed -i "/$filename_escaped/d" failureList.txt
     fi
     break;
-  fi
-  if [ "$i" == "SUMMARY: 1 bad, 0 good" ]; then
+  elif [ "$i" == "SUMMARY: 1 bad, 0 good" ]; then
     rm $1
     echo $2 >> filesToSubmit.txt
     break;
+  else 
+    echo "Warning!  Neither good nor bad."
+    break;
   fi
 done
-
