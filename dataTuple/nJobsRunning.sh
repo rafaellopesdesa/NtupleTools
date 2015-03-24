@@ -2,7 +2,7 @@
 
 condor_q $USER -const 'isDataTupleCMS3flagged==true' > jobsRunning.txt
 nJobsRunning=`awk 'END{print $1}' jobsRunning.txt`
-if [ "nJobsRunning" == "ID" ] 
+if [ "$nJobsRunning" == "ID" ] 
 then
   return 1
 fi
