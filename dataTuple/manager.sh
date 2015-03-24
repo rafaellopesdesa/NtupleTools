@@ -2,9 +2,6 @@
 
 #This is the manager that calls all the other pieces.  This should itself be called every N minutes.  
 
-#Alive
-echo "DataTupler is alive"
-
 #Don't allow more than one instance to run
 if [ -e /nfs-7/userdata/dataTuple/running.pid ] 
 then
@@ -111,18 +108,11 @@ echo "masterList.txt written"
 
 #2. Diff between masterList and completedList to make notDoneList.
 echo "Getting list of files that are on masterList but not on completedList.  Output in notDoneList.txt"
-echo $PATH
 
-#echo "first sort"
-#temp33=`sort /nfs-7/userdata/dataTuple/completedList.txt`
 sort /nfs-7/userdata/dataTuple/completedList.txt > temp33.txt
 
-#echo "second sort" 
-#temp32=`sort $PWD/masterList.txt`
 sort $PWD/masterList.txt > temp32.txt
 
-#comm -13 $temp33 $temp32 > notDoneList.txt
-#comm -13 <(sort /nfs-7/userdata/dataTuple/completedList.txt) <(sort $PWD/masterList.txt) > notDoneList.txt
 comm -13 temp33.txt temp32.txt > notDoneList.txt
 echo "done."
 
