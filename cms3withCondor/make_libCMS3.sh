@@ -18,8 +18,8 @@ DIR=$PWD
 
 source install.sh
 cd $CMSSW_BASE
-echo "Making the tarball"
-tar -chzvf lib_$THE_CMS3_TAG.tar.gz lib/ python/ test/MCProduction2015_NoFilter_cfg.py
+echo "Making the tarball..."
+tar -chzvf lib_$THE_CMS3_TAG.tar.gz lib/ python/ src/CMS3/NtupleMaker/test/MCProduction2015_NoFilter_cfg.py
 
 mv lib_$THE_CMS3_TAG.tar.gz $DIR/lib_$THE_CMS3_TAG.tar.gz
 cd $DIR
