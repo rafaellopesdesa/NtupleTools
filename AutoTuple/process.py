@@ -75,7 +75,7 @@ while (completelyDone == False):
       else:
         sys.stdout.write(line)
     os.system('web_autoTuple AutoTupleHQ.html &>/dev/null')
-    os.system('copy.sh %s %s' % parts[0], tag)
+    os.system('copy.sh %s %s' % (parts[0], tag))
     continue
  
   #Get ID numbers of jobs submitted
