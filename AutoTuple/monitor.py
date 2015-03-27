@@ -28,9 +28,11 @@ user = getpass.getuser()
 #Counters (for status page)
 numer = 0
 denom = 0 
+nUnsubmitted = 0
 nIdle = 0
 nRunning = 0
 nTransferring = 0
+nTransferred = 0 
 nFail = 0
 nFailNoResubmit = 0
 failFlag = False
@@ -56,6 +58,9 @@ while (redoFlag == True and timeout < 10):
     if "finished" in line: 
       numer += int(((line.split('(')[1]).split(')')[0]).split('/')[0])
       denom = int(((line.split('(')[1]).split(')')[0]).split('/')[1])
+    if "unsubmitted" in line:
+      nUnsubmitted = int(((line.split('(')[1]).split(')')[0]).split('/')[0]) 
+      denom = int(((line.split('(')[1]).split(')')[0]).split('/')[1])
     if "idle" in line:
       nIdle = int(((line.split('(')[1]).split(')')[0]).split('/')[0]) 
       denom = int(((line.split('(')[1]).split(')')[0]).split('/')[1])
@@ -64,6 +69,9 @@ while (redoFlag == True and timeout < 10):
       denom = int(((line.split('(')[1]).split(')')[0]).split('/')[1])
     if "transferring" in line:
       nTransferring = int(((line.split('(')[1]).split(')')[0]).split('/')[0]) 
+      denom = int(((line.split('(')[1]).split(')')[0]).split('/')[1])
+    if "transferred" in line:
+      nTransferred = int(((line.split('(')[1]).split(')')[0]).split('/')[0]) 
       denom = int(((line.split('(')[1]).split(')')[0]).split('/')[1])
     if (("failed" in line) and not ("failed with exit code" in line) and not ("failed to read" in line)):
       failFlag = True
@@ -91,6 +99,7 @@ for line in fileinput.input('AutoTupleHQ.html', inplace=1):
       inGoodRegion = 9
       continue
     elif queuedFlag == False:
+      sys.stdout.write('&nbsp; &nbsp; nUnsubmitted: ' + str(nUnsubmitted) + '/' + str(denom) + '<BR>\n')
       sys.stdout.write('&nbsp; &nbsp; idle: ' + str(nIdle) + '/' + str(denom) + '<BR>\n')
       inGoodRegion = 3
       continue
@@ -100,7 +109,11 @@ for line in fileinput.input('AutoTupleHQ.html', inplace=1):
     continue 
   if inGoodRegion == 4:
     sys.stdout.write('&nbsp; &nbsp; transferring: ' + str(nTransferring) + '/' + str(denom) + '<BR>\n')
-    inGoodRegion += 1
+    inGoodRegion += 0.5
+    continue 
+  if inGoodRegion == 4.5:
+    sys.stdout.write('&nbsp; &nbsp; transferred: ' + str(nTransferred) + '/' + str(denom) + '<BR>\n')
+    inGoodRegion += 0.5
     continue 
   if inGoodRegion == 5:
     sys.stdout.write('&nbsp; &nbsp; failed, will resubmit: ' + str(nFail - nFailNoResubmit) + '/' + str(denom) + '<BR>\n')
@@ -126,9 +139,11 @@ if (inGoodRegion == 0):
   AutoTupleHQ = open("AutoTupleHQ.html", 'a')
   AutoTupleHQ.write('<A HREF="http://uaf-7.t2.ucsd.edu/~' + user + '/' + filename + '">' + filename.split('_log')[0] + '</A><BR>\n')
   if queuedFlag == False:
+    AutoTupleHQ.write('&nbsp; &nbsp; unsubmitted: ' + str(nUnsubmitted) + '/' + str(denom) + '<BR>\n')
     AutoTupleHQ.write('&nbsp; &nbsp; idle: ' + str(nIdle) + '/' + str(denom) + '<BR>\n')
     AutoTupleHQ.write('&nbsp; &nbsp; running: ' + str(nRunning) + '/' + str(denom) + '<BR>\n')
     AutoTupleHQ.write('&nbsp; &nbsp; transferring: ' + str(nTransferring) + '/' + str(denom) + '<BR>\n')
+    AutoTupleHQ.write('&nbsp; &nbsp; transferred: ' + str(nTransferred) + '/' + str(denom) + '<BR>\n')
     AutoTupleHQ.write('&nbsp; &nbsp; failed, will resubmit: ' + str(nFail - nFailNoResubmit) + '/' + str(denom) + '<BR>\n')
     AutoTupleHQ.write('&nbsp; &nbsp; failed, will not resubmit: ' + str(nFailNoResubmit) + '/' + str(denom))
     if (nFailNoResubmit > 0): AutoTupleHQ.write('<font color="red"> &nbsp; &nbsp;<b> <-- WARNING!  Job failed!! <font color="black"></b><BR> \n ') 
