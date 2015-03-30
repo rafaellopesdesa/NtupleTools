@@ -25,6 +25,11 @@ parts.append(tag)
 parts.append(gtag)
 parts += lines[lineno].split(' ')[4:]
 
+#Figure out output directory
+os.system('grep -m 1 -r "Looking up detailed status of task" %s | awk \'{print $10}\' | cut -c 1-13 > %s' % ('crab_'+parts[0].split('/')[1]+'_'+parts[0].split('/')[2]+'/crab.log','crab_'+parts[0].split('/')[1]+'_'+parts[0].split('/')[2]+'/jobDateTime.txt'))
+timeFile = open('crab_'+parts[0].split('/')[1]+'_'+parts[0].split('/')[2]+'/jobDateTime.txt', "r")
+dateTime=timeFile.readline().rstrip("\n")
+
 completelyDone = False
 dataSet = parts[0].split('/')[1]
 nLoops = 0
@@ -37,7 +42,7 @@ while (completelyDone == False):
   #Submit all the jobs
   date=str(datetime.datetime.now().strftime('%y-%m-%d_%H:%M:%S'))
   crab_dir = 'crab_' + parts[0].split('/')[1]+'_'+parts[0].split('/')[2]
-  os.system('python makeListsForMergingCrab3.py -c ' + crab_dir + ' -d /hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/*/0000/ -o /hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/' + parts[4] + '/merged/ -s ' + parts[0].split('/')[1] + ' -k ' + parts[2] + ' -e 1 -x ' + parts[1] + ' --overrideCrab > ' + temp)
+  os.system('python makeListsForMergingCrab3.py -c ' + crab_dir + ' -d /hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/' + dateTime + '/0000/ -o /hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/' + parts[4] + '/merged/ -s ' + parts[0].split('/')[1] + ' -k ' + parts[2] + ' -e 1 -x ' + parts[1] + ' --overrideCrab > ' + temp)
   file = open(temp, "r")
   if nLoops == 0:
     for line in file:
