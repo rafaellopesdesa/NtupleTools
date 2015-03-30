@@ -215,6 +215,12 @@ do
     echo "&nbsp; &nbsp; cooloff: $nCooloff/$denominator <BR>" >> AutoTupleHQ.html
     echo "&nbsp; &nbsp; <b> finished: $nFinished/$denominator </b> <BR><BR>" >> AutoTupleHQ.html
 
+    #If less than 25% of the jobs have failed, force resubmission
+    if [ "$denominator" -gt "$(( 4*$nFailed ))" ] && [ "$nFailed" -gt "0" ] 
+    then
+      crab resubmit crab_$crab_filename
+    fi
+
     #Increase counter
     let "fileNumber += 1"
     
