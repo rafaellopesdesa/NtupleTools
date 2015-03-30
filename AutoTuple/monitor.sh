@@ -95,15 +95,13 @@ do
     temp=`echo ${filename//\//_} | cut -c 2-`
     crab_filename=${temp%_*}
     status_filename="crab_status_logs/${crab_filename}_log.txt"
-    echo "$crab_filename"
-    echo "$status_filename"
 
     #Output name with hyperlink to log
     echo "  " >> AutoTupleHQ.html
     echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
 
     #Do the check, upload result
-    crab_status $crab_filename --long > status_filename
+    crab status crab_$crab_filename --long > status_filename
     cp $status_filename /home/users/$USER/public_html/${crab_filename}_log.txt &>/dev/null
 
     #If status is done, we're done
