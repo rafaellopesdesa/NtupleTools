@@ -5,6 +5,18 @@
   #Have copy script updated on monitoring
   #Submit merge jobs to be a sed command
 
+#Check for instructions file
+if [ $# -eq 0 ] 
+  then 
+  echo "No arguments!  Need the instructions file....." 
+  return
+fi
+
+#Print status to screen
+echo " " 
+echo " " 
+echo "All quiet, cap'n!  Monitoring has begun....."
+
 #File
 file=$1
 
