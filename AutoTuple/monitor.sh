@@ -48,10 +48,6 @@ if [ -e AutoTupleHQ.html ]; then rm AutoTupleHQ.html; fi
 #Make directory for crab status logs
 if [ ! -d crab_status_logs ]; then mkdir crab_status_logs; fi
 
-#Date
-dateAG=`date +%D`
-timeAG=`date +%r`
-
 #shouldContinue to go false when all jobs are done
 shouldContinue="true"
 
@@ -60,6 +56,10 @@ while [ "$shouldContinue" == "true" ]
 do
   #Delete the existing one 
   if [ -e AutoTupleHQ.html ]; then rm AutoTupleHQ.html; fi
+
+  #Date & Time
+  dateAG=`date +%D`
+  timeAG=`date +%r`
 
   #Output the header stuff
   touch AutoTupleHQ.html
