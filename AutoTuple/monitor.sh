@@ -102,7 +102,7 @@ do
     echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
 
     #Do the check, upload result
-    crab status crab_$crab_filename --long > status_filename
+    crab status crab_$crab_filename --long > $status_filename
     cp $status_filename /home/users/$USER/public_html/${crab_filename}_log.txt &>/dev/null
 
     #If status is done, we're done
@@ -125,15 +125,15 @@ do
     fi
 
     #Otherwise, get distribution
-    nUnsubmitted=`grep -r "unsubmitted" $status_filename | grep "%" | awk '{print $4}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $1}'`
-    nIdle=`grep -r "idle" $status_filename | grep "%" | awk '{print $4}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $1}'`
-    nRunning=`grep -r "running" $status_filename | grep "%" | awk '{print $4}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $1}'`
-    nFailed=`grep -r "failed" $status_filename | grep "%" | awk '{print $4}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $1}'`
-    nTransferring=`grep -r "transferring" $status_filename | grep "%" | awk '{print $4}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $1}'`
-    nTransferred=`grep -r "transferred" $status_filename | grep "%" | awk '{print $4}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $1}'`
-    nCooloff=`grep -r "cooloff" $status_filename | grep "%" | awk '{print $4}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $1}'`
-    nFinished=`grep -r "finished" $status_filename | grep "%" | awk '{print $4}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $1}'`
-    denominator=`grep -r "%" $status_filename | grep ")" | awk '{print $4}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $2}'`
+    nUnsubmitted=`grep -r "unsubmitted" $status_filename | grep "%" | awk '{print $NF}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $1}'`
+    nIdle=`grep -r "idle" $status_filename | grep "%" | awk '{print $NF}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $1}'`
+    nRunning=`grep -r "running" $status_filename | grep "%" | awk '{print $NF}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $1}'`
+    nFailed=`grep -r "failed" $status_filename | grep "%" | awk '{print $NF}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $1}'`
+    nTransferring=`grep -r "transferring" $status_filename | grep "%" | awk '{print $NF}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $1}'`
+    nTransferred=`grep -r "transferred" $status_filename | grep "%" | awk '{print $NF}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $1}'`
+    nCooloff=`grep -r "cooloff" $status_filename | grep "%" | awk '{print $NF}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $1}'`
+    nFinished=`grep -r "finished" $status_filename | grep "%" | awk '{print $NF}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $1}'`
+    denominator=`grep -r "%" $status_filename | grep ")" | | grep "Details:" | awk '{print $NF}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $2}'`
 
     #If any are empty, set them to 0
     if [ "$nUnsubmitted"  == "" ]; then nUnsubmitted="0"; fi
