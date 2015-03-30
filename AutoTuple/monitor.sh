@@ -2,6 +2,7 @@
 
 #To do:
   #Redo flag 
+  #Submit merge jobs to be a sed command
 
 #File
 file=$1
