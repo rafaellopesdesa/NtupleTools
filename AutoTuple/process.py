@@ -31,7 +31,7 @@ nLoops = 0
 nEventsIn = 0
 temp = "temp" + parts[0].split('/')[1] + ".txt"
 
-#time.sleep(30)
+os.system('rm condor_status_logs/pp.txt >/dev/null')
 
 while (completelyDone == False):
   #Submit all the jobs
@@ -55,26 +55,7 @@ while (completelyDone == False):
   if (nLeft == 0): 
     completelyDone = True
     update = -1
-    for line in fileinput.input('AutoTupleHQ.html', inplace=1):
-      if line.startswith('<A HREF="http://uaf-7.t2.ucsd.edu/~' + user2 + '/' + dataSet): 
-        update = 0
-        sys.stdout.write(line)
-      elif (update >= 0 and update < 6): 
-        update += 1
-        sys.stdout.write(line)
-      elif (update == 6):
-        if (nLoops == 0): sys.stdout.write(line[0:line.rfind("<BR>")])
-        else: sys.stdout.write(line)
-        update = -1
-        sys.stdout.write('\n<b><font color="blue"> &nbsp; &nbsp; Post-processing finished! </b> nEvents in: ' + str(nEventsIn) + '<font color="black"> <BR><BR> \n')
-      elif (update > -1 and line.startswith('<A HREF="http://uaf-7.t2.ucsd.edu/~' + user2 + '/')): 
-        sys.stdout.write(line)
-        update = -1
-      elif (update > -1):
-        if not "Post" in line: sys.stdout.write(line)
-      else:
-        sys.stdout.write(line)
-    os.system('web_autoTuple AutoTupleHQ.html &>/dev/null')
+    os.system('%s done >> condor_status_logs/pp.txt' % dataSet+'_'+parts[1].split('/')[2])
     os.system('copy.sh %s %s' % (parts[0], tag))
     continue
  
@@ -105,26 +86,6 @@ while (completelyDone == False):
     nFinished = done.count(True)
     #Update logs
     update = -1
-    for line in fileinput.input('AutoTupleHQ.html', inplace=1):
-      if line.startswith('<A HREF="http://uaf-7.t2.ucsd.edu/~' + user2 + '/' + dataSet): 
-        update = 0
-        sys.stdout.write(line)
-      elif (update >= 0 and update < 6): 
-        update += 1
-        sys.stdout.write(line)
-      elif (update == 6):
-        if (nLoops == 0): sys.stdout.write(line[0:line.rfind("<BR>")])
-        else: sys.stdout.write(line)
-        update += 1 
-        sys.stdout.write('\n<b><font color="blue"> &nbsp; &nbsp; Post-processing started! </b> nEvents in: ' + str(nEventsIn) + '<font color="black"> <BR> \n')
-        sys.stdout.write("&nbsp; &nbsp; PostProcessed: " + str(nFinished) + "/" + str(len(done)) + ' <BR><BR> \n')
-      elif line.startswith('<A HREF="http://uaf-7.t2.ucsd.edu/~' + user2): 
-        update = -1
-        sys.stdout.write(line)
-      elif (update > -1):
-        if not "Post" in line: sys.stdout.write(line)
-      else:
-        sys.stdout.write(line)
-    os.system('web_autoTuple AutoTupleHQ.html &>/dev/null')
+    os.system('%s %i %i %i >> condor_status_logs/pp.txt' % (dataSet+'_'+parts[1].split('/')[2],nEventsIn,nFinished,len(done)))
     nLoops += 1
     time.sleep(180)

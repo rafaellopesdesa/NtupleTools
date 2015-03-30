@@ -2,6 +2,7 @@
 
 #To do:
   #Redo flag 
+  #Have copy script updated on monitoring
   #Submit merge jobs to be a sed command
 
 #File
@@ -80,8 +81,48 @@ do
     fi
 
     #skip if already finished
+    if [ ${WHICHDONE[$fileNumber]} == "done" ] 
+    then
+      let "fileNumber += 1"
+      continue
+    fi
+
+    #if crab has finished but post-processing has not, check on post-processing
     if [ ${WHICHDONE[$fileNumber]} == "true" ] 
     then
+      #Print header
+      echo "  " >> AutoTupleHQ.html
+      echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
+       
+      #If there is no pp log, print status message
+      if [ ! -e crab_status_logs/pp.txt ]
+      then
+        echo '<font color="blue"> &nbsp; &nbsp; <b> Post-Processing is underway!  No status available yet....  <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
+      #Otherwise, get filename and check log to see if there's any trace of it
+      else
+        filename=`echo $line | awk '{print $1}'`
+        grep -r "$filename" crab_status_logs/pp.txt
+        foundIt="$?"
+    
+        #Either way, print status message
+        if [ "$foundIt" != "0" ] 
+        then
+          echo '<font color="blue"> &nbsp; &nbsp; <b> Post-Processing is underway!  No status available yet....  <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
+        else
+          nEntriesIn=`grep -r "$filename" crab_status_logs/pp.txt | awk '{print $2}'`
+          nFinished=`grep -r "$filename" crab_status_logs/pp.txt | awk '{print $3}'`
+          nTotal=`grep -r "$filename" crab_status_logs/pp.txt | awk '{print $4}'`
+          if [ "$nFinished" == "$nTotal" ] 
+          then
+            echo "<font color=\"blue\"> &nbsp; &nbsp; <b> Post-Processing is finished!  nEventsIn: $nEntriesIn  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
+            WHICHDONE[$fileNumber]="done"
+          else
+            echo "<font color=\"blue\"> &nbsp; &nbsp; <b> Post-Processing is underway!  nEventsIn: $nEntriesIn.  Current progress: $nFinished/$nTotal  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
+          fi
+        fi
+      fi
+ 
+      #Increment file nmuber, continue
       let "fileNumber += 1"
       continue
     fi
@@ -103,15 +144,16 @@ do
 
     #Do the check, upload result
     crab status crab_$crab_filename --long > $status_filename
-    cp $status_filename /home/users/$USER/public_html/${crab_filename}_log.txt &>/dev/null
+    cp $status_filename /home/users/$USER/public_html/${crab_filename}_log.txt >/dev/null
 
     #If status is done, we're done
     temp=`grep -r "Task status" $status_filename | grep "COMPLETED"`
     if [ "$temp" == "" ]; then isDone="0"; else isDone="1"; fi
     if [ "$isDone" == "1" ]
     then
-      echo '<font color="blue"> &nbsp; &nbsp; <b> Task is finished!! <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
+      echo '<font color="blue"> &nbsp; &nbsp; <b> Ready for Post-Processing!!  <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
       WHICHDONE[$fileNumber]="true"
+      python process.py $file $fileNumber &
       continue
     fi
 
@@ -133,7 +175,7 @@ do
     nTransferred=`grep -r "transferred" $status_filename | grep "%" | awk '{print $NF}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $1}'`
     nCooloff=`grep -r "cooloff" $status_filename | grep "%" | awk '{print $NF}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $1}'`
     nFinished=`grep -r "finished" $status_filename | grep "%" | awk '{print $NF}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $1}'`
-    denominator=`grep -r "%" $status_filename | grep ")" | | grep "Details:" | awk '{print $NF}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $2}'`
+    denominator=`grep -r "%" $status_filename | grep ")" | grep "Details:" | awk '{print $NF}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $2}'`
 
     #If any are empty, set them to 0
     if [ "$nUnsubmitted"  == "" ]; then nUnsubmitted="0"; fi
@@ -160,6 +202,9 @@ do
     echo "&nbsp; &nbsp; transferred: $nTransferred/$denominator <BR>" >> AutoTupleHQ.html
     echo "&nbsp; &nbsp; cooloff: $nCooloff/$denominator <BR>" >> AutoTupleHQ.html
     echo "&nbsp; &nbsp; <b> finished: $nFinished/$denominator </b> <BR><BR>" >> AutoTupleHQ.html
+
+    #Increase counter
+    let "fileNumber += 1"
     
   done < $file 
 
