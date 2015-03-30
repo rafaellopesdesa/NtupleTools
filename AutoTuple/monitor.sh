@@ -8,7 +8,7 @@
 #Check for instructions file
 if [ $# -eq 0 ] 
   then 
-  echo "No arguments!  Need the instructions file....." 
+  echo "No arguments, mate!  Need the instructions file....." 
   return
 fi
 
@@ -16,6 +16,7 @@ fi
 echo " " 
 echo " " 
 echo "All quiet, cap'n!  Monitoring has begun....."
+echo "Yer can see yer progrress at uaf-7.t2.ucsd.edu/~$USER/AutoTupleHQ.html"
 
 #File
 file=$1
