@@ -25,19 +25,31 @@ parts.append(tag)
 parts.append(gtag)
 parts += lines[lineno].split(' ')[4:]
 
+#See if already exists
+dir="/hadoop/cms/store/group/snt/phys14/"+parts[0].split('/')[1]+"_"+parts[0].split('/')[2]+'/'+tag[5:]+"/"
+try:
+  if not os.listdir(dir) == []: 
+    os.system('echo "%s alreadyThere" >> crab_status_logs/pp.txt' % (parts[0].split('/')[1]+'_'+parts[0].split('/')[2]))
+    sys.exit()
+except OSError:
+  pass
+
+#Figure out output directory
+os.system('grep -m 1 -r "Looking up detailed status of task" %s | awk \'{print $10}\' | cut -c 1-13 > %s' % ('crab_'+parts[0].split('/')[1]+'_'+parts[0].split('/')[2]+'/crab.log','crab_'+parts[0].split('/')[1]+'_'+parts[0].split('/')[2]+'/jobDateTime.txt'))
+timeFile = open('crab_'+parts[0].split('/')[1]+'_'+parts[0].split('/')[2]+'/jobDateTime.txt', "r")
+dateTime=timeFile.readline().rstrip("\n")
+
 completelyDone = False
 dataSet = parts[0].split('/')[1]
 nLoops = 0
 nEventsIn = 0
 temp = "temp" + parts[0].split('/')[1] + ".txt"
 
-#time.sleep(30)
-
 while (completelyDone == False):
   #Submit all the jobs
   date=str(datetime.datetime.now().strftime('%y-%m-%d_%H:%M:%S'))
   crab_dir = 'crab_' + parts[0].split('/')[1]+'_'+parts[0].split('/')[2]
-  os.system('python makeListsForMergingCrab3.py -c ' + crab_dir + ' -d /hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/*/0000/ -o /hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/' + parts[4] + '/merged/ -s ' + parts[0].split('/')[1] + ' -k ' + parts[2] + ' -e 1 -x ' + parts[1] + ' --overrideCrab > ' + temp)
+  os.system('python makeListsForMergingCrab3.py -c ' + crab_dir + ' -d /hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/' + dateTime + '/0000/ -o /hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/' + parts[4] + '/merged/ -s ' + parts[0].split('/')[1] + ' -k ' + parts[2] + ' -e 1 -x ' + parts[1] + ' --overrideCrab > ' + temp)
   file = open(temp, "r")
   if nLoops == 0:
     for line in file:
@@ -54,28 +66,8 @@ while (completelyDone == False):
   #If no jobs were submitted, we are done, update monitor
   if (nLeft == 0): 
     completelyDone = True
-    update = -1
-    for line in fileinput.input('AutoTupleHQ.html', inplace=1):
-      if line.startswith('<A HREF="http://uaf-7.t2.ucsd.edu/~' + user2 + '/' + dataSet): 
-        update = 0
-        sys.stdout.write(line)
-      elif (update >= 0 and update < 6): 
-        update += 1
-        sys.stdout.write(line)
-      elif (update == 6):
-        if (nLoops == 0): sys.stdout.write(line[0:line.rfind("<BR>")])
-        else: sys.stdout.write(line)
-        update = -1
-        sys.stdout.write('\n<b><font color="blue"> &nbsp; &nbsp; Post-processing finished! </b> nEvents in: ' + str(nEventsIn) + '<font color="black"> <BR><BR> \n')
-      elif (update > -1 and line.startswith('<A HREF="http://uaf-7.t2.ucsd.edu/~' + user2 + '/')): 
-        sys.stdout.write(line)
-        update = -1
-      elif (update > -1):
-        if not "Post" in line: sys.stdout.write(line)
-      else:
-        sys.stdout.write(line)
-    os.system('web_autoTuple AutoTupleHQ.html &>/dev/null')
-    os.system('copy.sh %s %s' % (parts[0], tag))
+    os.system('echo "%s done %i" >> crab_status_logs/pp.txt' % (dataSet+'_'+parts[0].split('/')[2], nEventsIn))
+    os.system('copy.sh %s %s %s %s' % (parts[0], tag, args[1], args[2]))
     continue
  
   #Get ID numbers of jobs submitted
@@ -104,27 +96,6 @@ while (completelyDone == False):
     if not False in done: isDone = True
     nFinished = done.count(True)
     #Update logs
-    update = -1
-    for line in fileinput.input('AutoTupleHQ.html', inplace=1):
-      if line.startswith('<A HREF="http://uaf-7.t2.ucsd.edu/~' + user2 + '/' + dataSet): 
-        update = 0
-        sys.stdout.write(line)
-      elif (update >= 0 and update < 6): 
-        update += 1
-        sys.stdout.write(line)
-      elif (update == 6):
-        if (nLoops == 0): sys.stdout.write(line[0:line.rfind("<BR>")])
-        else: sys.stdout.write(line)
-        update += 1 
-        sys.stdout.write('\n<b><font color="blue"> &nbsp; &nbsp; Post-processing started! </b> nEvents in: ' + str(nEventsIn) + '<font color="black"> <BR> \n')
-        sys.stdout.write("&nbsp; &nbsp; PostProcessed: " + str(nFinished) + "/" + str(len(done)) + ' <BR><BR> \n')
-      elif line.startswith('<A HREF="http://uaf-7.t2.ucsd.edu/~' + user2): 
-        update = -1
-        sys.stdout.write(line)
-      elif (update > -1):
-        if not "Post" in line: sys.stdout.write(line)
-      else:
-        sys.stdout.write(line)
-    os.system('web_autoTuple AutoTupleHQ.html &>/dev/null')
+    os.system('echo "%s %i %i %i" >> crab_status_logs/pp.txt' % (dataSet+'_'+parts[0].split('/')[2],nEventsIn,nFinished,len(done)))
     nLoops += 1
-    time.sleep(180)
+    time.sleep(90)
