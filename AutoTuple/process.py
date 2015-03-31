@@ -36,8 +36,6 @@ nLoops = 0
 nEventsIn = 0
 temp = "temp" + parts[0].split('/')[1] + ".txt"
 
-os.system('rm crab_status_logs/pp.txt 2>/dev/null')
-
 while (completelyDone == False):
   #Submit all the jobs
   date=str(datetime.datetime.now().strftime('%y-%m-%d_%H:%M:%S'))

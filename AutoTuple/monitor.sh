@@ -64,6 +64,9 @@ if [ ! -d crab_status_logs ]; then mkdir crab_status_logs; fi
 #shouldContinue to go false when all jobs are done
 shouldContinue="true"
 
+#remove old post-processing logs
+rm crab_status_logs/pp.txt 2>/dev/null 
+
 #main loop
 while [ "$shouldContinue" == "true" ] 
 do
