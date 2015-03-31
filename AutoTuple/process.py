@@ -36,7 +36,7 @@ nLoops = 0
 nEventsIn = 0
 temp = "temp" + parts[0].split('/')[1] + ".txt"
 
-os.system('rm condor_status_logs/pp.txt >/dev/null')
+os.system('rm crab_status_logs/pp.txt 2>/dev/null')
 
 while (completelyDone == False):
   #Submit all the jobs
@@ -59,8 +59,8 @@ while (completelyDone == False):
   #If no jobs were submitted, we are done, update monitor
   if (nLeft == 0): 
     completelyDone = True
-    update = -1
-    os.system('%s done >> condor_status_logs/pp.txt' % dataSet+'_'+parts[1].split('/')[2])
+    os.system('echo "here"')
+    os.system('echo "%s done" >> crab_status_logs/pp.txt' % dataSet+'_'+parts[0].split('/')[2])
     os.system('copy.sh %s %s' % (parts[0], tag))
     continue
  
@@ -90,7 +90,6 @@ while (completelyDone == False):
     if not False in done: isDone = True
     nFinished = done.count(True)
     #Update logs
-    update = -1
-    os.system('%s %i %i %i >> condor_status_logs/pp.txt' % (dataSet+'_'+parts[1].split('/')[2],nEventsIn,nFinished,len(done)))
+    os.system('echo "%s %i %i %i" >> crab_status_logs/pp.txt' % (dataSet+'_'+parts[0].split('/')[2],nEventsIn,nFinished,len(done)))
     nLoops += 1
     time.sleep(180)

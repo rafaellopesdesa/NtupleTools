@@ -113,7 +113,9 @@ do
         echo '<font color="blue"> &nbsp; &nbsp; <b> Post-Processing is underway!  No status available yet....  <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
       #Otherwise, get filename and check log to see if there's any trace of it
       else
-        filename=`echo $line | awk '{print $1}'`
+        temp=`echo $line | awk '{print $1}'`
+        temp2=`echo ${temp//\//_} | cut -c 2-`
+        filename=${temp2%_*}
         grep -r "$filename" crab_status_logs/pp.txt
         foundIt="$?"
     
@@ -122,14 +124,17 @@ do
         then
           echo '<font color="blue"> &nbsp; &nbsp; <b> Post-Processing is underway!  No status available yet....  <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
         else
-          nEntriesIn=`grep -r "$filename" crab_status_logs/pp.txt | awk '{print $2}'`
-          nFinished=`grep -r "$filename" crab_status_logs/pp.txt | awk '{print $3}'`
-          nTotal=`grep -r "$filename" crab_status_logs/pp.txt | awk '{print $4}'`
-          if [ "$nFinished" == "$nTotal" ] 
+          isDonePP=`grep -r "$filename" crab_status_logs/pp.txt | awk '{print $2}'`
+          if [ "$isDonePP" == "done" ] 
           then
+            echo "done"
             echo "<font color=\"blue\"> &nbsp; &nbsp; <b> Post-Processing is finished!  nEventsIn: $nEntriesIn  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
             WHICHDONE[$fileNumber]="done"
           else
+            nEntriesIn=`grep -r "$filename" crab_status_logs/pp.txt | tail -1 | awk '{print $2}'`
+            nFinished=`grep -r "$filename" crab_status_logs/pp.txt | tail -1 | awk '{print $3}'`
+            nTotal=`grep -r "$filename" crab_status_logs/pp.txt | tail -1 |  awk '{print $4}'`
+            echo "running"
             echo "<font color=\"blue\"> &nbsp; &nbsp; <b> Post-Processing is underway!  nEventsIn: $nEntriesIn.  Current progress: $nFinished/$nTotal  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
           fi
         fi
