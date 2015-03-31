@@ -116,7 +116,7 @@ do
         temp=`echo $line | awk '{print $1}'`
         temp2=`echo ${temp//\//_} | cut -c 2-`
         filename=${temp2%_*}
-        grep -r "$filename" crab_status_logs/pp.txt
+        grep -r "$filename" crab_status_logs/pp.txt > /dev/null
         foundIt="$?"
     
         #Either way, print status message
