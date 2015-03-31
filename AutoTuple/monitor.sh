@@ -1,5 +1,12 @@
 #!/bin/bash
 
+#Needed for later
+containsElement () {
+  local e
+  for e in "${@:2}"; do [[ "$e" == "$1" ]] && return 0; done
+  return 1
+}
+
 #Check for instructions file
 if [ $# -eq 0 ] 
   then 
@@ -275,8 +282,11 @@ do
   cp AutoTupleHQ.html /home/users/$USER/public_html/AutoTupleHQ.html &>/dev/null
 
   #Check if totally done, sleep and continue looping if not
-  case "${WHICHDONE[@]}" in *"false"*) shouldContinue="true";; *) shouldContinue="false";; esac
-  case "${WHICHDONE[@]}" in *"true"*) shouldContinue="true";; *) shouldContinue="false";; esac
+  containsElement "false" "${WHICHDONE[@]}"
+  result1=$?
+  containsElement "true" "${WHICHDONE[@]}"
+  result2=$?
+  if [ "$result1" == "0" ] || [ "$result2" == "0" ]; then shouldContinue="true"; else shouldContinue="false"; fi 
   if [ "$shouldContinue" == "true" ]; then sleep 30; fi
   if [ "$shouldContinue" == "false" ]; then let "last_loop=$last_loop+1"; sleep 5; fi
   
