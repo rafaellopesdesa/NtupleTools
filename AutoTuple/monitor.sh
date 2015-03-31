@@ -275,8 +275,8 @@ do
   cp AutoTupleHQ.html /home/users/$USER/public_html/AutoTupleHQ.html &>/dev/null
 
   #Check if totally done, sleep and continue looping if not
-  case "${WHICHDONE[@]}" in *"false"*) shouldContinue=true;; *) shouldContinue=false;; esac
-  case "${WHICHDONE[@]}" in *"true"*) shouldContinue=true;; *) shouldContinue=false;; esac
+  case "${WHICHDONE[@]}" in *"false"*) shouldContinue="true";; *) shouldContinue="false";; esac
+  case "${WHICHDONE[@]}" in *"true"*) shouldContinue="true";; *) shouldContinue="false";; esac
   if [ "$shouldContinue" == "true" ]; then sleep 30; fi
   if [ "$shouldContinue" == "false" ]; then let "last_loop=$last_loop+1"; sleep 5; fi
   
