@@ -133,8 +133,11 @@ do
           isDonePP=`grep -r "$filename" crab_status_logs/pp.txt | awk '{print $2}'`
           if [ "$isDonePP" == "done" ] 
           then
-            echo "done"
             echo "<font color=\"blue\"> &nbsp; &nbsp; <b> Post-Processing is finished!  nEventsIn: $nEntriesIn  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
+            WHICHDONE[$fileNumber]="done"
+          elif [ "$isDonePP" == "alreadyThere" ] 
+          then
+            echo "<font color=\"blue\"> &nbsp; &nbsp; <b> Not going to postprocess, already exists on hadoop....  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
             WHICHDONE[$fileNumber]="done"
           else
             nEntriesIn=`grep -r "$filename" crab_status_logs/pp.txt | tail -1 | awk '{print $2}'`

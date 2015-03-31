@@ -25,6 +25,14 @@ parts.append(tag)
 parts.append(gtag)
 parts += lines[lineno].split(' ')[4:]
 
+#See if already exists
+dir="/hadoop/cms/store/group/snt/phys14/"+parts[0].split('/')[1]+"_"+parts[0].split('/')[2]+'/'+tag[5:]+"/"
+try:
+  if not os.listdir(dir) == []: 
+    os.system('echo "%s alreadyThere" >> crab_status_logs/pp.txt' % (parts[0].split('/')[1]+'_'+parts[0].split('/')[2]))
+except OSError:
+  pass
+
 #Figure out output directory
 os.system('grep -m 1 -r "Looking up detailed status of task" %s | awk \'{print $10}\' | cut -c 1-13 > %s' % ('crab_'+parts[0].split('/')[1]+'_'+parts[0].split('/')[2]+'/crab.log','crab_'+parts[0].split('/')[1]+'_'+parts[0].split('/')[2]+'/jobDateTime.txt'))
 timeFile = open('crab_'+parts[0].split('/')[1]+'_'+parts[0].split('/')[2]+'/jobDateTime.txt', "r")
@@ -58,7 +66,7 @@ while (completelyDone == False):
   if (nLeft == 0): 
     completelyDone = True
     os.system('echo "here"')
-    os.system('echo "%s done" >> crab_status_logs/pp.txt' % dataSet+'_'+parts[0].split('/')[2])
+    os.system('echo "%s done" >> crab_status_logs/pp.txt' % (dataSet+'_'+parts[0].split('/')[2]))
     os.system('copy.sh %s %s' % (parts[0], tag))
     continue
  
