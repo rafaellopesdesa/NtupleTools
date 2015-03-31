@@ -1,15 +1,10 @@
 #!/bin/bash
 
-#To do:
-  #Redo flag 
-  #Have copy script updated on monitoring
-  #Submit merge jobs to be a sed command
-
 #Check for instructions file
 if [ $# -eq 0 ] 
   then 
   echo "No arguments, mate!  Need the instructions file....." 
-  return
+  exit 
 fi
 
 #Print status to screen
@@ -52,8 +47,8 @@ while read p
 do
   WHICHDONE+=("false")
 done < $file
-WHICHDONE[0]="true"
-WHICHDONE[1]="true"
+WHICHDONE[0]="done"
+WHICHDONE[1]="done"
 
 #Remove HTML file
 if [ -e AutoTupleHQ.html ]; then rm AutoTupleHQ.html; fi
@@ -66,9 +61,13 @@ shouldContinue="true"
 
 #remove old post-processing logs
 rm crab_status_logs/pp.txt 2>/dev/null 
+rm crab_status_logs/copy.txt 2>/dev/null 
+
+#variable so we do one last loop
+last_loop=0
 
 #main loop
-while [ "$shouldContinue" == "true" ] 
+while [ "$last_loop" -lt "2"  ] 
 do
   #Delete the existing one 
   if [ -e AutoTupleHQ.html ]; then rm AutoTupleHQ.html; fi
@@ -96,13 +95,51 @@ do
       continue 
     fi
 
+    #Get the variables:
+    filename=`echo $line | awk '{print $1}'`
+    xsec=`echo $line | awk '{print $2}'`
+    kfact=`echo $line | awk '{print $3}'`
+    isData=`echo $line | awk '{print $4}'`
+
+    #Calculate directory names
+    temp=`echo ${filename//\//_} | cut -c 2-`
+    crab_filename=${temp%_*}
+    status_filename="crab_status_logs/${crab_filename}_log.txt"
+
     #skip if already finished
     if [ ${WHICHDONE[$fileNumber]} == "done" ] 
+    then
+      if [ -e crab_status_logs/copy.txt ]
+      then
+        temp=`echo $line | awk '{print $1}'`
+        temp2=`echo ${temp//\//_} | cut -c 2-`
+        filename=${temp2%_*}
+        nIn=`grep -r "$filename" crab_status_logs/pp.txt | tail -1 | awk '{print $3}'`
+        grep -r "$filename" crab_status_logs/copy.txt | grep "trying to recover" 2> /dev/null
+        copyProblem=$?
+        nOut=`grep -r "$filename" crab_status_logs/copy.txt | grep "nEntries" | tail -1 | awk '{print $NF}'`
+        let "fileNumber += 1"
+        echo "  " >> AutoTupleHQ.html
+        if [ "$copyProblem" != "0" ] 
+        then
+          echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
+          echo "<font color=\"blue\"> &nbsp; &nbsp; <b> This task be finished!!!! nEventsIn: $nIn nEventsOut: $nOut <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
+          continue
+        elif [ "$copyProblem" == "0" ] 
+        then
+          echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
+          echo "<font color=\"red\"> &nbsp; &nbsp; <b> Ahoy, matey!! This task be finished, but there may be some problem with the output.  I suggest taking a look at the output in the hadoop snt directory!   nEventsIn: $nIn.  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
+          continue
+        fi
+      else
+        WHICHDONE[$fileNumber]="true"
+      fi
+    elif [ ${WHICHDONE[$fileNumber]} == "notPP" ] 
     then
       let "fileNumber += 1"
       echo "  " >> AutoTupleHQ.html
       echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
-        echo '<font color="blue"> &nbsp; &nbsp; <b> This task be finished!!!! <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
+        echo '<font color="blue"> &nbsp; &nbsp; <b> This task be finished!!!! Note well, matey, that we did not post-process, because the dirrrectory already existed on hadoop!!  <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
       continue
     fi
 
@@ -130,7 +167,8 @@ do
         then
           echo '<font color="blue"> &nbsp; &nbsp; <b> Post-Processing is underway!  No status available yet....  <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
         else
-          isDonePP=`grep -r "$filename" crab_status_logs/pp.txt | awk '{print $2}'`
+          isDonePP=`grep -r "$filename" crab_status_logs/pp.txt | tail -1 | awk '{print $2}'`
+          nEntriesIn=`grep -r "$filename" crab_status_logs/pp.txt | tail -1 | awk '{print $3}'`
           if [ "$isDonePP" == "done" ] 
           then
             echo "<font color=\"blue\"> &nbsp; &nbsp; <b> Post-Processing is finished!  nEventsIn: $nEntriesIn  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
@@ -138,12 +176,11 @@ do
           elif [ "$isDonePP" == "alreadyThere" ] 
           then
             echo "<font color=\"blue\"> &nbsp; &nbsp; <b> Not going to postprocess, already exists on hadoop....  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
-            WHICHDONE[$fileNumber]="done"
+            WHICHDONE[$fileNumber]="notPP"
           else
             nEntriesIn=`grep -r "$filename" crab_status_logs/pp.txt | tail -1 | awk '{print $2}'`
             nFinished=`grep -r "$filename" crab_status_logs/pp.txt | tail -1 | awk '{print $3}'`
             nTotal=`grep -r "$filename" crab_status_logs/pp.txt | tail -1 |  awk '{print $4}'`
-            echo "running"
             echo "<font color=\"blue\"> &nbsp; &nbsp; <b> Post-Processing is underway!  nEventsIn: $nEntriesIn.  Current progress: $nFinished/$nTotal  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
           fi
         fi
@@ -153,17 +190,6 @@ do
       let "fileNumber += 1"
       continue
     fi
-
-    #Otherwise, need to check.  Get the variables:
-    filename=`echo $line | awk '{print $1}'`
-    xsec=`echo $line | awk '{print $2}'`
-    kfact=`echo $line | awk '{print $3}'`
-    isData=`echo $line | awk '{print $4}'`
-
-    #Calculate directory names
-    temp=`echo ${filename//\//_} | cut -c 2-`
-    crab_filename=${temp%_*}
-    status_filename="crab_status_logs/${crab_filename}_log.txt"
 
     #Output name with hyperlink to log
     echo "  " >> AutoTupleHQ.html
@@ -250,6 +276,8 @@ do
 
   #Check if totally done, sleep and continue looping if not
   case "${WHICHDONE[@]}" in *"false"*) shouldContinue=true;; *) shouldContinue=false;; esac
+  case "${WHICHDONE[@]}" in *"true"*) shouldContinue=true;; *) shouldContinue=false;; esac
   if [ $shouldContinue == true ]; then sleep 30; fi
+  if [ $shouldContinue == false ]; then let "last_loop=$last_loop+1"; sleep 5; fi
   
 done

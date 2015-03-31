@@ -32,13 +32,11 @@ sed -i s/process.GlobalTag.globaltag\ =\ .*/process.GlobalTag.globaltag\ =\ \"$g
 cp ../../submitMergeJobs.sh .
 cp ../../submit_crab_jobs.py  .
 cp ../../$1 .
-cp ../../monitor.py . 
 cp ../../monitor.sh . 
 cp ../../process.py .
 cp ../../pirate.txt .
 cp ../../FindLumisPerJob.sh . 
 cp ../../das_client.py . 
-cp ../../web_autoTuple .
 cp ../../crabPic.png .
 cp ../../copy.sh .
 cp ../../numEventsROOT.C .

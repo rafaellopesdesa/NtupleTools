@@ -30,6 +30,7 @@ dir="/hadoop/cms/store/group/snt/phys14/"+parts[0].split('/')[1]+"_"+parts[0].sp
 try:
   if not os.listdir(dir) == []: 
     os.system('echo "%s alreadyThere" >> crab_status_logs/pp.txt' % (parts[0].split('/')[1]+'_'+parts[0].split('/')[2]))
+    sys.exit()
 except OSError:
   pass
 
@@ -65,9 +66,8 @@ while (completelyDone == False):
   #If no jobs were submitted, we are done, update monitor
   if (nLeft == 0): 
     completelyDone = True
-    os.system('echo "here"')
-    os.system('echo "%s done" >> crab_status_logs/pp.txt' % (dataSet+'_'+parts[0].split('/')[2]))
-    os.system('copy.sh %s %s' % (parts[0], tag))
+    os.system('echo "%s done %i" >> crab_status_logs/pp.txt' % (dataSet+'_'+parts[0].split('/')[2], nEventsIn))
+    os.system('copy.sh %s %s %s %s' % (parts[0], tag, args[1], args[2]))
     continue
  
   #Get ID numbers of jobs submitted
@@ -98,4 +98,4 @@ while (completelyDone == False):
     #Update logs
     os.system('echo "%s %i %i %i" >> crab_status_logs/pp.txt' % (dataSet+'_'+parts[0].split('/')[2],nEventsIn,nFinished,len(done)))
     nLoops += 1
-    time.sleep(180)
+    time.sleep(90)
