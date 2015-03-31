@@ -100,6 +100,9 @@ do
     if [ ${WHICHDONE[$fileNumber]} == "done" ] 
     then
       let "fileNumber += 1"
+      echo "  " >> AutoTupleHQ.html
+      echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
+        echo '<font color="blue"> &nbsp; &nbsp; <b> This task be finished!!!! <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
       continue
     fi
 
