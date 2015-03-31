@@ -22,10 +22,8 @@ Awesome trick: Making the instructions.txt file is a little bit painful.  Here i
 
 AutoTupler development -- to do list:
   - Automatic making of instructions file from twiki
-  - Status page is not perfect; should rethink how/when status page updated
   - Asks for grid pass phrase at beginning, bad.  Also, need to add protection for if pass phrase entered incorrectly
   - Support for "Error during task injection" errors -- have it attempt to resubmit N times. 
-  - Seem to frequently get a "PhedEx" error which requires full delete-and-redo after ~1 h, should support this
-  - Add cooloff, transferred, submitted, unsubmitted to status list?
+  - Checkout one file with sed, rather than having two copies
   - Should support non-unitary filter efficiencies.  This will require the below.
   - Should look at logs to get nEvents
