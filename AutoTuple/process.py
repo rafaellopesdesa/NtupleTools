@@ -20,10 +20,10 @@ lineno = int(args[2])
 lines = [ line.strip() for line in open(file)]
 gtag = lines[0]
 tag = lines[1]
-parts = lines[lineno].split(' ')[0:4]
+parts = lines[lineno].split()[0:4]
 parts.append(tag)
 parts.append(gtag)
-parts += lines[lineno].split(' ')[4:]
+parts += lines[lineno].split()[4:]
 
 #See if already exists
 dir="/hadoop/cms/store/group/snt/phys14/"+parts[0].split('/')[1]+"_"+parts[0].split('/')[2]+'/'+tag[5:]+"/"
