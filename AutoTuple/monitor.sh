@@ -146,7 +146,7 @@ do
       let "fileNumber += 1"
       echo "  " >> AutoTupleHQ.html
       echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
-        echo '<font color="blue"> &nbsp; &nbsp; <b> This task be finished!!!! Note well, matey, that we did not post-process, because the dirrrectory already existed on hadoop!!  <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
+        echo '<font color="blue"> &nbsp; &nbsp; <b> This task be finished!!!! Note well, matey, that we did not post-process, because the dirrrectory already existed on the cmstas hadoop area!!  If yerr want to postprocess, delete that directory and restart monitoring with . monitor.sh instructions.txt  <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
       continue
     fi
 
