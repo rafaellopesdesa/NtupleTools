@@ -25,9 +25,9 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 
 #Branches
 process.out.outputCommands = cms.untracked.vstring( 'drop *' )
-process.out.outputCommands.extend(cms.untracked.vstring('keep *_*Maker*_*_CMS2*'))
-process.out.outputCommands.extend(cms.untracked.vstring('drop *_cms2towerMaker*_*_CMS2*'))
-process.out.outputCommands.extend(cms.untracked.vstring('drop CaloTowers*_*_*_CMS2*'))
+process.out.outputCommands.extend(cms.untracked.vstring('keep *_*Maker*_*_CMS3*'))
+process.out.outputCommands.extend(cms.untracked.vstring('drop *_cms2towerMaker*_*_CMS3*'))
+process.out.outputCommands.extend(cms.untracked.vstring('drop CaloTowers*_*_*_CMS3*'))
 
 #Makers
 process.p = cms.Path( 
@@ -63,7 +63,3 @@ process.p = cms.Path(
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 process.eventMaker.isData                        = cms.bool(False)
 process.luminosityMaker.isData                   = process.eventMaker.isData
-
-#Slim CMS2
-from CMS3.NtupleMaker.SlimCms2_cff import slimcms2
-process.out.outputCommands.extend(slimcms2)
