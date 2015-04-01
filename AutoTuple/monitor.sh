@@ -39,9 +39,9 @@ source /cvmfs/cms.cern.ch/crab3/crab.sh
 export PATH=$PATH:`pwd`
 
 #Make sure public_html directory exists
-if [ ! -d ~/$USERNAME/public_html ] 
+if [ ! -d ~/public_html ] 
 then
-  mkdir ~/$USERNAME/public_html
+  mkdir ~/public_html
 fi
 
 #Pirate picture
