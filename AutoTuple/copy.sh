@@ -19,7 +19,7 @@ nFiles=$(( $nFiles_temp - 1 ))
 mkdir /hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$CMS3tag/merged/temp 
 echo "mv /hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$CMS3tag/merged/merged_ntuple_$nFiles_temp.root /hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$CMS3tag/merged/temp/"
 mv /hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$CMS3tag/merged/merged_ntuple_$nFiles_temp.root /hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$CMS3tag/merged/temp/
-find /hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$CMS3tag/merged/*.root -type f -size -4500M -maxdepth 1 -delete 2> /dev/null
+find /hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$CMS3tag/merged/*.root -type f -size -3500M -maxdepth 1 -delete 2> /dev/null
 mv /hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$CMS3tag/merged/temp/*.root /hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$CMS3tag/merged/
 rmdir /hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$CMS3tag/merged/temp
 nFiles_new=`ls /hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$CMS3tag/merged/*.root -l | wc -l`
