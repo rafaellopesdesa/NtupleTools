@@ -156,7 +156,7 @@ do
         nOut="not available"
       fi
       echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
-        echo "<font color=\"blue\"> &nbsp; &nbsp; <b> This task be finished!!!! Note well, matey, that we did not post-process, because the dirrrectory already existed on the cmstas hadoop area!! </b> <BR> &nbsp; &nbsp;  If yerr want to postprocess, delete that directory and restart monitoring with . monitor.sh instructions.txt  <font color=\"black\"><BR> & nbsp; &nbsp; nEventsIn: $nIn.  nEventsOut: $nOut. <BR> <BR>" >> AutoTupleHQ.html
+        echo "<font color=\"blue\"> &nbsp; &nbsp; <b> This task be finished!!!! Note well, matey, that we did not post-process, because the dirrrectory already existed on the cmstas hadoop area!! </b> <BR> &nbsp; &nbsp;  If yerr want to postprocess, delete that directory and restart monitoring with . monitor.sh instructions.txt  <font color=\"black\"><BR> &nbsp; &nbsp; nEventsIn: $nIn.  nEventsOut: $nOut. <BR> <BR>" >> AutoTupleHQ.html
       continue
     fi
 
