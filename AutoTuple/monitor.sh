@@ -131,11 +131,13 @@ do
         then
           echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
           echo "<font color=\"blue\"> &nbsp; &nbsp; <b> This task be finished!!!! nEventsIn: $nIn nEventsOut: $nOut <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
+          echo "$filename $nIn $nOut" >> crab_status_logs/isdone.txt
           continue
         elif [ "$copyProblem" == "0" ] 
         then
           echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
-          echo "<font color=\"red\"> &nbsp; &nbsp; <b> Ahoy, matey!! This task be finished, but there may be some problem with the output.  I suggest taking a look at the output in the hadoop snt directory!   nEventsIn: $nIn.  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
+          numbers=`grep -r "$filename" crab_status_logs/copy.txt | grep "trying to recover" | awk '{print $5}' | sed 's/\//\ /g' | awk '{print $NF}' | sed 's/_/\ /g' | awk '{print $NF}' | sed 's/\./\ /g' | awk '{print $1}'`
+          echo "<font color=\"red\"> &nbsp; &nbsp; <b> Shiver me timbers!  There was a problem copying this file.  File $i is corrupt. Not fixing. nEventsIn: $nIn.  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
           continue
         fi
       else
@@ -145,8 +147,11 @@ do
     then
       let "fileNumber += 1"
       echo "  " >> AutoTupleHQ.html
+      nIn=`grep -r "$filename" crab_status_logs/isdone.txt | tail -1 | awk 'print{$2}'`
+      nOut=`grep -r "$filename" crab_status_logs/isdone.txt | tail -1 | awk 'print{$3}'`
+      if [ "$?" != "0" ]; then nIn="not available"; nOut="not available"; fi
       echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
-        echo '<font color="blue"> &nbsp; &nbsp; <b> This task be finished!!!! Note well, matey, that we did not post-process, because the dirrrectory already existed on the cmstas hadoop area!!  If yerr want to postprocess, delete that directory and restart monitoring with . monitor.sh instructions.txt  <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
+        echo "<font color=\"blue\"> &nbsp; &nbsp; <b> This task be finished!!!! Note well, matey, that we did not post-process, because the dirrrectory already existed on the cmstas hadoop area!! </b> <BR> &nbsp; &nbsp;  If yerr want to postprocess, delete that directory and restart monitoring with . monitor.sh instructions.txt  <font color=\"black\"><BR> & nbsp; &nbsp; nEventsIn: $nIn.  nEventsOut: $nOut. <BR> <BR>" >> AutoTupleHQ.html
       continue
     fi
 
