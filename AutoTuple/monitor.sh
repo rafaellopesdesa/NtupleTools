@@ -127,7 +127,7 @@ do
         nOut=`grep -r "$filename" crab_status_logs/copy.txt | grep "nEntries" | tail -1 | awk '{print $NF}'`
         let "fileNumber += 1"
         echo "  " >> AutoTupleHQ.html
-        if [ "$copyProblem" != "0" ] && [ "$(( 10*$nOut))" -gt "$nIn" ] 
+        if [ "$copyProblem" != "0" ] && [ "$(( 10 * $nOut))" -gt "$nIn" ] 
         then
           echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
           echo "<font color=\"blue\"> &nbsp; &nbsp; <b> This task be finished!!!! nEventsIn: $nIn nEventsOut: $nOut <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
