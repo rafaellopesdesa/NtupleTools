@@ -111,6 +111,7 @@ do
     temp=`echo $line | awk '{print $1}'`
     temp2=`echo ${temp//\//_} | cut -c 2-`
     filename=${temp2%_*}
+    short_filename=`echo $line | awk '{print $1}' | sed 's/\//\ /g' | awk '{print $1}'`
     xsec=`echo $line | awk '{print $2}'`
     kfact=`echo $line | awk '{print $3}'`
     isData=`echo $line | awk '{print $4}'`
@@ -124,7 +125,10 @@ do
     #If already finished......
     if [ "${WHICHDONE[$fileNumber]}" == "done" ] || [ "${WHICHDONE[$fileNumber]}" == "notPP" ]
     then
-      nIn=`grep -r "$filename" crab_status_logs/pp.txt | tail -1 | awk '{print $3}'`
+      grep -m 1 -r "Looking up detailed status of task" crab_$filename/crab.log | awk '{print $10}' | cut -c 1-13 > crab_$filename/jobDateTime.txt
+      dateTime=`less crab_$filename/jobDateTime.txt`
+      root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/user/$USER/$short_filename/crab_$filename/$dateTime/0000/\"\) > crab_status_logs/temp2.txt 2>&1
+      nIn=`grep -r "nEntries" crab_status_logs/temp2.txt | tail -1 | awk '{print $NF}'`
       root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/group/snt/phys14/$filename/$tagDir\"\) > crab_status_logs/temp.txt 2>&1
       grep -r "trying to recover" crab_status_logs/temp.txt 2>/dev/null
       if [ "$?" == "0" ] 
@@ -135,7 +139,6 @@ do
         nOut=`grep -r "nEntries" crab_status_logs/temp.txt | tail -1 | awk '{print $NF}'`
         copyProblem="0"
       fi
-      echo "$filename nOut: $nOut"
     fi
     if [ "${WHICHDONE[$fileNumber]}" == "done" ] 
     then
