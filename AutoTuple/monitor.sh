@@ -142,14 +142,14 @@ do
       if [ -e crab_status_logs/copy.txt ]
       then
         echo "  " >> AutoTupleHQ.html
-        if [ "$copyProblem" != "0" ] && [ "$(( 10 * $nOut))" -gt "$nIn" ] 
+        if [ "$copyProblem" == "0" ] && [ "$(( 10 * $nOut))" -gt "$nIn" ] 
         then
           echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
           echo "<font color=\"blue\"> &nbsp; &nbsp; <b> This task be finished!!!! nEventsIn: $nIn nEventsOut: $nOut <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
           echo "$filename $nIn $nOut" >> crab_status_logs/isdone.txt
           let "fileNumber += 1"
           continue
-        elif [ "$copyProblem" == "0" ] 
+        elif [ "$copyProblem" != "0" ] 
         then
           echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
           numbers=`grep -r "$filename" crab_status_logs/copy.txt | grep "trying to recover" | awk '{print $5}' | sed 's/\//\ /g' | awk '{print $NF}' | sed 's/_/\ /g' | awk '{print $NF}' | sed 's/\./\ /g' | awk '{print $1}'`
