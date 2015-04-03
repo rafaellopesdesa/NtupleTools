@@ -96,72 +96,81 @@ do
   while read line
   do
     #Skip the first two lines
-    if [ $fileNumber \< 2 ]
+    if [ "$fileNumber" == "0" ]
     then 
       let "fileNumber += 1"
+      continue 
+    elif [ "$fileNumber" == "1" ]
+    then
+      let "fileNumber += 1"
+      CMS3tag=$line
       continue 
     fi
 
     #Get the variables:
-    filename=`echo $line | awk '{print $1}'`
+    temp=`echo $line | awk '{print $1}'`
+    temp2=`echo ${temp//\//_} | cut -c 2-`
+    filename=${temp2%_*}
     xsec=`echo $line | awk '{print $2}'`
     kfact=`echo $line | awk '{print $3}'`
     isData=`echo $line | awk '{print $4}'`
 
     #Calculate directory names
-    temp=`echo ${filename//\//_} | cut -c 2-`
-    crab_filename=${temp%_*}
+    temp3=`echo ${temp//\//_} | cut -c 2-`
+    crab_filename=${temp3%_*}
     status_filename="crab_status_logs/${crab_filename}_log.txt"
+    tagDir=`echo $CMS3tag | cut -c 6-`
 
-    #skip if already finished
-    if [ ${WHICHDONE[$fileNumber]} == "done" ] 
+    #If already finished......
+    if [ "${WHICHDONE[$fileNumber]}" == "done" ] || [ "${WHICHDONE[$fileNumber]}" == "notPP" ]
+    then
+      nIn=`grep -r "$filename" crab_status_logs/pp.txt | tail -1 | awk '{print $3}'`
+      root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/group/snt/phys14/$filename/$tagDir\"\) > crab_status_logs/temp.txt 2>&1
+      grep -r "trying to recover" crab_status_logs/temp.txt 2>/dev/null
+      if [ "$?" == "0" ] 
+      then 
+        nOut="Error in Copying!" 
+        copyProblem="1"
+      else
+        nOut=`grep -r "nEntries" crab_status_logs/temp.txt | tail -1 | awk '{print $NF}'`
+        copyProblem="0"
+      fi
+      echo "$filename nOut: $nOut"
+    fi
+    if [ "${WHICHDONE[$fileNumber]}" == "done" ] 
     then
       if [ -e crab_status_logs/copy.txt ]
       then
-        temp=`echo $line | awk '{print $1}'`
-        temp2=`echo ${temp//\//_} | cut -c 2-`
-        filename=${temp2%_*}
-        nIn=`grep -r "$filename" crab_status_logs/pp.txt | tail -1 | awk '{print $3}'`
-        grep -r "$filename" crab_status_logs/copy.txt | grep "trying to recover" 2> /dev/null
-        copyProblem=$?
-        nOut=`grep -r "$filename" crab_status_logs/copy.txt | grep "nEntries" | tail -1 | awk '{print $NF}'`
-        let "fileNumber += 1"
         echo "  " >> AutoTupleHQ.html
         if [ "$copyProblem" != "0" ] && [ "$(( 10 * $nOut))" -gt "$nIn" ] 
         then
           echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
           echo "<font color=\"blue\"> &nbsp; &nbsp; <b> This task be finished!!!! nEventsIn: $nIn nEventsOut: $nOut <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
           echo "$filename $nIn $nOut" >> crab_status_logs/isdone.txt
+          let "fileNumber += 1"
           continue
         elif [ "$copyProblem" == "0" ] 
         then
           echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
           numbers=`grep -r "$filename" crab_status_logs/copy.txt | grep "trying to recover" | awk '{print $5}' | sed 's/\//\ /g' | awk '{print $NF}' | sed 's/_/\ /g' | awk '{print $NF}' | sed 's/\./\ /g' | awk '{print $1}'`
           echo "<font color=\"red\"> &nbsp; &nbsp; <b> Shiver me timbers!  There was a problem copying this file.  File $i is corrupt. Not fixing. nEventsIn: $nIn.  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
+          let "fileNumber += 1"
           continue
         fi
       else
         WHICHDONE[$fileNumber]="true"
       fi
-    elif [ ${WHICHDONE[$fileNumber]} == "notPP" ] 
+    elif [ "${WHICHDONE[$fileNumber]}" == "notPP" ] 
     then
-      let "fileNumber += 1"
       echo "  " >> AutoTupleHQ.html
-      if [ -e crab_status_logs/isdone.txt ] 
-      then
-        nIn=`grep -r "$filename" crab_status_logs/isdone.txt | tail -1 | awk '{print $2}'`
-        nOut=`grep -r "$filename" crab_status_logs/isdone.txt | tail -1 | awk '{print $3}'`
-      else 
-        nIn="not available"
-        nOut="not available"
-      fi
       echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
-        echo "<font color=\"blue\"> &nbsp; &nbsp; <b> This task be finished!!!! Note well, matey, that we did not post-process, because the dirrrectory already existed on the cmstas hadoop area!! </b> <BR> &nbsp; &nbsp;  If yerr want to postprocess, delete that directory and restart monitoring with . monitor.sh instructions.txt  <font color=\"black\"><BR> &nbsp; &nbsp; nEventsIn: $nIn.  nEventsOut: $nOut. <BR> <BR>" >> AutoTupleHQ.html
+      echo "<font color=\"blue\"> &nbsp; &nbsp; <b> This task be finished!!!! Did not post-process; dirrrectory already existed on the cmstas hadoop.... </b> <BR> &nbsp; &nbsp;  If yerr want to postprocess, delete that directory and restart monitoring with . monitor.sh instructions.txt  <font color=\"black\"><BR> &nbsp; &nbsp; nEventsIn: $nIn.  nEventsOut: $nOut. <BR> <BR>" >> AutoTupleHQ.html
+      let "fileNumber += 1"
       continue
     fi
 
     #if crab has finished but post-processing has not, check on post-processing
-    if [ ${WHICHDONE[$fileNumber]} == "true" ] 
+    if [ "${WHICHDONE[$fileNumber]}" == "true" ] 
     then
       #Print header
       echo "  " >> AutoTupleHQ.html
@@ -173,9 +182,6 @@ do
         echo '<font color="blue"> &nbsp; &nbsp; <b> Post-Processing is underway!  No status available yet....  <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
       #Otherwise, get filename and check log to see if there's any trace of it
       else
-        temp=`echo $line | awk '{print $1}'`
-        temp2=`echo ${temp//\//_} | cut -c 2-`
-        filename=${temp2%_*}
         grep -r "$filename" crab_status_logs/pp.txt > /dev/null
         foundIt="$?"
     
@@ -192,7 +198,7 @@ do
             WHICHDONE[$fileNumber]="done"
           elif [ "$isDonePP" == "alreadyThere" ] 
           then
-            echo "<font color=\"blue\"> &nbsp; &nbsp; <b> Not going to postprocess, already exists on hadoop....  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
+            echo "<font color=\"blue\"> &nbsp; &nbsp; <b> Not going to postprocess; already exists on hadoop....  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
             WHICHDONE[$fileNumber]="notPP"
           else
             nEntriesIn=`grep -r "$filename" crab_status_logs/pp.txt | tail -1 | awk '{print $2}'`
