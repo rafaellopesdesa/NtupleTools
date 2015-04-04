@@ -15,6 +15,8 @@ user2 = getpass.getuser()
 args = sys.argv
 file = args[1]
 lineno = int(args[2])
+dateTime = "0"
+if len(args) > 2: dateTime = int(args[3])
 
 #Get arguments
 lines = [ line.strip() for line in open(file)]
@@ -35,9 +37,10 @@ except OSError:
   pass
 
 #Figure out output directory
-os.system('grep -m 1 -r "Looking up detailed status of task" %s | awk \'{print $10}\' | cut -c 1-13 > %s' % ('crab_'+parts[0].split('/')[1]+'_'+parts[0].split('/')[2]+'/crab.log','crab_'+parts[0].split('/')[1]+'_'+parts[0].split('/')[2]+'/jobDateTime.txt'))
-timeFile = open('crab_'+parts[0].split('/')[1]+'_'+parts[0].split('/')[2]+'/jobDateTime.txt', "r")
-dateTime=timeFile.readline().rstrip("\n")
+if (dateTime == "0"):
+  os.system('grep -m 1 -r "Looking up detailed status of task" %s | awk \'{print $10}\' | cut -c 1-13 > %s' % ('crab_'+parts[0].split('/')[1]+'_'+parts[0].split('/')[2]+'/crab.log','crab_'+parts[0].split('/')[1]+'_'+parts[0].split('/')[2]+'/jobDateTime.txt'))
+  timeFile = open('crab_'+parts[0].split('/')[1]+'_'+parts[0].split('/')[2]+'/jobDateTime.txt', "r")
+  dateTime=timeFile.readline().rstrip("\n")
 
 completelyDone = False
 dataSet = parts[0].split('/')[1] + '_' + parts[0].split('/')[2]

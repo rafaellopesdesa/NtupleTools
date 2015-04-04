@@ -286,11 +286,22 @@ do
     #If status is failed, delete and resubmit
     grep -r "Task status" $status_filename | grep "FAILED" &>/dev/null 
     isFailed="$?"
+    #Also failed if no WD and not because already successfully crabbed
     if [ "$isFailed" != "0" ]
     then 
       grep -r "not found" $status_filename | grep "Working directory for task" &>/dev/null 
-      isFailed="$?"
+      result="$?"
+      if [ "$result" == "0"] && [ -e "crab_status_logs/noCrab_$filename" ] 
+      then
+        WHICHDONE[$fileNumber]="true"
+        python process.py $file $fileNumber $dateTime &
+        let "fileNumber += 1"
+        continue
+      elif [ "$result" == "0" ] 
+        isFailed="$result"
+      fi
     fi
+    #Also failed if no requestcache file
     if [ "$isFailed" != "0" ]
     then 
       grep -r "Cannot find .requestcache file inside the working directory for task" $status_filename &>/dev/null 
