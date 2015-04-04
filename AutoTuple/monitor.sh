@@ -189,7 +189,7 @@ do
         echo '<font color="blue"> &nbsp; &nbsp; <b> Post-Processing is underway!  No status available yet....  <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
       #Otherwise, get filename and check log to see if there's any trace of it
       else
-        grep -r "$filename" crab_status_logs/pp.txt > /dev/null
+        grep -r "$filename" crab_status_logs/pp.txt > /dev/null 2>&1
         foundIt="$?"
     
         #Either way, print status message
@@ -229,13 +229,26 @@ do
     cp $status_filename /home/users/$USER/public_html/${crab_filename}_log.txt >/dev/null
 
     #If status is done, we're done
-    temp=`grep -r "Task status" $status_filename | grep "COMPLETED"`
-    if [ "$temp" == "" ]; then isDone="0"; else isDone="1"; fi
+    grep -r "Task status" $status_filename | grep "COMPLETED" >/dev/null 2&>1
+    if [ "$?" == "0" ]; then isDone="1"; else isDone="0"; fi
     if [ "$isDone" == "1" ]
     then
       echo '<font color="blue"> &nbsp; &nbsp; <b> Ready for Post-Processing!!  <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
       WHICHDONE[$fileNumber]="true"
       python process.py $file $fileNumber &
+      let "fileNumber += 1"
+      continue
+    fi
+
+    #If status is failed, delete and resubmit
+    grep -r "Task status" $status_filename | grep "FAILED" >/dev/null 2&>1
+    isFailed="$?"
+    if [ "$isFailed" == "0" ]
+    then
+      echo '<font color="red"> &nbsp; &nbsp; <b> Avast!  Blasted Crab Task Failed!! Resubmitting..... <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
+      rm -rf crab_$crab_filename
+      crab submit -c cfg/$crab_filename.py
+      let "fileNumber += 1"
       continue
     fi
 
@@ -245,6 +258,7 @@ do
     if [ "$isQueued" == "0" ]
     then
       echo '<font color="blue"> &nbsp; &nbsp; <b> Task is Queued!! <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
+      let "fileNumber += 1"
       continue
     fi
 

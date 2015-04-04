@@ -41,7 +41,6 @@ dateTime=timeFile.readline().rstrip("\n")
 
 completelyDone = False
 dataSet = parts[0].split('/')[1] + '_' + parts[0].split('/')[2]
-shortdataSet = parts[0].split('/')[1] 
 nLoops = 0
 nEventsIn = 0
 temp = "temp" + parts[0].split('/')[1] + ".txt"
@@ -51,11 +50,6 @@ while (completelyDone == False):
   date=str(datetime.datetime.now().strftime('%y-%m-%d_%H:%M:%S'))
   crab_dir = 'crab_' + parts[0].split('/')[1]+'_'+parts[0].split('/')[2]
   os.system('python makeListsForMergingCrab3.py -c ' + crab_dir + ' -d /hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/' + dateTime + '/0000/ -o /hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/' + parts[4] + '/merged/ -s ' + dataSet + ' -k ' + parts[2] + ' -e 1 -x ' + parts[1] + ' --overrideCrab > ' + temp + '2')
-  print 'python makeListsForMergingCrab3.py -c ' + crab_dir + ' -d /hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/' + dateTime + '/0000/ -o /hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/' + parts[4] + '/merged/ -s ' + dataSet + ' -k ' + parts[2] + ' -e 1 -x ' + parts[1] + ' --overrideCrab '
-  file = open(temp, "r")
-  if nLoops == 0:
-    for line in file:
-      if "Total number of events run over" in line: nEventsIn = int(line.split(":")[1])
   os.system('./submitMergeJobs.sh cfg/' + dataSet + '_cfg.sh ' + date + ' > ' + temp)  
 
   #See if any jobs were submitted (will be false when resubmission not needed):
@@ -69,7 +63,7 @@ while (completelyDone == False):
   #If no jobs were submitted, we are done, update monitor
   if (nLeft == 0): 
     completelyDone = True
-    os.system('echo "%s done %i" >> crab_status_logs/pp.txt' % (dataSet, nEventsIn))
+    os.system('echo "%s done" >> crab_status_logs/pp.txt' % (dataSet))
     os.system('copy.sh %s %s %s %s' % (parts[0], tag, args[1], args[2]))
     continue
  
