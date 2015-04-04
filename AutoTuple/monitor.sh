@@ -291,7 +291,7 @@ do
     then 
       grep -r "not found" $status_filename | grep "Working directory for task" &>/dev/null 
       result="$?"
-      if [ "$result" == "0"] && [ -e "crab_status_logs/noCrab_$filename" ] 
+      if [ "$result" == "0" ] && [ -e "crab_status_logs/noCrab_$filename" ] 
       then
         WHICHDONE[$fileNumber]="true"
         python process.py $file $fileNumber $dateTime &
