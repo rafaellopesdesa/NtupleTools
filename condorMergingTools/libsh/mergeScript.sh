@@ -23,6 +23,11 @@ echo "Attempting to merge files from $inputList"
 mData=`basename $mData`
 echo "using metadata file: $mData"
 
+#Debugging
+nFilesAG=`wc -l < $inputList`
+echo "The list contains the following $nFilesAG files:"
+less $inputList
+
 # Environment
 export CMS_PATH=/cvmfs/cms.cern.ch
 export SCRAM_ARCH=slc6_amd64_gcc481
