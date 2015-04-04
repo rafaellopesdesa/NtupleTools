@@ -6,6 +6,7 @@ import sys
 import datetime
 import getpass
 import fileinput
+import glob
 
 script, inFile = argv
 lines = [ line.strip() for line in open(inFile)]
