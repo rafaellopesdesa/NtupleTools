@@ -291,11 +291,12 @@ do
     then 
       grep -r "not found" $status_filename | grep "Working directory for task" &>/dev/null 
       result="$?"
-      if [ "$result" == "0" ] && [ -e "crab_status_logs/noCrab_$filename" ] 
+      if [ "$result" == "0" ] && [ -e "crab_status_logs/noCrab_$filename.txt" ] 
       then
         WHICHDONE[$fileNumber]="true"
         python process.py $file $fileNumber $dateTime &
         let "fileNumber += 1"
+        echo "<font color=\"blue\"> &nbsp; &nbsp; <b> Trying to proceed without redoing the crab stuff.  date_time is $dateTime..... <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
         continue
       elif [ "$result" == "0" ] 
       then
