@@ -140,7 +140,7 @@ do
       root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/user/$USER/$short_filename/crab_$filename/$dateTime/0000/\"\) > crab_status_logs/temp2.txt 2>&1
       nIn=`grep -r "nEntries" crab_status_logs/temp2.txt | tail -1 | awk '{print $NF}'`
       root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/group/snt/phys14/$filename/$tagDir\"\) > crab_status_logs/temp.txt 2>&1
-      grep -r "trying to recover" crab_status_logs/temp.txt 2>/dev/null
+      grep -r "trying to recover" crab_status_logs/temp.txt &> /dev/null
       if [ "$?" == "0" ] 
       then 
         nOut="Error in Copying!" 
@@ -216,7 +216,7 @@ do
         echo '<font color="blue"> &nbsp; &nbsp; <b> Post-Processing is underway!  No status available yet....  <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
       #Otherwise, get filename and check log to see if there's any trace of it
       else
-        grep -r "$filename" crab_status_logs/pp.txt > /dev/null 2>&1
+        grep -r "$filename" crab_status_logs/pp.txt &> /dev/null
         foundIt="$?"
     
         #Either way, print status message
@@ -256,7 +256,7 @@ do
     cp $status_filename /home/users/$USER/public_html/${crab_filename}_log.txt >/dev/null
 
     #If status is done, we're done
-    grep -r "Task status" $status_filename | grep "COMPLETED" 2>/dev/null
+    grep -r "Task status" $status_filename | grep "COMPLETED" &>/dev/null
     if [ "$?" == "0" ]; then isDone="1"; else isDone="0"; fi
     if [ "$isDone" == "1" ]
     then
@@ -268,16 +268,16 @@ do
     fi
 
     #If status is failed, delete and resubmit
-    grep -r "Task status" $status_filename | grep "FAILED" 2>/dev/null 
+    grep -r "Task status" $status_filename | grep "FAILED" &>/dev/null 
     isFailed="$?"
     if [ "$isFailed" != "0" ]
     then 
-      grep -r "not found" $status_filename | grep "Working directory for task" 2>/dev/null 
+      grep -r "not found" $status_filename | grep "Working directory for task" &>/dev/null 
       isFailed="$?"
     fi
     if [ "$isFailed" != "0" ]
     then 
-      grep -r "Cannot find .requestcache file inside the working directory for task" $status_filename 2>/dev/null 
+      grep -r "Cannot find .requestcache file inside the working directory for task" $status_filename &>/dev/null 
       isFailed="$?"
     fi
     if [ "$isFailed" == "0" ]
@@ -285,15 +285,13 @@ do
       if [ "${NCRABREDO[$fileNumber]}" -lt "2" ] 
       then
         echo '<font color="red"> &nbsp; &nbsp; <b> Avast!  Blasted Crab Task Failed!! Resubmitting..... <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
-        rm -rf crab_$crab_filename 2> /dev/null
+        rm -rf crab_$crab_filename &> /dev/null
         ./FindLumisPerJob.sh $inputDS > LumisPerJob_temp.txt
         numLumiPerJob=`less LumisPerJob_temp.txt`
         rm LumisPerJob_temp.txt
         NCRABREDO[$fileNumber]=$(( ${NCRABREDO[$fileNumber]} + 1 ))
-        echo "number: $fileNumber, counter: ${NCRABREDO[$fileNumber]}"
-        python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d $inputDS -t $CMS3tag -gtag $gtag -isData $isData -lumisPerJob $numLumiPerJob
-        echo "python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d $inputDS -t $CMS3tag -gtag $gtag -isData $isData -lumisPerJob $numLumiPerJob"
-        crab submit -c cfg/$crab_filename.py
+        python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d $inputDS -t $CMS3tag -gtag $gtag -isData $isData -lumisPerJob $numLumiPerJob &> /dev/null
+        crab submit -c cfg/$crab_filename.py &> /dev/null
       else
         echo '<font color="red"> &nbsp; &nbsp; <b> Avast!  Blasted Crab Task Failed even after we resubmitted!! Giving up..... <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
       fi
@@ -302,7 +300,7 @@ do
     fi
 
     #If status is queued, we're done
-    grep -r "QUEUED" $status_filename 2>/dev/null
+    grep -r "QUEUED" $status_filename &>/dev/null
     isQueued="$?"
     if [ "$isQueued" == "0" ]
     then
