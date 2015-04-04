@@ -50,6 +50,7 @@ while (lnum <= inFile_size):
   if (redoCrab == 0): 
     f = open("crab_status_logs/noCrab_" + parts[0].split('/')[1] + "_" + parts[0].split('/')[2] + ".txt", 'w+')
     f.write("yes")
+    f.close()
     continue
   print numLumiPerJob
   command = 'python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d ' + parts[0] + ' -t ' + tag + ' -gtag ' + gtag + ' -isData ' + parts[3] + ' -lumisPerJob ' + numLumiPerJob
