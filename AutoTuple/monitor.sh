@@ -50,9 +50,11 @@ chmod a+r ~/public_html/crabPic.png
 
 #Store WHICHDONE with TRUE when job is finished (so don't keep checking on it)
 WHICHDONE=()
+NCRABREDO=()
 while read p 
 do
   WHICHDONE+=("false")
+  NCRABREDO+=(0)
 done < $file
 WHICHDONE[0]="done"
 WHICHDONE[1]="done"
@@ -92,12 +94,13 @@ do
   echo "Last updated at $timeAG on $dateAG <BR> <BR>" >> AutoTupleHQ.html
 
   #Loop over files and do status check 
-  fileNumber=0
+  fileNumber="0"
   while read line
   do
     #Skip the first two lines
     if [ "$fileNumber" == "0" ]
     then 
+      gtag=$line
       let "fileNumber += 1"
       continue 
     elif [ "$fileNumber" == "1" ]
@@ -108,8 +111,8 @@ do
     fi
 
     #Get the variables:
-    temp=`echo $line | awk '{print $1}'`
-    temp2=`echo ${temp//\//_} | cut -c 2-`
+    inputDS=`echo $line | awk '{print $1}'`
+    temp2=`echo ${inputDS//\//_} | cut -c 2-`
     filename=${temp2%_*}
     short_filename=`echo $line | awk '{print $1}' | sed 's/\//\ /g' | awk '{print $1}'`
     xsec=`echo $line | awk '{print $2}'`
@@ -117,14 +120,19 @@ do
     isData=`echo $line | awk '{print $4}'`
 
     #Calculate directory names
-    temp3=`echo ${temp//\//_} | cut -c 2-`
+    temp3=`echo ${inputDS//\//_} | cut -c 2-`
     crab_filename=${temp3%_*}
     status_filename="crab_status_logs/${crab_filename}_log.txt"
     tagDir=`echo $CMS3tag | cut -c 6-`
 
     #date and time
-    grep -m 1 -r "Looking up detailed status of task" crab_$filename/crab.log | awk '{print $10}' | cut -c 1-13 > crab_$filename/jobDateTime.txt
-    dateTime=`less crab_$filename/jobDateTime.txt`
+    if [ -e crab_$filename/crab.log ] 
+    then
+      grep -m 1 -r "Looking up detailed status of task" crab_$filename/crab.log | awk '{print $10}' | cut -c 1-13 > crab_$filename/jobDateTime.txt
+      dateTime=`less crab_$filename/jobDateTime.txt`
+    else
+      dateTime="noDateOrTimeAvailable"
+    fi
 
     #If already finished......
     if [ "${WHICHDONE[$fileNumber]}" == "done" ] || [ "${WHICHDONE[$fileNumber]}" == "notPP" ]
@@ -158,7 +166,13 @@ do
         then
           echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
           numbers=`grep -r "$filename" crab_status_logs/copy.txt | grep "trying to recover" | awk '{print $5}' | sed 's/\//\ /g' | awk '{print $NF}' | sed 's/_/\ /g' | awk '{print $NF}' | sed 's/\./\ /g' | awk '{print $1}'`
-          echo "<font color=\"red\"> &nbsp; &nbsp; <b> Shiver me timbers!  There was a problem copying this file.  File $i is corrupt. Not fixing. nEventsIn: $nIn.  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
+          for i in $numbers
+          do
+            rm /hadoop/cms/store/group/snt/phys14/$filename/$tagDir/merged_ntuple_$i.root
+          done
+          mv /hadoop/cms/store/group/snt/phys14/$filename/$tagDir/*.root /hadoop/cms/store/user/$USER/$short_filename/crab_$filename/$dateTime/0000/
+          WHICHDONE[$fileNumber]="true"
+          echo "<font color=\"red\"> &nbsp; &nbsp; <b> Shiver me timbers!  There was a problem copying this file.  File $i is corrupt. Fixing..... nEventsIn: $nIn.  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
           let "fileNumber += 1"
           continue
         fi
@@ -167,11 +181,24 @@ do
       fi
     elif [ "${WHICHDONE[$fileNumber]}" == "notPP" ] 
     then
-      echo "  " >> AutoTupleHQ.html
-      echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
-      echo "<font color=\"blue\"> &nbsp; &nbsp; <b> This task be finished!!!! Did not post-process; dirrrectory already existed on the cmstas hadoop.... </b> <BR> &nbsp; &nbsp;  If yerr want to postprocess, delete that directory and restart monitoring with . monitor.sh instructions.txt  <font color=\"black\"><BR> &nbsp; &nbsp; nEventsIn: $nIn.  nEventsOut: $nOut. <BR> <BR>" >> AutoTupleHQ.html
-      let "fileNumber += 1"
-      continue
+      if [ "$copyProblem" == "0" ] 
+      then
+        echo "  " >> AutoTupleHQ.html
+        echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
+        echo "<font color=\"blue\"> &nbsp; &nbsp; <b> This task be finished!!!! Did not post-process; dirrrectory already existed on the cmstas hadoop.... </b> <BR> &nbsp; &nbsp;  If yerr want to postprocess, delete that directory and restart monitoring with . monitor.sh instructions.txt  <font color=\"black\"><BR> &nbsp; &nbsp; nEventsIn: $nIn.  nEventsOut: $nOut. <BR> <BR>" >> AutoTupleHQ.html
+        let "fileNumber += 1"
+        continue
+      elif [ "$copyProblem" != "0" ] 
+      then
+          echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
+          numbers=`grep -r "$filename" crab_status_logs/copy.txt | grep "trying to recover" | awk '{print $5}' | sed 's/\//\ /g' | awk '{print $NF}' | sed 's/_/\ /g' | awk '{print $NF}' | sed 's/\./\ /g' | awk '{print $1}'`
+          rm /hadoop/cms/store/group/snt/phys14/$filename/$tagDir/*.root
+          WHICHDONE[$fileNumber]="true"
+          echo "<font color=\"red\"> &nbsp; &nbsp; <b> Shiver me timbers!  Did not post-process, but found a corrupt file in the output dirrrectory on the cmstas hadoop.... </b> <BR> Deleting everything and redoing it.  nEventsIn: $nIn.  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
+          let "fileNumber += 1"
+          python process.py $file $fileNumber &
+          continue
+      fi
     fi
 
     #if crab has finished but post-processing has not, check on post-processing
@@ -229,7 +256,7 @@ do
     cp $status_filename /home/users/$USER/public_html/${crab_filename}_log.txt >/dev/null
 
     #If status is done, we're done
-    grep -r "Task status" $status_filename | grep "COMPLETED" >/dev/null 2&>1
+    grep -r "Task status" $status_filename | grep "COMPLETED" 2>/dev/null
     if [ "$?" == "0" ]; then isDone="1"; else isDone="0"; fi
     if [ "$isDone" == "1" ]
     then
@@ -241,19 +268,41 @@ do
     fi
 
     #If status is failed, delete and resubmit
-    grep -r "Task status" $status_filename | grep "FAILED" >/dev/null 2&>1
+    grep -r "Task status" $status_filename | grep "FAILED" 2>/dev/null 
     isFailed="$?"
+    if [ "$isFailed" != "0" ]
+    then 
+      grep -r "not found" $status_filename | grep "Working directory for task" 2>/dev/null 
+      isFailed="$?"
+    fi
+    if [ "$isFailed" != "0" ]
+    then 
+      grep -r "Cannot find .requestcache file inside the working directory for task" $status_filename 2>/dev/null 
+      isFailed="$?"
+    fi
     if [ "$isFailed" == "0" ]
     then
-      echo '<font color="red"> &nbsp; &nbsp; <b> Avast!  Blasted Crab Task Failed!! Resubmitting..... <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
-      rm -rf crab_$crab_filename
-      crab submit -c cfg/$crab_filename.py
+      if [ "${NCRABREDO[$fileNumber]}" -lt "2" ] 
+      then
+        echo '<font color="red"> &nbsp; &nbsp; <b> Avast!  Blasted Crab Task Failed!! Resubmitting..... <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
+        rm -rf crab_$crab_filename 2> /dev/null
+        ./FindLumisPerJob.sh $inputDS > LumisPerJob_temp.txt
+        numLumiPerJob=`less LumisPerJob_temp.txt`
+        rm LumisPerJob_temp.txt
+        NCRABREDO[$fileNumber]=$(( ${NCRABREDO[$fileNumber]} + 1 ))
+        echo "number: $fileNumber, counter: ${NCRABREDO[$fileNumber]}"
+        python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d $inputDS -t $CMS3tag -gtag $gtag -isData $isData -lumisPerJob $numLumiPerJob
+        echo "python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d $inputDS -t $CMS3tag -gtag $gtag -isData $isData -lumisPerJob $numLumiPerJob"
+        crab submit -c cfg/$crab_filename.py
+      else
+        echo '<font color="red"> &nbsp; &nbsp; <b> Avast!  Blasted Crab Task Failed even after we resubmitted!! Giving up..... <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
+      fi
       let "fileNumber += 1"
       continue
     fi
 
     #If status is queued, we're done
-    grep -r "QUEUED" $status_filename >/dev/null
+    grep -r "QUEUED" $status_filename 2>/dev/null
     isQueued="$?"
     if [ "$isQueued" == "0" ]
     then
