@@ -40,5 +40,6 @@ cp ../../das_client.py .
 cp ../../crabPic.png .
 cp ../../copy.sh .
 cp ../../numEventsROOT.C .
+mkdir crab_status_logs
 python submit_crab_jobs.py $1
 . monitor.sh $1 
