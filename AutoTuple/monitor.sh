@@ -298,6 +298,7 @@ do
         let "fileNumber += 1"
         continue
       elif [ "$result" == "0" ] 
+      then
         isFailed="$result"
       fi
     fi
