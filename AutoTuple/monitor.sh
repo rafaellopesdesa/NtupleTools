@@ -51,10 +51,12 @@ chmod a+r ~/public_html/crabPic.png
 #Store WHICHDONE with TRUE when job is finished (so don't keep checking on it)
 WHICHDONE=()
 NCRABREDO=()
+NREDOPP=()
 while read p 
 do
   WHICHDONE+=("false")
   NCRABREDO+=(0)
+  NREDOPP+=(0)
 done < $file
 WHICHDONE[0]="done"
 WHICHDONE[1]="done"
@@ -149,6 +151,20 @@ do
         nOut=`grep -r "nEntries" crab_status_logs/temp.txt | tail -1 | awk '{print $NF}'`
         copyProblem="0"
       fi
+      #check for nOut > nIn
+      if [ "$nOut" -gt "$nIn" ] && [ "$copyProblem" == "0" ] 
+      then
+        echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
+        if [ "${NREDOPP[$fileNumber]}" -lt "3" ] 
+        then
+          echo "<font color=\"red\"> &nbsp; &nbsp; <b> Garrr!  More events out than in!  Post-processing again.... <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
+          rm /hadoop/cms/store/group/snt/phys14/$filename/$tagDir/*.root 2> /dev/null
+          NREDOPP[$fileNumber]=$(( ${NREDOPP[$fileNumber]} + 1 ))
+          WHICHDONE[$fileNumber]="true" 
+        else
+          echo "<font color=\"red\"> &nbsp; &nbsp; <b> Garrr!  More events out than in, even after redoing it a few times!  Giving up.... <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
+        fi
+      fi
     fi
     if [ "${WHICHDONE[$fileNumber]}" == "done" ] 
     then
@@ -195,8 +211,8 @@ do
           rm /hadoop/cms/store/group/snt/phys14/$filename/$tagDir/*.root
           WHICHDONE[$fileNumber]="true"
           echo "<font color=\"red\"> &nbsp; &nbsp; <b> Shiver me timbers!  Did not post-process, but found a corrupt file in the output dirrrectory on the cmstas hadoop.... </b> <BR> Deleting everything and redoing it.  nEventsIn: $nIn.  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
-          let "fileNumber += 1"
           python process.py $file $fileNumber &
+          let "fileNumber += 1"
           continue
       fi
     fi

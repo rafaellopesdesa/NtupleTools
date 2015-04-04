@@ -49,7 +49,7 @@ while (completelyDone == False):
   #Submit all the jobs
   date=str(datetime.datetime.now().strftime('%y-%m-%d_%H:%M:%S'))
   crab_dir = 'crab_' + parts[0].split('/')[1]+'_'+parts[0].split('/')[2]
-  os.system('python makeListsForMergingCrab3.py -c ' + crab_dir + ' -d /hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/' + dateTime + '/0000/ -o /hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/' + parts[4] + '/merged/ -s ' + dataSet + ' -k ' + parts[2] + ' -e 1 -x ' + parts[1] + ' --overrideCrab > ' + temp + '2')
+  os.system('python makeListsForMergingCrab3.py -c ' + crab_dir + ' -d /hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/' + dateTime + '/0000/ -o /hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/' + parts[4] + '/merged/ -s ' + dataSet + ' -k ' + parts[2] + ' -e 1 -x ' + parts[1] + ' --overrideCrab >> ' + temp + '2')
   os.system('./submitMergeJobs.sh cfg/' + dataSet + '_cfg.sh ' + date + ' > ' + temp)  
 
   #See if any jobs were submitted (will be false when resubmission not needed):
