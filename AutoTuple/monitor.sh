@@ -133,7 +133,7 @@ do
       grep -m 1 -r "Looking up detailed status of task" crab_$filename/crab.log | awk '{print $10}' | cut -c 1-13 > crab_$filename/jobDateTime.txt
       dateTime=`less crab_$filename/jobDateTime.txt`
     else
-      dateTime=`ls -lthr /hadoop/cms/store/user/$USER/$short_filename/crab_$filename/ | awk '{print $1}' | tail -1 | sed 's/\//\ /g' | awk '{print $NF}'`
+      dateTime=`ls -lthr /hadoop/cms/store/user/$USER/$short_filename/crab_$filename/1* | awk '{print $NF}' | tail -1 | sed 's/\//\ /g' | awk '{print $NF}'`
     fi
 
     #If already finished......
