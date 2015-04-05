@@ -16,8 +16,6 @@ args = sys.argv
 file = args[1]
 lineno = int(args[2])
 dateTime = "0"
-print len(args)
-print args
 if (len(args) > 3): dateTime = args[3]
 
 #Get arguments
