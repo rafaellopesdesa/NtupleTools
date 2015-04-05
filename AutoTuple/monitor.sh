@@ -120,6 +120,7 @@ do
     xsec=`echo $line | awk '{print $2}'`
     kfact=`echo $line | awk '{print $3}'`
     isData=`echo $line | awk '{print $4}'`
+    sparms=`echo $line | awk '{print $5}'`
 
     #Calculate directory names
     temp3=`echo ${inputDS//\//_} | cut -c 2-`
@@ -319,7 +320,12 @@ do
         numLumiPerJob=`less LumisPerJob_temp.txt`
         rm LumisPerJob_temp.txt
         NCRABREDO[$fileNumber]=$(( ${NCRABREDO[$fileNumber]} + 1 ))
-        python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d $inputDS -t $CMS3tag -gtag $gtag -isData $isData -lumisPerJob $numLumiPerJob &> /dev/null
+        if [ "$sparms" == "" ]
+        then
+          python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d $inputDS -t $CMS3tag -gtag $gtag -isData $isData -lumisPerJob $numLumiPerJob &> /dev/null
+        else
+          python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d $inputDS -t $CMS3tag -gtag $gtag -isData $isData -lumisPerJob $numLumiPerJob -sParms $sparms &> /dev/null
+        fi
         crab submit -c cfg/$crab_filename.py &> /dev/null
       else
         echo '<font color="red"> &nbsp; &nbsp; <b> Avast!  Blasted Crab Task Failed even after we resubmitted!! Giving up..... <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
