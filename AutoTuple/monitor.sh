@@ -119,8 +119,9 @@ do
     short_filename=`echo $line | awk '{print $1}' | sed 's/\//\ /g' | awk '{print $1}'`
     xsec=`echo $line | awk '{print $2}'`
     kfact=`echo $line | awk '{print $3}'`
-    isData=`echo $line | awk '{print $4}'`
-    sparms=`echo $line | awk '{print $5}'`
+    filtEff=`echo $line | awk '{print $4}'`
+    isData=`echo $line | awk '{print $5}'`
+    sparms=`echo $line | awk '{print $6}'`
 
     #Calculate directory names
     temp3=`echo ${inputDS//\//_} | cut -c 2-`

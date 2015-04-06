@@ -53,9 +53,9 @@ while (lnum <= inFile_size):
     f.close()
     continue
   print numLumiPerJob
-  command = 'python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d ' + parts[0] + ' -t ' + tag + ' -gtag ' + gtag + ' -isData ' + parts[3] + ' -lumisPerJob ' + numLumiPerJob
-  if len(parts) > 4:
-    command += ' -sParms ' + parts[4]
+  command = 'python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d ' + parts[0] + ' -t ' + tag + ' -gtag ' + gtag + ' -isData ' + parts[4] + ' -lumisPerJob ' + numLumiPerJob
+  if len(parts) > 5:
+    command += ' -sParms ' + parts[5]
   print command
   os.system(command)
   crab_dir = parts[0].split('/')[1]+'_'+parts[0].split('/')[2]

@@ -22,10 +22,19 @@ if (len(args) > 3): dateTime = args[3]
 lines = [ line.strip() for line in open(file)]
 gtag = lines[0]
 tag = lines[1]
-parts = lines[lineno].split(' ')[0:4]
+parts = lines[lineno].split(' ')[0:5]
 parts.append(tag)
 parts.append(gtag)
-parts += lines[lineno].split(' ')[4:]
+parts += lines[lineno].split(' ')[5:]
+#Parts contents:
+  #0 - name 
+  #1 - xsec
+  #2 - k-factor
+  #3 - e-factor
+  #4 - is data
+  #5 - CMS3tag
+  #6 - gtag
+  #7 - sparms
 
 #See if already exists
 dir="/hadoop/cms/store/group/snt/phys14/"+parts[0].split('/')[1]+"_"+parts[0].split('/')[2]+'/'+tag[5:]+"/"
@@ -52,7 +61,7 @@ while (completelyDone == False):
   #Submit all the jobs
   date=str(datetime.datetime.now().strftime('%y-%m-%d_%H:%M:%S'))
   crab_dir = 'crab_' + parts[0].split('/')[1]+'_'+parts[0].split('/')[2]
-  os.system('python makeListsForMergingCrab3.py -c ' + crab_dir + ' -d /hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/' + dateTime + '/0000/ -o /hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/' + parts[4] + '/merged/ -s ' + dataSet + ' -k ' + parts[2] + ' -e 1 -x ' + parts[1] + ' --overrideCrab >> ' + temp + '2')
+  os.system('python makeListsForMergingCrab3.py -c ' + crab_dir + ' -d /hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/' + dateTime + '/0000/ -o /hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/' + parts[5] + '/merged/ -s ' + dataSet + ' -k ' + parts[2] + ' -e ' + parts[3] + ' -x ' + parts[1] + ' --overrideCrab >> ' + temp + '2')
   os.system('./submitMergeJobs.sh cfg/' + dataSet + '_cfg.sh ' + date + ' > ' + temp)  
 
   #See if any jobs were submitted (will be false when resubmission not needed):
