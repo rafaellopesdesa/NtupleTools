@@ -188,7 +188,7 @@ do
           do
             rm /hadoop/cms/store/group/snt/phys14/$filename/$tagDir/merged_ntuple_$i.root
           done
-          mv /hadoop/cms/store/group/snt/phys14/$filename/$tagDir/*.root /hadoop/cms/store/user/$USER/$short_filename/crab_$filename/$dateTime/0000/
+          mv /hadoop/cms/store/group/snt/phys14/$filename/$tagDir/*.root /hadoop/cms/store/user/$USER/$short_filename/crab_$filename/CMS3_$tagDir/
           WHICHDONE[$fileNumber]="true"
           echo "<font color=\"red\"> &nbsp; &nbsp; <b> Shiver me timbers!  There was a problem copying this file.  File $i is corrupt. Fixing..... nEventsIn: $nIn.  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
           let "fileNumber += 1"
