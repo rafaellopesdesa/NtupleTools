@@ -185,7 +185,7 @@ goodCrabXMLFiles = []
 
 # if datapath.find("pnfs") != -1 or datapath.find("hadoop") != -1:
 print "Creating folders for logs and merged file lists in %s/mergeFiles" %(outpath)
-cmd = "mkdir -p " + crabpath + "/mergeFiles/mergeLists"
+cmd = "mkdir -p " + crabpath + "/mergeFiles/mergeLists; rm " + crabpath + "/mergeFiles/mergeLists/merged_list_*.txt"
 # print commands.getstatusoutput("ls %s/mergeFiles/mergeLists" %(crabpath))[1]
 if commands.getstatusoutput(cmd)[0] == 256 and commands.getstatusoutput("ls %s/mergeFiles/mergeLists" %(crabpath))[1]!="":
     print "The directory %s/mergeFiles/mergeLists already exists and is not empty!. Exiting!" %(crabpath)
