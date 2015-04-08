@@ -154,7 +154,7 @@ do
         copyProblem="0"
       fi
       #check for nOut > nIn
-      if [ "$nOut" -gt "$nIn" ] && [ "$copyProblem" == "0" ] 
+      if [ "$copyProblem" == "0" ] && [ "$nOut" -gt "$nIn" ] 
       then
         echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
         if [ "${NREDOPP[$fileNumber]}" -lt "3" ] 
