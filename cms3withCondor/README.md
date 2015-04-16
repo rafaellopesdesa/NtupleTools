@@ -1,4 +1,4 @@
-++CMS3 With Condor
+##CMS3 With Condor
 
 This allows you to run CMS3 on the grid with Condor.  This is useful for privately-produced samples.  The DataTupler also checks this out, so be careful not to commit anything that will break the dataTuple
 
