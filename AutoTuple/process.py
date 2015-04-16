@@ -22,10 +22,10 @@ if (len(args) > 3): dateTime = args[3]
 lines = [ line.strip() for line in open(file)]
 gtag = lines[0]
 tag = lines[1]
-parts = lines[lineno].split(' ')[0:5]
+parts = lines[lineno].split()[0:5]
 parts.append(tag)
 parts.append(gtag)
-parts += lines[lineno].split(' ')[5:]
+parts += lines[lineno].split()[5:]
 #Parts contents:
   #0 - name 
   #1 - xsec
