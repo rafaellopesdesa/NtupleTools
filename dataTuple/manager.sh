@@ -2,6 +2,12 @@
 
 #This is the manager that calls all the other pieces.  This should itself be called every N minutes.  
 
+#Set CMS3 tag to use
+CMS3tag=CMS3_V07-02-08
+
+#State the maxmimum number of events
+MAX_NEVENTS=10
+
 #Don't allow more than one instance to run
 if [ -e /nfs-7/userdata/dataTuple/running.pid ] 
 then
@@ -263,7 +269,7 @@ then
     echo "step 5b"
     outputName=$(python getFileName.py $currentLine 2>&1)
     outputDir=$(python getDirName.py $currentLine 2>&1)
-    . submitJob.sh filesToSubmit.txt $currentTime $outputPath/$outputDir $outputName $lineno
+    . submitJob.sh filesToSubmit.txt $currentTime $outputPath/$outputDir $outputName $lineno $CMS3tag $MAX_NEVENTS
 
     #c. Update submitted list
     echo "step 5c"

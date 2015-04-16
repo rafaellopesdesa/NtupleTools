@@ -21,7 +21,7 @@ process.out = cms.OutputModule("PoolOutputModule",
 process.outpath = cms.EndPath(process.out)
 
 #Max Events
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(SUPPLY_MAX_NEVENTS) )
 
 #Branches
 process.out.outputCommands = cms.untracked.vstring( 'drop *' )
