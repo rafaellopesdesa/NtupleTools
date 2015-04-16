@@ -2,13 +2,13 @@
 
 #User input
 #Directory where the babies are stored
-dir=/hadoop/cms/store/user/cgeorge/condor/privateSignals/13TeV_T5qqqqWW_Gl1500_Chi800_LSP100
+dir=/hadoop/cms/store/user/cgeorge/condor/SSPrivate/v1.08/
 #Nice name for sample
-name=13TeV_T5qqqqWW_Gl1500_Chi800_LSP100
+name=13TeV_T5qqqqWW_mGo1200_mCh1000_mChi800
 #Sparm class -- GLUINO, STOP, or OTHER
 SPARM_CLASS=GLUINO
 #Sparm mass
-SPARM_MASS=1500
+SPARM_MASS=1200
 
 #####----- HERE THERE BE DRAGONS --------#####
 if [ $SPARM_CLASS == "GLUINO" ] 

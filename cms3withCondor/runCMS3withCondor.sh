@@ -4,7 +4,6 @@
   #This should have the first line being the directory you want to run on (/store/...)
   #Subsequent lines should be the actual file names relative to that dir
   #(no way to look them up remotely, have to go to eos)
-#instructions=t5qqqqww_deg_1000_315_300.txt
 instructions=t5qqqqww_1200_1000_800.txt
 
 #State the absolute output path (in hadoop) where output should go
@@ -20,6 +19,14 @@ max_nEvents="-1"
 
 #------HERE THERE BE DRAGONS----------
 
+#See if already exists
+here=`pwd`
+nFiles=`wc -l < $instructions`
+nFiles=$(( $nFiles - 1 )) 
+pushd $outputPath &>/dev/null
+. $here/whichMissingCondorSubmissions $nFiles > $here/whichMissing.txt
+popd &>/dev/null
+
 #Remove old tempfile
 rm tempfile.txt &>/dev/null
 
@@ -28,13 +35,24 @@ lineno=0
 while read line
 do
   lineno=$(( $lineno + 1 ))
+  alreadyDone="1"
   if [ "$lineno" == "1" ]
   then 
     prefix=$line
-  else 
-    echo "$prefix/$line" >> tempfile.txt
+  else  
+    while read line2
+    do
+      if [ "$line2" == "$lineno" ]
+      then
+        alreadyDone="0"
+      fi
+    done < whichMissing.txt
+    if [ "$alreadyDone" == "0" ]; then echo "$prefix/$line" >> tempfile.txt; fi
   fi
 done < $instructions
+
+#If the tempfile doesn't exist, then nothing to do, done
+if [ ! -e tempfile.txt ]; then echo "Task is finished."; return; fi
 
 #Get the current time
 currentTime=`date +%s`
@@ -50,3 +68,4 @@ fi
 
 #Delete temporary stuff
 rm tempfile.txt &>/dev/null
+rm whichMissing.txt &>/dev/null
