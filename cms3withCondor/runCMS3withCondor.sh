@@ -42,12 +42,12 @@ do
   else  
     while read line2
     do
-      if [ "$line2" == "$lineno" ]
+      if [ "$line2" == "$(( $lineno - 1 ))" ]
       then
         alreadyDone="0"
       fi
     done < whichMissing.txt
-    if [ "$alreadyDone" == "0" ]; then echo "$prefix/$line" >> tempfile.txt; fi
+    if [ "$alreadyDone" == "0" ]; then echo "$prefix/$line" >> tempfile.txt; else echo " " >> tempfile.txt; fi
   fi
 done < $instructions
 
@@ -67,5 +67,5 @@ fi
 . submit.sh tempfile.txt $currentTime $outputPath $cms3tag $max_nEvents true
 
 #Delete temporary stuff
-rm tempfile.txt &>/dev/null
-rm whichMissing.txt &>/dev/null
+#rm tempfile.txt &>/dev/null
+#rm whichMissing.txt &>/dev/null

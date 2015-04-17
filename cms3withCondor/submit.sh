@@ -60,6 +60,8 @@ do
 
   let "number=$number+1"
 
+  if [ "$line" == "" ]; then continue; fi
+
   INPUT_FILE_NAME=$line
 
   if (( $# == 6 )) && [ "$DO_NTUPLE_NUMBER" == "true" ]
