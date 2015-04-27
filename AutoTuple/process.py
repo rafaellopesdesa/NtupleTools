@@ -76,7 +76,7 @@ while (completelyDone == False):
   if (nLeft == 0): 
     completelyDone = True
     os.system('echo "%s done" >> crab_status_logs/pp.txt' % (dataSet))
-    os.system('copy.sh %s %s %s %s' % (parts[0], tag, args[1], args[2]))
+    os.system('. copy.sh %s %s %s %s' % (parts[0], tag, args[1], args[2]))
     continue
  
   #Get ID numbers of jobs submitted
@@ -108,4 +108,5 @@ while (completelyDone == False):
     #Update logs
     os.system('echo "%s %i %i %i" >> crab_status_logs/pp.txt' % (dataSet,nEventsIn,nFinished,len(done)))
     nLoops += 1
+    if (nLoops > 700): completelyDone = True
     time.sleep(90)
