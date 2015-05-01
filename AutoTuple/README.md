@@ -7,7 +7,7 @@ In principle, this should handle all aspects of CMS3 making, from submission to 
   2. "python twiki.py YOUR_TWIKI_USERNAME --makeInstructions NAME".  This will create instructions.txt using samples assigned to nme NAME.  Alternatively, you can write this by hand, see instructions.txt in this repo for example.
   3. ". setup.sh instructions.txt" (no quotes)
   4. Monitor it fairly closely for ~30 mins or so (until the AutoTupleHQ page is available); it may ask for passwords, proxies, etc.  You can find the status page at http://uaf-7.t2.ucsd.edu/~USER/AutoTupleHQ.html, where USER is your username on the uaf
-  5. When all jobs finished, copy to hadoop.  You can do this manually or with ". copy.sh /SAMPLENAME/foo/bar CMS3_V07-0X-YY" (the latter way will tell you the location and the nEvents copied).  Use twiki.py to update the twiki, or you can do it manually.
+  5. When all jobs finished, use twiki.py to update the twiki, or you can do it manually.  Make sure the nEventsIn and nEventsOut make sense (should be the same unless there is a filter, and nEventsIn should match DBS).  
 
 ###To restart:
   - If you interrupt it, can resume with ". monitor.sh insturctions.txt" (no quotes)
