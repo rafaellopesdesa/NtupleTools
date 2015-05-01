@@ -41,7 +41,7 @@ if (args.dataset != None and (args.makeInstructions != None or args.manual != No
   print "Aborting! Cannot have more than 1 of (manual, dataset, makeInstructions) at once"
   sys.exit()
 if (args.manual != 1 and args.manual != 2 and args.manual != None):
-  print "Aborting! Need to specify either 0 (download) or 1 (upload) for manual"
+  print "Aborting! Need to specify either 1 (download) or 2 (upload) for manual"
   sys.exit()
 if (args.manual != None and (args.gTag != None or args.CMS3tag != None or args.location != None or args.nIn != None or args.nOut != None)):
   print "Aborting! Cannot have manual specified with other options."  
