@@ -15,7 +15,7 @@ In principle, this should handle all aspects of CMS3 making, from submission to 
 ###To post-process by itself
   - If you just want to post-process, you can do "python process.py instructions.py 4" where 4 is the line number on the instructions file that you want to post-process.  This will only work if you made the original crab jobs using the AutoTupler (or you used the same directory structure that the AutoTupler uses).  
 
-#Other Twiki.py usage.  
+###Other Twiki.py usage.  
 First argument is your twiki username.  Then you'll need at least one optional argument, depending on what you want to do.  There are three modes in which you can run this:
   - Manual.  --manual 1 will download two copies of the twiki.  You can then make changes manually and upload by calling the script with --manual 2
   - Instructions.  --makeInstructions name will make the instructions.py file for the person named "name".  You should check this carefully.  Note that data samples are not currently supported.  
