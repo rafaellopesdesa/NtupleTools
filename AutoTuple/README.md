@@ -25,3 +25,5 @@ Note: In principle, you can write scripts that call twiki.py and even feed the p
 
 ###AutoTupler development -- to do list:
   - Should look at logs to get nEvents
+  - Integrate with Dan's checker when finished
+  - Post-processing should have 100% efficiency rate; enforce this
