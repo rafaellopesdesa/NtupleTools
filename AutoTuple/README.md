@@ -20,6 +20,7 @@ First argument is your twiki username.  Then you'll need at least one optional a
   - Manual.  --manual 1 will download two copies of the twiki.  You can then make changes manually and upload by calling the script with --manual 2
   - Instructions.  --makeInstructions name will make the instructions.py file for the person named "name".  You should check this carefully.  Note that data samples are not currently supported.  
   - Modify.  --dataset to specify the dataset you want to modify, then one of the other options (ex: --xsec 500) to change the value in question.  --help to get a list of the allowed options.  You'll have to enter your password each time.  
+
 Note: In principle, you can write scripts that call twiki.py and even feed the password in.  Be VERY careful with these, it's easy to overwrite the twiki.  
 
 ###AutoTupler development -- to do list:
