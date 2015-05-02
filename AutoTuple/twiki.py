@@ -134,11 +134,9 @@ if (args.makeInstructions != None):
       kfactor = theLine[6]
       filtEff = theLine[7]
       if (gTag != "" and gTag != theLine[8]): 
-        print "Aborting! Two different global tags!", gTag, ' ', theLine[8]
-        sys.exit() 
+        print "Critical Warning!!! Two different global tags!. Picking one at random..."
       if (CMS3Tag != "" and CMS3Tag != theLine[9]): 
-        print "Aborting! Two different CMS3 tags!"
-        sys.exit() 
+        print "Critical Warning!!! Two different CMS3 tags!.  Picking one at random..."
       gTag = theLine[8]
       CMS3Tag = theLine[9]
       Comments = theLine[12]
@@ -159,9 +157,9 @@ if (args.makeInstructions != None):
     print "No samples found for user ", args.makeInstructions, ".  Aborting"
     sys.exit()
   else:
-    print "Instructions file written.  Check it carefully!  Change 'False' to 'True' for data samples!"
+    print "Instructions file written.  Check it carefully!  Change 'False' to 'True' for data samples!  Make sure the CMS3tag is the one you want!"
 
-#Done unless updating twiki or making manual changes
+#Done if making instructions
 if (args.makeInstructions != None): sys.exit()
 
 #Search for the dataset
