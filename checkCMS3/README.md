@@ -13,9 +13,9 @@ Return value: the number of problems found.
 Detailed printouts will highlight where any problems are found.
 
 ###Tests performed:
--Detailed event counting
--Printout of CMS3 tag
--Detailed checks of post-processing variables
--Checking for sParm branches
+  - Detailed event counting
+  - Printout of CMS3 tag
+  - Detailed checks of post-processing variables
+  - Checking for sParm branches
 
 Send questions, comments, bugs, or feature requests to Dan Klein.
