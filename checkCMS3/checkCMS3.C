@@ -8,10 +8,17 @@
 
 using namespace std;
 
-int checkCMS3( TString samplePath = "" ) {
+
+void printColor(const char* message, const int color, bool human) {
+  if( human ) printf("\033[%dm%s\033[0m\n", color, message);
+  else cout << message << endl;
+}
+
+
+int checkCMS3( TString samplePath = "", bool humanUser = true ) {
 
   if( samplePath == "" ) {
-	cout << "Please provide a path to a CMS3 ntuple!" << endl;
+	cout << "Please provide a path to a CMS3 sample!" << endl;
 	return 1;
   }
 
@@ -19,6 +26,8 @@ int checkCMS3( TString samplePath = "" ) {
   bool isMerged = false;
   bool isSUSY   = false;
   bool isScan   = false;
+
+  char message[40];
 
   TChain* chain = new TChain("Events");
 
@@ -99,7 +108,8 @@ int checkCMS3( TString samplePath = "" ) {
   branch_CMS3tag->GetEntry(0);
   TString tagtext = cms3tag.at(0);
 
-  printf("\nCMS3 tag: \033[96m%s \033[0m\n", tagtext.Data());
+  cout << "\nCMS3 tag: ";
+  printColor( tagtext.Data(), 96, humanUser );
 
   
   /////////////////////////////////////////////////////////////////////////////////
@@ -121,37 +131,56 @@ int checkCMS3( TString samplePath = "" ) {
 
   // Get event count from DAS
   cout << "Event count from DAS:     ";
-  TString Evts_das = gSystem->GetFromPipe( "python das_client.py --query=\"dataset= "+dataset_name+" | grep dataset.nevents\" | tail -1" );
-  const Long64_t nEvts_das = Evts_das.Atoll();
-  cout << nEvts_das << endl;
-
-  // Check to see if the numbers match up
-  if( nEvts_chain==nEvts_das ) {
-	if( !isMerged ) printf("           \033[92m Matched \033[0m\n");
-	else if( isMerged && nEvts_chain==nEvts_branch ) printf("           \033[92m Matched \033[0m\n");
-	else {
-	  printf("          \033[91m  MISMATCH!  \033[0m\n");
-	  nProblems++;
-	}
+  bool das_failed = true;
+  int loop_count = 0;
+  Long64_t nEvts_das = -9999;
+  while( loop_count<2 && das_failed ) {
+	TString Evts_das = gSystem->GetFromPipe( "python das_client.py --query=\"dataset= "+dataset_name+" | grep dataset.nevents\" | tail -1" );
+	nEvts_das = Evts_das.Atoll();
+	if( nEvts_das > 0 ) das_failed = false;
+	loop_count++;
   }
-  else {
-	printf("          \033[91m  MISMATCH!  \033[0m\n");
+  if( das_failed ) {
+	printColor("DAS query failed!", 91, humanUser);
 	nProblems++;
   }
-  
-  // Breakdown by filename
-  cout << "\nNumber of events by file:" << endl;
-  TObjArray *fileList = chain->GetListOfFiles();
-  TIter fileIter(fileList);
-  TFile *currentFile = 0;
-  TRegexp shortname("[mergd_]*ntuple_[0-9]+.root");
+  else cout << nEvts_das << endl;
 
-  while(( currentFile = (TFile*)fileIter.Next() )) {
-	TFile *file = new TFile( currentFile->GetTitle() );
-	TTree *tree = (TTree*)file->Get("Events");
-	TString filename = file->GetName();
-	Long64_t nEvts_file = tree->GetEntries();
-	printf( "%28s:  %8lld\n", filename(shortname).Data(), nEvts_file );
+  // Check to see if the event counts match up
+  // Cases:
+  // 1) single merged file:    check branch vs. DAS
+  // 2) multiple merged files: check branch vs. DAS vs. chain
+  // 3) N unmerged files:      check chain vs. DAS, because branch doesn't exist yet
+  bool countsMatch = false;
+  if( nMergedFiles>1 &&
+	  nEvts_chain==nEvts_das &&
+	  nEvts_chain==nEvts_branch ) countsMatch = true;
+  else if( nMergedFiles==1 &&
+		   nEvts_branch==nEvts_das ) countsMatch = true;
+  else if( !isMerged &&
+		   nEvts_chain==nEvts_das ) countsMatch = true;
+
+  if( countsMatch ) printColor("            Matched", 92, humanUser);
+  else {
+	printColor("            MISMATCH!", 91, humanUser);
+	nProblems++;
+  }
+
+  // Breakdown by filename
+  if( nMergedFiles+nUnmergedFiles > 1 && !countsMatch ) {
+	cout << "\nNumber of events by file:" << endl;
+	TObjArray *fileList = chain->GetListOfFiles();
+	TIter fileIter(fileList);
+	TFile *currentFile = 0;
+	TRegexp shortname("[mergd_]*ntuple_[0-9]+.root");
+
+	while(( currentFile = (TFile*)fileIter.Next() )) {
+	  TFile *file = new TFile( currentFile->GetTitle() );
+	  TTree *tree = (TTree*)file->Get("Events");
+	  TString filename = file->GetName();
+	  Long64_t nEvts_file = tree->GetEntries();
+	  printf( "%28s:  %8lld\n", filename(shortname).Data(), nEvts_file );
+	}
   }
 
 
@@ -166,36 +195,40 @@ int checkCMS3( TString samplePath = "" ) {
 	cout << "\nChecking for events with important values set to zero:" << endl;
 	Long64_t nZeros_xsec     = chain->GetEntries("evt_xsec_incl==0");
 	cout << "Cross-section: ";
-	if( nZeros_xsec == 0 ) printf("\033[92mNone found\033[0m\n");
+	if( nZeros_xsec == 0 ) printColor("No zeros found", 92, humanUser);
 	else {
-	  printf("\033[91m%lld events with zeros!\033[0m\n", nZeros_xsec);
+	  sprintf(message, "%lld events with zeros!", nZeros_xsec);
+	  printColor(message, 91, humanUser);
 	  nProblems++;
 	}
 	Long64_t nZeros_kfact    = chain->GetEntries("evt_kfactor==0");
 	cout << "k factor:      ";
-	if( nZeros_kfact == 0 ) printf("\033[92mNone found\033[0m\n");
+	if( nZeros_kfact == 0 ) printColor("No zeros found", 92, humanUser);
 	else {
-	  printf("\033[91m%lld events with zeros!\033[0m\n", nZeros_kfact);
+	  sprintf(message, "%lld events with zeros!", nZeros_kfact);
+	  printColor(message, 91, humanUser);
 	  nProblems++;
 	}
 	Long64_t nZeros_filteff  = chain->GetEntries("evt_filt_eff==0");
 	cout << "Filter eff:    ";
-	if( nZeros_filteff == 0 ) printf("\033[92mNone found\033[0m\n");
+	if( nZeros_filteff == 0 ) printColor("No zeros found", 92, humanUser);
 	else {
-	  printf("\033[91m%lld events with zeros!\033[0m\n", nZeros_filteff);
+	  sprintf(message, "%lld events with zeros!", nZeros_filteff);
+	  printColor(message, 91, humanUser);
 	  nProblems++;
 	}
 	Long64_t nZeros_scale1fb = chain->GetEntries("evt_scale1fb==0");
 	cout << "scale1fb:      ";
-	if( nZeros_scale1fb == 0 ) printf("\033[92mNone found\033[0m\n");
+	if( nZeros_scale1fb == 0 ) printColor("No zeros found", 92, humanUser);
 	else {
-	  printf("\033[91m%lld events with zeros!\033[0m\n", nZeros_scale1fb);
+	  sprintf(message, "%lld events with zeros!", nZeros_scale1fb);
+	  printColor(message, 91, humanUser);
 	  nProblems++;
 	}
 
 	// Make sure the value of scale1fb is consistent with the other numbers
 	cout << "\nChecking values for consistency:" << endl;
-	cout << " Number of events = " << nEvts_chain << endl;
+	cout << " Number of events = " << nEvts_branch << endl;
 	double xsec = chain->GetMaximum("evt_xsec_incl");
 	cout << "    Cross section = " << xsec << endl;
 	double kfact = chain->GetMaximum("evt_kfactor");
@@ -207,9 +240,9 @@ int checkCMS3( TString samplePath = "" ) {
 
 	double test_scale1fb = 1000.*xsec*filteff*kfact / double(nEvts_chain);
 	// cout << "test_scale1fb: " << test_scale1fb << ". Consistency: " << (test_scale1fb - scale1fb) / scale1fb << endl;
-	if( ((test_scale1fb - scale1fb) / scale1fb) < 0.000001 ) printf("                \033[92m CONSISTENT \033[0m\n");
+	if( ((test_scale1fb - scale1fb) / scale1fb) < 0.000001 ) printColor("                 CONSISTENT ", 92, humanUser);
 	else {
-	  printf("                \033[91m INCONSISTENT! \033[0m\n");
+	  printColor("                 INCONSISTENT! ", 91, humanUser);
 	  nProblems++;
 	}
 
@@ -231,10 +264,18 @@ int checkCMS3( TString samplePath = "" ) {
 	else {
 	  cout << "\nFound these sparm values:" << endl;
 	  int nSparmVals = sparm_values.size();
-	  for( int i=0; i<nSparmVals; i++ )  printf("%10s = %7.1f\n", sparm_names.at(i).Data(), sparm_values.at(i) );
-	}
 
-  }
+	  for( int i=0; i<nSparmVals; i++ ) {
+		sprintf(message, "%10s = %7.1f", sparm_names.at(i).Data(), sparm_values.at(i) );
+
+		if( sparm_values.at(i) > 0. ) printColor(message, 92, humanUser);
+		else {
+		  printColor(message, 91, humanUser);
+		  nProblems++;
+		}
+	  } //end loop over sparm variables
+	}
+  } //end if(isSUSY && isMerged)
   else if( !isSUSY) cout << "\nThis doesn't appear to be a SUSY sample. Skipping checks on sparm branches..." << endl;
   else if( !isMerged ) cout << "\nThis SUSY sample isn't merged. Skipping checks on sparm branches..." << endl;
 
@@ -244,9 +285,14 @@ int checkCMS3( TString samplePath = "" ) {
   // Summary
   
   cout << "\n\n=============== RESULTS =========================" << endl;	
-  cout << "\nProblems found:";
-  if (nProblems==0) printf("\033[92m 0 \033[0m\n\n");
-  else printf("\033[91m %d \033[0m\n\n", nProblems);
+  cout << "\nProblems found: ";
+  if (nProblems==0) printColor("0", 92, humanUser);
+  else {
+	sprintf(message, "%d", nProblems);
+	printColor(message, 91, humanUser);
+  }
+  cout << endl;
+
   return nProblems;
 }
 
