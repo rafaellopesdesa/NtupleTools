@@ -238,7 +238,7 @@ int checkCMS3( TString samplePath = "", bool humanUser = true ) {
 	double scale1fb = chain->GetMaximum("evt_scale1fb");
 	cout << "         Scale1fb = " << scale1fb << endl;
 
-	double test_scale1fb = 1000.*xsec*filteff*kfact / double(nEvts_chain);
+	double test_scale1fb = 1000.*xsec*filteff*kfact / double(nEvts_branch);
 	// cout << "test_scale1fb: " << test_scale1fb << ". Consistency: " << (test_scale1fb - scale1fb) / scale1fb << endl;
 	if( ((test_scale1fb - scale1fb) / scale1fb) < 0.000001 ) printColor("                 CONSISTENT ", 92, humanUser);
 	else {
