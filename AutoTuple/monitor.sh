@@ -213,7 +213,7 @@ do
           rm /hadoop/cms/store/group/snt/phys14/$filename/$tagDir/*.root
           WHICHDONE[$fileNumber]="true"
           echo "<font color=\"red\"> &nbsp; &nbsp; <b> Shiver me timbers!  Did not post-process, but found a corrupt file in the output dirrrectory on the cmstas hadoop.... </b> <BR> Deleting everything and redoing it.  nEventsIn: $nIn.  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
-          python process.py $file $fileNumber &
+          python process.py $file $fileNumber $dateTime &
           let "fileNumber += 1"
           continue
       fi
@@ -280,7 +280,7 @@ do
     then
       echo '<font color="blue"> &nbsp; &nbsp; <b> Ready for Post-Processing!!  <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
       WHICHDONE[$fileNumber]="true"
-      python process.py $file $fileNumber &
+      python process.py $file $fileNumber $dateTime &
       let "fileNumber += 1"
       continue
     fi

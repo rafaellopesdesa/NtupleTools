@@ -76,7 +76,7 @@ while (completelyDone == False):
   if (nLeft == 0): 
     completelyDone = True
     os.system('echo "%s done" >> crab_status_logs/pp.txt' % (dataSet))
-    os.system('. copy.sh %s %s %s %s' % (parts[0], tag, args[1], args[2]))
+    os.system('. copy.sh %s %s %s' % (parts[0], tag, dateTime))
     continue
  
   #Get ID numbers of jobs submitted
