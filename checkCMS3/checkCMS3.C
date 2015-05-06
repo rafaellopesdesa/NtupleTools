@@ -15,7 +15,7 @@ void printColor(const char* message, const int color, bool human) {
 }
 
 
-int checkCMS3( TString samplePath = "", bool humanUser = true ) {
+int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilter = false, bool humanUser = true) {
 
   if( samplePath == "" ) {
 	cout << "Please provide a path to a CMS3 sample!" << endl;
@@ -36,6 +36,7 @@ int checkCMS3( TString samplePath = "", bool humanUser = true ) {
 
   /////////////////////////////////////////////////////////////////////////////////
   // File counting
+  /////////////////////////////////////////////////////////////////////////////////
 
   // Make a chain, and count the number of files in the directory
   const unsigned int nMergedFiles = chain->Add( samplePath + "/merged_ntuple*.root");
@@ -67,6 +68,7 @@ int checkCMS3( TString samplePath = "", bool humanUser = true ) {
 
   /////////////////////////////////////////////////////////////////////////////////
   // Set up a few branches, and read in some key values
+  /////////////////////////////////////////////////////////////////////////////////
 
   chain->SetMakeClass(1);
   
@@ -104,6 +106,7 @@ int checkCMS3( TString samplePath = "", bool humanUser = true ) {
   
   /////////////////////////////////////////////////////////////////////////////////
   // Check CMS3 tag
+  /////////////////////////////////////////////////////////////////////////////////
 
   branch_CMS3tag->GetEntry(0);
   TString tagtext = cms3tag.at(0);
@@ -114,6 +117,7 @@ int checkCMS3( TString samplePath = "", bool humanUser = true ) {
   
   /////////////////////////////////////////////////////////////////////////////////
   // Event counting
+  /////////////////////////////////////////////////////////////////////////////////
 
   cout << "\n================ Event counts ================================\n" << endl;
 
@@ -146,19 +150,46 @@ int checkCMS3( TString samplePath = "", bool humanUser = true ) {
   }
   else cout << nEvts_das << endl;
 
-  // Check to see if the event counts match up
-  // Cases:
-  // 1) single merged file:    check branch vs. DAS
-  // 2) multiple merged files: check branch vs. DAS vs. chain
-  // 3) N unmerged files:      check chain vs. DAS, because branch doesn't exist yet
+  ////////////////////////////////////////////////
+  //    CHECK EVENT COUNTS                      //
+  ////////////////////////////////////////////////
+ 
   bool countsMatch = false;
-  if( nMergedFiles>1 &&
-	  nEvts_chain==nEvts_das &&
-	  nEvts_chain==nEvts_branch ) countsMatch = true;
-  else if( nMergedFiles==1 &&
-		   nEvts_branch==nEvts_das ) countsMatch = true;
-  else if( !isMerged &&
-		   nEvts_chain==nEvts_das ) countsMatch = true;
+
+  //1. Merged files
+  if (isMerged){
+
+    //(a) Check das vs. branch.  A problem here normally indicates a problem with the unmerged files
+    if (nEvts_das == nEvts_branch) countsMatch = true;
+
+    //(b) Check unmerged vs. merged.  A problem here normally indicates a problem with merging
+    if (!isMerged && unmerged_path == "") cout << "Warning!  No unmerged path provided, will not check nMerged == nUnmerged..." << endl;
+    int nEvts_unmerged = 0;
+    if (unmerged_path != ""){ 
+      TChain* chain_unmerged = new TChain("Events");
+      int nFiles = chain_unmerged->Add(Form("%s/ntuple_*.root", unmerged_path.Data()));  
+      if (nFiles == 0){
+        cout << "Error!  Unmerged files not found.  Aborting...." 
+        return 99; 
+      }
+      nEvts_unmerged = chain_unmerged->GetEntries(); 
+      if (nEvts_unmerged != nEvts_chain){
+        countsMatch = false;
+        cout << "Too few merged events!" << endl;
+      } 
+      cout << "nEvts_unmerged:           " << nEvts_unmerged << endl;
+    } 
+
+    //(c) Check branch == merged if there is no filter
+    if (!useFilter && nEvts_branch != nEvts_chain) countsMatch = false;
+  }
+
+  //2. Unmerged files
+  else if(!isMerged && nEvts_chain==nEvts_das) countsMatch = true;
+
+  ////////////////////////////////////////////////
+  //    REPORT EVENT COUNTS                     //
+  ////////////////////////////////////////////////
 
   if( countsMatch ) printColor("            Matched", 92, humanUser);
   else {
@@ -187,6 +218,7 @@ int checkCMS3( TString samplePath = "", bool humanUser = true ) {
 
   /////////////////////////////////////////////////////////////////////////////////
   // Check CMS3 post-processing variables (if this is a merged sample)
+  /////////////////////////////////////////////////////////////////////////////////
 
   cout << "\n\n============ Post-processing variables ============================" << endl;
 
@@ -252,6 +284,7 @@ int checkCMS3( TString samplePath = "", bool humanUser = true ) {
 
   /////////////////////////////////////////////////////////////////////////////////
   // Sparm checks
+  /////////////////////////////////////////////////////////////////////////////////
 
   cout << "\n\n============ Sparm branches ============================" << endl;	
 
@@ -283,6 +316,7 @@ int checkCMS3( TString samplePath = "", bool humanUser = true ) {
 
   /////////////////////////////////////////////////////////////////////////////////
   // Summary
+  /////////////////////////////////////////////////////////////////////////////////
   
   cout << "\n\n=============== RESULTS =========================" << endl;	
   cout << "\nProblems found: ";
