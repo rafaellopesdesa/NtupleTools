@@ -22,7 +22,7 @@ else
   echo "libCMS3 file does not exist, will make on the fly."
   chmod 744 make_libCMS3.sh
   ./make_libCMS3.sh $CMS3_TAG
-  if [ -e "libCMS3=lib_${CMS3_TAG}.tar.gz" ]
+  if [ -e "lib_${CMS3_TAG}.tar.gz" ]
   then
     libCMS3=lib_${CMS3_TAG}.tar.gz
     cp lib_${CMS3_TAG}.tar.gz /nfs-7/userdata/libCMS3/
