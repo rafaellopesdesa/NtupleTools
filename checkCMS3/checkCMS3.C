@@ -138,12 +138,14 @@ int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilt
   bool das_failed = true;
   int loop_count = 0;
   Long64_t nEvts_das = -9999;
-  while( loop_count<2 && das_failed ) {
+
+  while( loop_count<3 && das_failed ) {
 	TString Evts_das = gSystem->GetFromPipe( "python das_client.py --query=\"dataset= "+dataset_name+" | grep dataset.nevents\" | tail -1" );
 	nEvts_das = Evts_das.Atoll();
 	if( nEvts_das > 0 ) das_failed = false;
 	loop_count++;
   }
+
   if( das_failed ) {
 	printColor("DAS query failed!", 91, humanUser);
 	nProblems++;
@@ -157,28 +159,28 @@ int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilt
   bool countsMatch = false;
 
   //1. Merged files
-  if (isMerged){
+  if( isMerged ) {
 
-    //(a) Check das vs. branch.  A problem here normally indicates a problem with the unmerged files
-    if (nEvts_das == nEvts_branch) countsMatch = true;
+    //(a) Check das vs. branch. A problem here normally indicates a problem with the unmerged files
+    if( nEvts_das == nEvts_branch ) countsMatch = true;
 
-    //(b) Check unmerged vs. merged.  A problem here normally indicates a problem with merging
-    if (!isMerged && unmerged_path == "") cout << "Warning!  No unmerged path provided, will not check nMerged == nUnmerged..." << endl;
+    //(b) Check unmerged vs. merged. A problem here normally indicates a problem with merging
     int nEvts_unmerged = 0;
-    if (unmerged_path != ""){ 
+    if( unmerged_path == "" ) cout << "Warning!  No unmerged path provided, will not check nMerged == nUnmerged..." << endl;
+    else {
       TChain* chain_unmerged = new TChain("Events");
-      int nFiles = chain_unmerged->Add(Form("%s/ntuple_*.root", unmerged_path.Data()));  
-      if (nFiles == 0){
-        cout << "Error!  Unmerged files not found.  Aborting...." 
+      int nFiles = chain_unmerged->Add( unmerged_path + "/ntuple_*.root");
+      if (nFiles == 0) {
+        cout << "Error! Unmerged files not found. Aborting..." << endl;
         return 99; 
       }
-      nEvts_unmerged = chain_unmerged->GetEntries(); 
-      if (nEvts_unmerged != nEvts_chain){
+      nEvts_unmerged = chain_unmerged->GetEntries();
+      if( nEvts_unmerged != nEvts_chain ) {
         countsMatch = false;
-        cout << "Too few merged events!" << endl;
-      } 
-      cout << "nEvts_unmerged:           " << nEvts_unmerged << endl;
-    } 
+        printColor(" Too few merged events! ", 91, humanUser);
+      }
+      cout << "Evts in unmerged sample:  " << nEvts_unmerged << endl;
+    }
 
     //(c) Check branch == merged if there is no filter
     if (!useFilter && nEvts_branch != nEvts_chain) countsMatch = false;
