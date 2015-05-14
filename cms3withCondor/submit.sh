@@ -28,7 +28,7 @@ else
     cp lib_${CMS3_TAG}.tar.gz /nfs-7/userdata/libCMS3/
   else
     echo "Failed to make libCMS3 tarball on the fly!"
-    exit 1
+    return 1
   fi
 fi
 
