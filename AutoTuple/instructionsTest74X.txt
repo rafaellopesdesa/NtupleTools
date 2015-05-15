@@ -1,0 +1,3 @@
+GR_R_74_V8
+cmssw_74x
+/DoubleElectron/CMSSW_7_4_0_pre9_ROOT6-GR_R_74_V8_1Apr_RelVal_zEl2012D-v1/MINIAOD 1 1 1 True
