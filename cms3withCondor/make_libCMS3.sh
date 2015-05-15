@@ -10,7 +10,7 @@ fi
 
 echo "Checkout and build CMS3:"
 
-curl https://raw.githubusercontent.com/cmstas/NtupleMaker/master/install.sh > install.sh
+curl https://raw.githubusercontent.com/cmstas/NtupleMaker/${THE_CMS3_TAG}/install.sh > install.sh
 
 sed -i "s/CMS3Tag=master/CMS3Tag=${THE_CMS3_TAG}/g" install.sh
 
