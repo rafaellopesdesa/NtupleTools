@@ -236,7 +236,10 @@ f_cfg.write("export mData=%s/mergeFiles/metaData.txt\n" %(crabpath))
 f_cfg.write("export outputDir=%s\n" %(outpath))
 f_cfg.write("export dataSet=%s\n" %(samplename))
 f_cfg.write("export workingDirectory=%s\n" %(localdirectory))
-f_cfg.write("export executableScript=%s/libsh/mergeScript.sh\n" %(localdirectory))
+if (os.environ["SCRAM_ARCH"]=='slc6_amd64_gcc491'): 
+    f_cfg.write("export executableScript=%s/libsh/mergeScriptRoot6.sh\n" %(localdirectory))
+else:    
+    f_cfg.write("export executableScript=%s/libsh/mergeScript.sh\n" %(localdirectory))
 f_cfg.close()
 
 print "All file lists are created and stored in %smergeFiles/mergeLists/\n preparing to create jobs to postprocess ntuples..." %(crabpath)
