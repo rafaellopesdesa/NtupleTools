@@ -130,12 +130,12 @@ int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilt
   }
 
   // Count using chain->GetEntries()
-  cout << "Total events in files:    ";
+  cout << "Total events in files:    " << flush;
   const Long64_t nEvts_chain = chain->GetEntries();
   cout << nEvts_chain << endl;
 
   // Get event count from DAS
-  cout << "Event count from DAS:     ";
+  cout << "Event count from DAS:     " << flush;
   bool das_failed = true;
   int loop_count = 0;
   Long64_t nEvts_das = -9999;
@@ -307,8 +307,8 @@ int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilt
   if( isSUSY && isMerged ) {
 
 	if( isScan ) {
-	  cout << "\nThis file appears to have a range of sparm values.\nI'm not equipped to handle that; please check the values by eye:" << endl;
-	  chain->Draw("sparm_values");
+	  cout << "\nThis file appears to have a range of sparm values.\nI'm not equipped to handle that; please check the values by eye, in a histogram." << endl;
+	  if( humanUser ) chain->Draw("sparm_values");
 	}
 	else {
 	  cout << "\nFound these sparm values:" << endl;
