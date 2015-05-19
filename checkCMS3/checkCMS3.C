@@ -41,6 +41,7 @@ int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilt
   // Make a chain, and count the number of files in the directory
   const unsigned int nMergedFiles = chain->Add( samplePath + "/merged_ntuple*.root");
   const unsigned int nUnmergedFiles = chain->Add( samplePath + "/ntuple*.root");
+  const unsigned int nFilesHere = nMergedFiles + nUnmergedFiles;
 
   // Check to see if these are merged or unmerged ntuples
   if(      nMergedFiles>0  && nUnmergedFiles==0 ) {
@@ -200,7 +201,12 @@ int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilt
   }
 
   // Breakdown by filename
-  if( nMergedFiles+nUnmergedFiles > 1 && !countsMatch ) {
+  if( nFilesHere > 1 && !countsMatch ) {
+
+	float nEvtsPerFile = nEvts_chain / float(nFilesHere);
+	bool isHigh = false;
+	bool isLow  = false;
+
 	cout << "\nNumber of events by file:" << endl;
 	TObjArray *fileList = chain->GetListOfFiles();
 	TIter fileIter(fileList);
@@ -212,7 +218,15 @@ int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilt
 	  TTree *tree = (TTree*)file->Get("Events");
 	  TString filename = file->GetName();
 	  Long64_t nEvts_file = tree->GetEntries();
-	  printf( "%28s:  %8lld\n", filename(shortname).Data(), nEvts_file );
+
+	  isHigh = false;
+	  isLow = false;
+	  if( nEvts_file < (0.8*nEvtsPerFile) ) isLow = true;
+	  else if( nEvts_file > (1.25*nEvtsPerFile) ) isHigh = true;
+
+	  if( isHigh ) printf( "%28s:  %8lld  <-- count is high\n", filename(shortname).Data(), nEvts_file );
+	  else if( isLow) printf( "%28s:  %8lld  <-- count is low\n", filename(shortname).Data(), nEvts_file );
+	  else if( !isHigh && !isLow && nFilesHere<10 ) printf( "%28s:  %8lld\n", filename(shortname).Data(), nEvts_file );
 	}
   }
 
