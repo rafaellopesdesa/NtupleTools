@@ -25,3 +25,8 @@ Note: In principle, you can write scripts that call twiki.py and even feed the p
 
 ###AutoTupler development -- to do list:
   - none!!
+
+###AutoTupler -- (far) Future Development (good projects for undergrads, etc.)
+  - Print a document for each sample containing the absolute path of the MINAODSIM file for each job, so we can manually run on the job if it fails repeatedly
+  - Integrate twiki.py into this (carefully) 
+  - Consider more efficient ways to do the checking (ex: if nEventsInUnmerged != nEventsFromDAS, don't bother post-processing)
