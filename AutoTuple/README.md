@@ -4,7 +4,7 @@ In principle, this should handle all aspects of CMS3 making, from submission to 
 
 ###Instructions:
   1. Clone the NTupleTools repository to an empty directory (git clone ssh://git@github.com/cmstas/NtupleTools AutoTupler)  Open a screen session. 
-  2. "python twiki.py YOUR_TWIKI_USERNAME --makeInstructions NAME".  This will create instructions.txt using samples assigned to nme NAME.  Alternatively, you can write this by hand, see instructions.txt in this repo for example.
+  2. "python twiki.py YOUR_TWIKI_USERNAME --makeInstructions NAME".  This will create instructions.txt using samples assigned to name NAME.  Alternatively, you can write this by hand, see instructions.txt in this repo for example.
   3. ". setup.sh instructions.txt" (no quotes)
   4. Monitor it fairly closely for ~30 mins or so (until the AutoTupleHQ page is available); it may ask for passwords, proxies, etc.  You can find the status page at http://uaf-7.t2.ucsd.edu/~USER/AutoTupleHQ.html, where USER is your username on the uaf
   5. When all jobs finished, use twiki.py to update the twiki, or you can do it manually.  Make sure the nEventsIn and nEventsOut make sense (should be the same unless there is a filter, and nEventsIn should match DBS).  
