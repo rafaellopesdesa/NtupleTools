@@ -3,7 +3,7 @@
 In principle, this should handle all aspects of CMS3 making, from submission to output in the user's hadoop directory.
 
 ###Instructions:
-  1. Clone the NTupleTools repository to an empty directory (git clone ssh://git@github.com/cmstas/NtupleTools AutoTupler)  Open a screen session. 
+  1. Clone the NTupleTools repository to an empty directory (git clone ssh://git@github.com/cmstas/NtupleTools)  Open a screen session. 
   2. "python twiki.py YOUR_TWIKI_USERNAME --makeInstructions NAME".  This will create instructions.txt using samples assigned to name NAME.  Alternatively, you can write this by hand, see instructions.txt in this repo for example.
   3. ". setup.sh instructions.txt" (no quotes)
   4. Monitor it fairly closely for ~30 mins or so (until the AutoTupleHQ page is available); it may ask for passwords, proxies, etc.  You can find the status page at http://uaf-7.t2.ucsd.edu/~USER/AutoTupleHQ.html, where USER is your username on the uaf
