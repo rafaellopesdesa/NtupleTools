@@ -1,5 +1,7 @@
 #!/bin/bash
 
+theDir="run2"
+
 #Needed for later
 containsElement () {
   local e
@@ -143,7 +145,7 @@ do
     then
       root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/user/$USER/$short_filename/crab_$filename/$dateTime/0000/\"\) > crab_status_logs/temp2.txt 2>&1
       nIn=`grep -r "nEntries" crab_status_logs/temp2.txt | tail -1 | awk '{print $NF}'`
-      root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/group/snt/phys14/$filename/$tagDir\"\) > crab_status_logs/temp.txt 2>&1
+      root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/group/snt/$thedir/$filename/$tagDir\"\) > crab_status_logs/temp.txt 2>&1
       grep -r "trying to recover" crab_status_logs/temp.txt &> /dev/null
       if [ "$?" == "0" ] 
       then 
@@ -160,7 +162,7 @@ do
         if [ "${NREDOPP[$fileNumber]}" -lt "3" ] 
         then
           echo "<font color=\"red\"> &nbsp; &nbsp; <b> Garrr!  More events out than in!  Post-processing again.... <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
-          rm /hadoop/cms/store/group/snt/phys14/$filename/$tagDir/*.root 2> /dev/null
+          rm /hadoop/cms/store/group/snt/$thedir/$filename/$tagDir/*.root 2> /dev/null
           NREDOPP[$fileNumber]=$(( ${NREDOPP[$fileNumber]} + 1 ))
           WHICHDONE[$fileNumber]="true" 
         else
@@ -186,9 +188,9 @@ do
           numbers=`grep -r "$filename" crab_status_logs/copy.txt | grep "trying to recover" | awk '{print $5}' | sed 's/\//\ /g' | awk '{print $NF}' | sed 's/_/\ /g' | awk '{print $NF}' | sed 's/\./\ /g' | awk '{print $1}'`
           for i in $numbers
           do
-            rm /hadoop/cms/store/group/snt/phys14/$filename/$tagDir/merged_ntuple_$i.root
+            rm /hadoop/cms/store/group/snt/$thedir/$filename/$tagDir/merged_ntuple_$i.root
           done
-          mv /hadoop/cms/store/group/snt/phys14/$filename/$tagDir/*.root /hadoop/cms/store/user/$USER/$short_filename/crab_$filename/CMS3_$tagDir/merged/
+          mv /hadoop/cms/store/group/snt/$thedir/$filename/$tagDir/*.root /hadoop/cms/store/user/$USER/$short_filename/crab_$filename/CMS3_$tagDir/merged/
           WHICHDONE[$fileNumber]="true"
           echo "<font color=\"red\"> &nbsp; &nbsp; <b> Shiver me timbers!  There was a problem copying this file.  File $i is corrupt. Fixing..... nEventsIn: $nIn.  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
           let "fileNumber += 1"
@@ -210,7 +212,7 @@ do
       then
           echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
           numbers=`grep -r "$filename" crab_status_logs/copy.txt | grep "trying to recover" | awk '{print $5}' | sed 's/\//\ /g' | awk '{print $NF}' | sed 's/_/\ /g' | awk '{print $NF}' | sed 's/\./\ /g' | awk '{print $1}'`
-          rm /hadoop/cms/store/group/snt/phys14/$filename/$tagDir/*.root
+          rm /hadoop/cms/store/group/snt/$thedir/$filename/$tagDir/*.root
           WHICHDONE[$fileNumber]="true"
           echo "<font color=\"red\"> &nbsp; &nbsp; <b> Shiver me timbers!  Did not post-process, but found a corrupt file in the output dirrrectory on the cmstas hadoop.... </b> <BR> Deleting everything and redoing it.  nEventsIn: $nIn.  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
           python process.py $file $fileNumber $dateTime &

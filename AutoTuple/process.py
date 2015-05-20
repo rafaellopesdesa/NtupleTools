@@ -7,6 +7,9 @@ import datetime
 import getpass
 import fileinput
 
+#Switches
+string dir2 = "run2";
+
 user = getpass.getuser()
 if (user == "dsklein"): user = "dklein";
 if (user == "iandyckes"): user = "gdyckes";
@@ -37,7 +40,7 @@ parts += lines[lineno].split()[5:]
   #7 - sparms
 
 #See if already exists
-dir="/hadoop/cms/store/group/snt/phys14/"+parts[0].split('/')[1]+"_"+parts[0].split('/')[2]+'/'+tag[5:]+"/"
+dir="/hadoop/cms/store/group/snt/" + dir2 + /"+parts[0].split('/')[1]+"_"+parts[0].split('/')[2]+'/'+tag[5:]+"/"
 try:
   if not os.listdir(dir) == []: 
     os.system('echo "%s alreadyThere" >> crab_status_logs/pp.txt' % (parts[0].split('/')[1]+'_'+parts[0].split('/')[2]))
