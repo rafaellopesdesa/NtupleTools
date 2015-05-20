@@ -165,6 +165,9 @@ if (args.makeInstructions != None):
     sys.exit()
   else:
     print "Instructions file written.  Check it carefully!  Change 'False' to 'True' for data samples!  Make sure the CMS3tag is the one you want!"
+    f3.close()
+    os.system('sed -i "1,2s/\ //g" instructions.txt')
+    os.system("sed -i '3,$s/\ //' instructions.txt")
 
 #Done if making instructions
 if (args.makeInstructions != None): sys.exit()
@@ -211,3 +214,4 @@ for line in f4:
   blah += line
 br.form[ 'text' ] = blah
 br.submit()
+
