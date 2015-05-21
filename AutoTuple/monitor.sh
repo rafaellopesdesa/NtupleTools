@@ -36,9 +36,9 @@ do
 done < $file
 
 #Environment
-eval `scramv1 runtime -sh`
 source /cvmfs/cms.cern.ch/crab3/crab.sh
 export PATH=$PATH:`pwd`
+eval `scramv1 runtime -sh`
 
 #Make sure public_html directory exists
 if [ ! -d ~/public_html ] 
