@@ -41,7 +41,6 @@ int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilt
   // Make a chain, and count the number of files in the directory
   const unsigned int nMergedFiles = chain->Add( samplePath + "/merged_ntuple*.root");
   const unsigned int nUnmergedFiles = chain->Add( samplePath + "/ntuple*.root");
-  const unsigned int nFilesHere = nMergedFiles + nUnmergedFiles;
 
   // Check to see if these are merged or unmerged ntuples
   if(      nMergedFiles>0  && nUnmergedFiles==0 ) {
@@ -130,23 +129,21 @@ int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilt
   }
 
   // Count using chain->GetEntries()
-  cout << "Total events in files:    " << flush;
+  cout << "Total events in files:    ";
   const Long64_t nEvts_chain = chain->GetEntries();
   cout << nEvts_chain << endl;
 
   // Get event count from DAS
-  cout << "Event count from DAS:     " << flush;
+  cout << "Event count from DAS:     ";
   bool das_failed = true;
   int loop_count = 0;
   Long64_t nEvts_das = -9999;
-
-  while( loop_count<3 && das_failed ) {
+  while( loop_count<2 && das_failed ) {
 	TString Evts_das = gSystem->GetFromPipe( "python das_client.py --query=\"dataset= "+dataset_name+" | grep dataset.nevents\" | tail -1" );
 	nEvts_das = Evts_das.Atoll();
 	if( nEvts_das > 0 ) das_failed = false;
 	loop_count++;
   }
-
   if( das_failed ) {
 	printColor("DAS query failed!", 91, humanUser);
 	nProblems++;
@@ -160,28 +157,28 @@ int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilt
   bool countsMatch = false;
 
   //1. Merged files
-  if( isMerged ) {
+  if (isMerged){
 
-    //(a) Check das vs. branch. A problem here normally indicates a problem with the unmerged files
-    if( nEvts_das == nEvts_branch ) countsMatch = true;
+    //(a) Check das vs. branch.  A problem here normally indicates a problem with the unmerged files
+    if (nEvts_das == nEvts_branch) countsMatch = true;
 
-    //(b) Check unmerged vs. merged. A problem here normally indicates a problem with merging
+    //(b) Check unmerged vs. merged.  A problem here normally indicates a problem with merging
+    if (!isMerged && unmerged_path == "") cout << "Warning!  No unmerged path provided, will not check nMerged == nUnmerged..." << endl;
     int nEvts_unmerged = 0;
-    if( unmerged_path == "" ) cout << "Warning!  No unmerged path provided, will not check nMerged == nUnmerged..." << endl;
-    else {
+    if (unmerged_path != ""){ 
       TChain* chain_unmerged = new TChain("Events");
-      int nFiles = chain_unmerged->Add( unmerged_path + "/ntuple_*.root");
-      if (nFiles == 0) {
-        cout << "Error! Unmerged files not found. Aborting..." << endl;
+      int nFiles = chain_unmerged->Add(Form("%s/ntuple_*.root", unmerged_path.Data()));  
+      if (nFiles == 0){
+        cout << "Error!  Unmerged files not found.  Aborting...." 
         return 99; 
       }
-      nEvts_unmerged = chain_unmerged->GetEntries();
-      if( nEvts_unmerged != nEvts_chain ) {
+      nEvts_unmerged = chain_unmerged->GetEntries(); 
+      if (nEvts_unmerged != nEvts_chain){
         countsMatch = false;
-        printColor(" Too few merged events! ", 91, humanUser);
-      }
-      cout << "Evts in unmerged sample:  " << nEvts_unmerged << endl;
-    }
+        cout << "Too few merged events!" << endl;
+      } 
+      cout << "nEvts_unmerged:           " << nEvts_unmerged << endl;
+    } 
 
     //(c) Check branch == merged if there is no filter
     if (!useFilter && nEvts_branch != nEvts_chain) countsMatch = false;
@@ -201,12 +198,7 @@ int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilt
   }
 
   // Breakdown by filename
-  if( nFilesHere > 1 && !countsMatch ) {
-
-	float nEvtsPerFile = nEvts_chain / float(nFilesHere);
-	bool isHigh = false;
-	bool isLow  = false;
-
+  if( nMergedFiles+nUnmergedFiles > 1 && !countsMatch ) {
 	cout << "\nNumber of events by file:" << endl;
 	TObjArray *fileList = chain->GetListOfFiles();
 	TIter fileIter(fileList);
@@ -218,15 +210,7 @@ int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilt
 	  TTree *tree = (TTree*)file->Get("Events");
 	  TString filename = file->GetName();
 	  Long64_t nEvts_file = tree->GetEntries();
-
-	  isHigh = false;
-	  isLow = false;
-	  if( nEvts_file < (0.8*nEvtsPerFile) ) isLow = true;
-	  else if( nEvts_file > (1.25*nEvtsPerFile) ) isHigh = true;
-
-	  if( isHigh ) printf( "%28s:  %8lld  <-- count is high\n", filename(shortname).Data(), nEvts_file );
-	  else if( isLow) printf( "%28s:  %8lld  <-- count is low\n", filename(shortname).Data(), nEvts_file );
-	  else if( !isHigh && !isLow && nFilesHere<10 ) printf( "%28s:  %8lld\n", filename(shortname).Data(), nEvts_file );
+	  printf( "%28s:  %8lld\n", filename(shortname).Data(), nEvts_file );
 	}
   }
 
@@ -307,8 +291,8 @@ int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilt
   if( isSUSY && isMerged ) {
 
 	if( isScan ) {
-	  cout << "\nThis file appears to have a range of sparm values.\nI'm not equipped to handle that; please check the values by eye, in a histogram." << endl;
-	  if( humanUser ) chain->Draw("sparm_values");
+	  cout << "\nThis file appears to have a range of sparm values.\nI'm not equipped to handle that; please check the values by eye:" << endl;
+	  chain->Draw("sparm_values");
 	}
 	else {
 	  cout << "\nFound these sparm values:" << endl;
