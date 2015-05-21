@@ -7,9 +7,11 @@ dateTime=$3
 if [[ $dataSet == *"50ns"* ]]
 then
   thedir="run2_50ns"
-else if [[ $dataSet == *"25ns"* ]]
+  echo "50"
+elif [[ $dataSet == *"25ns"* ]]
 then
   thedir="run2_25ns"
+  echo "25" 
 else
   echo "Aborting!  Can't figure out if 25 or 50 ns!!"
   return 1
