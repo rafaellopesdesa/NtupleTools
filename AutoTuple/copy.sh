@@ -4,7 +4,16 @@ dataSet=$1
 CMS3tag=$2
 dateTime=$3
 
-thedir="run2"
+if [[ $dataSet == *"50ns"* ]]
+then
+  thedir="run2_50ns"
+else if [[ $dataSet == *"25ns"* ]]
+then
+  thedir="run2_25ns"
+else
+  echo "Aborting!  Can't figure out if 25 or 50 ns!!"
+  return 1
+fi
 
 myDir=`echo $CMS3tag | cut -c 6-`
 longName=`echo $dataSet | awk -F '/' '{print $2 "_" $3}'`
