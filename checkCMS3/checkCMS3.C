@@ -343,10 +343,12 @@ int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilt
   }
   cout << endl;
 
-  ofstream myfile;
-  myfile.open("crab_status_logs/temp.txt");
-  if (nProblems == 0) myfile << file << " nEntries: " << chain->GetEntries() << endl;
-  myfile.close();
+  if (!human){
+    ofstream myfile;
+    myfile.open("crab_status_logs/temp.txt");
+    if (nProblems == 0) myfile << file << " nEntries: " << chain->GetEntries() << endl;
+    myfile.close();
+  }
 
   return nProblems;
 }
