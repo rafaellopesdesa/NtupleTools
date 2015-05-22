@@ -29,7 +29,7 @@ if [ "$USERNAME" == "mderdzinski" ]; then USERNAME="mderdzin"; fi
 
 #check CMS3
 nRedo=`grep -r "Too few merged events\!" copy_log_$shortName.log | awk '{print $5}'`
-root -b -q checkCMS3.C\(\"/hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$CMS3tag/merged/\",\"/hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$dateTime/0000/\",0,0\) > copy_log_$shortName.log
+root -b -q checkCMS3.C\(\"/hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$CMS3tag/merged/\",\"/hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$dateTime/0000/\",0,0,\"$dataSet\"\) > copy_log_$shortName.log
 nProblems=`grep -r "Problems found:" copy_log_$shortName.log | awk '{print $3}'`
 grep -r  "Too few merged events!" copy_log_$shortName.log &>/dev/null
 mergingProblems=$?

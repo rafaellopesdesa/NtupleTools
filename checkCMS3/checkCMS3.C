@@ -15,7 +15,7 @@ void printColor(const char* message, const int color, bool human) {
 }
 
 
-int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilter = false, bool humanUser = true) {
+int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilter = false, bool humanUser = true, string file = "") {
 
   if( samplePath == "" ) {
 	cout << "Please provide a path to a CMS3 sample!" << endl;
@@ -346,7 +346,7 @@ int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilt
   if (!humanUser){
     ofstream myfile;
     myfile.open("crab_status_logs/temp.txt");
-    if (nProblems == 0) myfile << " nEntries: " << chain->GetEntries() << endl;
+    if (nProblems == 0) myfile << file << " " << chain->GetEntries() << endl;
     myfile.close();
   }
 
