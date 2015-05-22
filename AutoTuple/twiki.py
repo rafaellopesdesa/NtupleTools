@@ -80,8 +80,15 @@ br.form[ 'password' ] = password
 br.submit()
 
 #Look for the link to Phys14 from our home page
+
+which = 0
+while (which != 1 and which != 2 and which != 3): 
+  which = int(raw_input("Which one do you want?  Type 1 for phys14, 2 for run2_25ns, or 3 for run2_50ns "))
+
 for link in br.links():
-  if (link.url == '/tastwiki/bin/view/CMS/Phys14Samples'): br.follow_link(link)
+  if (which == 1 and link.url == '/tastwiki/bin/view/CMS/Phys14Samples'): br.follow_link(link)
+  if (which == 2 and link.url == '/tastwiki/bin/view/CMS/Run2Samples_25ns'): br.follow_link(link)
+  if (which == 3 and link.url == '/tastwiki/bin/view/CMS/Run2Samples_50ns'): br.follow_link(link)
 
 #Look for the link to 'raw edit'
 for link in br.links():
@@ -158,6 +165,9 @@ if (args.makeInstructions != None):
     sys.exit()
   else:
     print "Instructions file written.  Check it carefully!  Change 'False' to 'True' for data samples!  Make sure the CMS3tag is the one you want!"
+    f3.close()
+    os.system('sed -i "1,2s/\ //g" instructions.txt')
+    os.system("sed -i '3,$s/\ //' instructions.txt")
 
 #Done if making instructions
 if (args.makeInstructions != None): sys.exit()
@@ -204,3 +214,4 @@ for line in f4:
   blah += line
 br.form[ 'text' ] = blah
 br.submit()
+
