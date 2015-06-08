@@ -387,6 +387,8 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
       h2->Scale(1./h2->GetEntries());
       if (leg->GetNRows() < 2) leg->AddEntry(h1, "old", "p");
       if (leg->GetNRows() < 2) leg->AddEntry(h2, "new", "l");
+      h2->SetTitle(v_commonBranches.at(i));
+      h1->SetTitle(v_commonBranches.at(i));
    }
 
     if(drawWithErrors) {
@@ -413,8 +415,6 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
        << ". They will be drawn side by side" << endl;
       
       c1->Divide(2,1);
-      h2->SetTitle(v_commonBranches.at(i));
-      h1->SetTitle(v_commonBranches.at(i));
       if(!drawWithErrors) {
 	h1->SetLineColor(0);
 	h1->SetMarkerSize(1.1);
@@ -510,8 +510,6 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
       h1->SetMarkerSize(1.1);
       h1->SetMarkerStyle(3);
       h2->SetLineColor(kRed);
-      h2->SetTitle(v_commonBranches.at(i));
-      h1->SetTitle(v_commonBranches.at(i));
       h1->Draw();
       h2->Draw("SAMEh*");
       leg->Draw();
@@ -522,8 +520,6 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
       h2->SetMarkerStyle(8);
       h2->SetMarkerColor(kRed);
       TString histtitle = v_commonBranches.at(i);
-      h2->SetTitle(v_commonBranches.at(i));
-      h1->SetTitle(v_commonBranches.at(i));
       h1->Draw("e");
       h2->Draw("samese");
       leg->Draw();
