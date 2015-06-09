@@ -1,5 +1,3 @@
-#pragma GCC diagnostic ignored "-Wwrite-strings"
-#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 #include <fstream>
 #include <vector>
 #include "TFile.h"
@@ -19,7 +17,7 @@ int plotAll(){
 
   TList *t_list = tree->GetListOfAliases();
 
-  for(int i = 0; i < t_list->GetSize(); i++) {
+  for(int i = 0; i < 10; i++){ //t_list->GetSize(); i++) {
     TString aliasname(t_list->At(i)->GetName());
     cout << aliasname.Data() << endl;
     TString command = aliasname;
@@ -73,10 +71,16 @@ int plotAll(){
 
     dataMCplotMaker(null, hists, titles, subtitle, "CMS3 4.02 Validation", Form("--outputName %s --noFill --noLegend --setMaximum %f --energy 13 --lumi 0 --xAxisLabel %s --noXaxisUnit --noDivisionLabel", subtitle.c_str(), max, histname2.c_str())); 
 
-    delete hist;
-
   }
+ 
+  system("rm merged.pdf &>/dev/null"); 
+  system("gs -sDEVICE=pdfwrite     -dNOPAUSE -dBATCH -dSAFER     -sOutputFile=merged.pdf  *pdf"); 
+  system("mkdir blah");
+  system("mv merged.pdf blah/merged.pdf");
+  system("rm *.pdf");
+  system("mv blah/merged.pdf merged.pdf");
+  system("rmdir blah"); 
 
-    return 0;
+  return 0;
 
 }
