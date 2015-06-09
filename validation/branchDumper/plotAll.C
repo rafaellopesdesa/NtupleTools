@@ -1,5 +1,3 @@
-#pragma GCC diagnostic ignored "-Wwrite-strings"
-#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 #include <fstream>
 #include <vector>
 #include "TFile.h"
@@ -73,10 +71,12 @@ int plotAll(){
 
     dataMCplotMaker(null, hists, titles, subtitle, "CMS3 4.02 Validation", Form("--outputName %s --noFill --noLegend --setMaximum %f --energy 13 --lumi 0 --xAxisLabel %s --noXaxisUnit --noDivisionLabel", subtitle.c_str(), max, histname2.c_str())); 
 
-    delete hist;
-
   }
+ 
+  system("mkdir plots");
+  system("mv *.pdf plots/"); 
+  system("gs -sDEVICE=pdfwrite     -dNOPAUSE -dBATCH -dSAFER     -sOutputFile=merged.pdf  plots/*pdf"); 
 
-    return 0;
+  return 0;
 
 }
