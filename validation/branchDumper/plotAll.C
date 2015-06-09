@@ -17,7 +17,7 @@ int plotAll(){
 
   TList *t_list = tree->GetListOfAliases();
 
-  for(int i = 0; i < 10; i++){ //t_list->GetSize(); i++) {
+  for(int i = 0; i < t_list->GetSize(); i++) {
     TString aliasname(t_list->At(i)->GetName());
     cout << aliasname.Data() << endl;
     TString command = aliasname;
