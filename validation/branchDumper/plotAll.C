@@ -73,13 +73,9 @@ int plotAll(){
 
   }
  
-  system("rm merged.pdf &>/dev/null"); 
-  system("gs -sDEVICE=pdfwrite     -dNOPAUSE -dBATCH -dSAFER     -sOutputFile=merged.pdf  *pdf"); 
-  system("mkdir blah");
-  system("mv merged.pdf blah/merged.pdf");
-  system("rm *.pdf");
-  system("mv blah/merged.pdf merged.pdf");
-  system("rmdir blah"); 
+  system("mkdir plots");
+  system("mv *.pdf plots/"); 
+  system("gs -sDEVICE=pdfwrite     -dNOPAUSE -dBATCH -dSAFER     -sOutputFile=merged.pdf  plots/*pdf"); 
 
   return 0;
 
