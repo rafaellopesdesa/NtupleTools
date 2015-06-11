@@ -25,19 +25,23 @@ parser.add_argument('--nIn'             , type=types.IntType   , help='number of
 parser.add_argument('--nOut'            , type=types.IntType   , help='number of events on the hadoop directory (should equal nIn unless there is a filter somewhere)')
 parser.add_argument('--makeInstructions', type=types.StringType, help='username for AutoTupler instructions file.  Leave blank if not making instructions file') 
 parser.add_argument('--manual'          , type=types.IntType   , help='use this argument to manually change the twiki.  Argument: 1 to download updateTwiki2.txt and 2 to upload updateTwiki2.txt') 
+parser.add_argument('--allSamples'      , type=types.IntType  , help='use this argument to download all samples. Argument: 1') 
 args = parser.parse_args()
 
 #Error checking
-if (args.manual == None and  args.dataset == None and args.makeInstructions == None):
-  print "Aborting! Need to specify either --manual or --dataset or --makeInstructions!"
+if (args.manual == None and  args.dataset == None and args.makeInstructions == None and args.allSamples == None):
+  print "Aborting! Need to specify either --manual or --dataset or --makeInstructions or --allSamples!"
   sys.exit()
-if (args.manual != None and (args.dataset != None or args.makeInstructions != None)):
+if (args.manual != None and (args.dataset != None or args.makeInstructions != None or args.allSamples != None)):
   print "Aborting! Cannot have more than 1 of (manual, dataset, makeInstructions) at once"
   sys.exit()
-if (args.dataset != None and (args.manual != None or args.makeInstructions != None)):
+if (args.dataset != None and (args.manual != None or args.makeInstructions != None or args.allSamples != None)):
   print "Aborting! Cannot have more than 1 of (manual, dataset, makeInstructions) at once"
   sys.exit()
-if (args.dataset != None and (args.makeInstructions != None or args.manual != None)):
+if (args.dataset != None and (args.makeInstructions != None or args.manual != None or args.allSamples != None)):
+  print "Aborting! Cannot have more than 1 of (manual, dataset, makeInstructions) at once"
+  sys.exit()
+if (args.allSamples != None and (args.makeInstructions != None or args.manual != None or args.dataset != None)):
   print "Aborting! Cannot have more than 1 of (manual, dataset, makeInstructions) at once"
   sys.exit()
 if (args.manual != 1 and args.manual != 2 and args.manual != None):
@@ -52,7 +56,7 @@ if (args.makeInstructions != None and (args.gTag != None or args.CMS3tag != None
 
 #Warnings
 if (args.manual == 2):
-  print "Warning! Going to replace the twiki with the contents of  updateTwiki2.txt.  Make SURE this file is OK!"
+  print "Warning! Going to COMPLETELY replace the twiki with the contents of updateTwiki2.txt.  Make SURE this file is OK!"
   check = raw_input("Type 'yes' to confirm that this file is good, will exit for any other value ")
   if (check != "yes"): 
     print "You did not type yes.  Aborting..."
@@ -125,7 +129,18 @@ if (args.manual == 2):
 #Open the file for reading
 f = open('updateTwiki.txt', 'r');
 
-#If making instructions for AutoTupler, do that
+#If getting all samples, do that
+if (args.allSamples != None):
+  f5 = open('allsamples.txt', 'w');
+  for line in f:
+    if (line.find('|') != -1):
+      theLine = line.split('|')
+      dataset = theLine[1]
+      if (dataset.find('/') != -1): f5.write(dataset + '\n')
+  f5.close()
+  sys.exit()
+
+#If making instructions for AutoTupler do that
 gTag = ""
 CMS3Tag = ""
 nSamples = 0
