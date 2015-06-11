@@ -19,7 +19,10 @@ DIR=$PWD
 source install.sh
 cd $CMSSW_BASE
 echo "Making the tarball..."
-tar -chzvf lib_$THE_CMS3_TAG.tar.gz lib/ python/ src/CMS3/NtupleMaker/test/*_cfg.py
+stuff1=`find src/ -name "data"`
+stuff2=`find src/ -name "interface"`
+tar -chzvf lib_$THE_CMS3_TAG.tar.gz lib/ python/ $stuff1 $stuff2 src/CMS3/NtupleMaker/test/*_cfg.py
+
 
 mv lib_$THE_CMS3_TAG.tar.gz $DIR/lib_$THE_CMS3_TAG.tar.gz
 cd $DIR
