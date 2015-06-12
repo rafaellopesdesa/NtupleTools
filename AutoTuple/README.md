@@ -5,7 +5,7 @@ In principle, this should handle all aspects of CMS3 making, from submission to 
 ###Instructions:
   0. Update the twiki with all the cross-sections, k factors, etc. 
     - You can use the getXsec directory for this
-    - the cross-section should always match MCM (unless MCM is meaningless); the kfactor should address any needed corrections.  Add a comment to explain if your k-factor is nonzero
+    - the cross-section should always match MCM (unless MCM is meaningless); the kfactor should address any needed corrections.  Add a comment to explain if your k-factor is not unity.
   1. Clone the NTupleTools repository to an empty directory (git clone ssh://git@github.com/cmstas/NtupleTools)  Open a screen session. 
   2. "python twiki.py YOUR_TWIKI_LOGIN_NAME --makeInstructions NAME_IN_ASSIGNED_COLUMN_ON_TWIKI".  
     - For example, Alex would use "george" for the first name, because that's how he logs into the twiki, and "Alex" for the second name, because that's what his samples are assigned to.  This will create instructions.txt using samples assigned to name NAME.  Alternatively, you can write this by hand, see instructions.txt in this repo for example.
