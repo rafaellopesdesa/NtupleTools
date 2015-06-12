@@ -3,8 +3,13 @@
 In principle, this should handle all aspects of CMS3 making, from submission to output in the group's hadoop directory.
 
 ###Instructions:
+  0. Update the twiki with all the cross-sections, k factors, etc. 
+    - You can use the getXsec directory for this
+    - the cross-section should always match MCM (unless MCM is meaningless); the kfactor should address any needed corrections.  Add a comment to explain if your k-factor is nonzero
   1. Clone the NTupleTools repository to an empty directory (git clone ssh://git@github.com/cmstas/NtupleTools)  Open a screen session. 
-  2. "python2.6 twiki.py YOUR_TWIKI_LOGIN_NAME --makeInstructions NAME_IN_ASSIGNED_COLUMN_ON_TWIKI".  For example, Alex would use "george" for the first name, because that's how he logs into the twiki, and "Alex" for the second name, because that's what his samples are assigned to.  This will create instructions.txt using samples assigned to name NAME.  Alternatively, you can write this by hand, see instructions.txt in this repo for example.
+  2. "python twiki.py YOUR_TWIKI_LOGIN_NAME --makeInstructions NAME_IN_ASSIGNED_COLUMN_ON_TWIKI".  
+    - For example, Alex would use "george" for the first name, because that's how he logs into the twiki, and "Alex" for the second name, because that's what his samples are assigned to.  This will create instructions.txt using samples assigned to name NAME.  Alternatively, you can write this by hand, see instructions.txt in this repo for example.
+    - You need to use the python locally installed on the UAF.  Are there are problems, try "python2.6" instead of "python".  Also, if your .bashrc is sourcing  /cvmfs/cms.cern.ch/crab3/crab.sh in your bashrc (or anywhere else), that will cause problems (and is in general a bad idea).  
   3. ". setup.sh instructions.txt" (no quotes)
   4. Monitor it fairly closely for ~5 mins or so (until the AutoTupleHQ page is available); it may ask for passwords, proxies, etc.  You can find the status page at http://uaf-7.t2.ucsd.edu/~USER/AutoTupleHQ.html, where USER is your username on the uaf
   5. When all jobs finished, use twiki.py to update the twiki, or you can do it manually.  Make sure it was copied successfully to hadoop and is not in a /bad/ subdirectory, which indicates that there were problems.  
