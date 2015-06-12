@@ -103,7 +103,11 @@ for link in br.links():
 try:
   br.select_form('main')
 except mechanize._mechanize.FormNotFoundError:
-  print "Invalid username or password!  Or it could be that someone else is editing the twiki. Aborting...."
+  if("oopsleaseconflict" in str(br)):
+    print "Looks like user ", str(br).split("param1=Main.")[-1].split(";")[0], " is editing right now. Aborting..."
+  else:
+    print "Invalid username or password! Aborting...."
+
   sys.exit()
 
 #Read the text to updateTwiki.txt
