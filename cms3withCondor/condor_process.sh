@@ -2,13 +2,13 @@
 
 #User input
 #Directory where the babies are stored
-dir=/hadoop/cms/store/user/cgeorge/condor/SSPrivate/v1.08/
+dir=/hadoop/cms/store/user/cgeorge/condor/SSPrivate/v07-02-08/
 #Nice name for sample
-name=13TeV_T5qqqqWW_mGo1200_mCh1000_mChi800
+name=$1
 #Sparm class -- GLUINO, STOP, or OTHER
-SPARM_CLASS=GLUINO
+SPARM_CLASS=$2
 #Sparm mass
-SPARM_MASS=1200
+SPARM_MASS=$3
 
 #####----- HERE THERE BE DRAGONS --------#####
 
@@ -33,7 +33,7 @@ fi
 xsec=`echo $temp2 | awk '{ print $NF }' | cut -c 1-7 --complement`
 
 #Make lists
-python makeListsForMergingCrab3.py -d $dir -o $dir/merged/ -s $name -k 1 -e 1 -x $xsec --overrideCrab 
+python makeListsForMergingCrab3.py -d $dir/$name -o $dir/$name/merged/ -s $name -k 1 -e 1 -x $xsec --overrideCrab 
 
 #Submit it
 . submitMergeJobs.sh cfg/${name}_cfg.sh
