@@ -63,10 +63,26 @@ bool areHistosTheSame(TH1F* h1, TH1F* h2){
   float range2 = h2->GetBinCenter(1) - h2->GetBinCenter(h2->GetNbinsX());
 
   if(TMath::Abs(range1 - range2) > 0.000001) return false;
-  
-  float chi2 = h1->Chi2Test(h2, "WWNORM");
-  std::cout << " chi2: " << chi2 << std::endl;
-  return chi2 > 0.95;
+ 
+  float prob = h1->Chi2Test(h2, "WWNORM"); // = 1 if consistent, = 0 if inconsistent 
+
+  //if there is 1 filled bin, chi2test returns 0, so we manually find and compare this bin
+  if(prob < 0.0001) {
+      int nNonZeroBins = 0;
+      int iNonZeroBin  = 0;
+      for(int i = 1; i < h1->GetNbinsX()+1; i++) {
+          if(nNonZeroBins > 1) break;
+          if(h1->GetBinContent(i) > 0.0 && h2->GetBinContent(i) > 0.0 ) {
+              nNonZeroBins += 1;
+              iNonZeroBin = i;
+          }
+      }
+      if(nNonZeroBins == 1) {
+          // check if the single bin that has entries is within 1% between h1 and h2
+          if( 1.0*(h1->GetBinContent(iNonZeroBin)-h2->GetBinContent(iNonZeroBin))/h1->GetBinContent(iNonZeroBin) < 0.01 ) prob = 1.0;
+      }
+  }
+  return prob > 0.95;
 }
 
 //-----------------------------------------------------------------------
@@ -200,7 +216,7 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
     
     h1->Scale(1./h1->GetEntries());
     if(!drawWithErrors) {
-      h1->SetLineColor(0);
+      h1->SetLineColor(kBlue);
       h1->SetMarkerSize(1.1);
       h1->SetMarkerStyle(3);
     } 
@@ -284,6 +300,7 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
   for(unsigned int i =  0; i < v_commonBranches.size(); i++) {
   
     TString alias = v_commonBranches.at(i);
+
     cout << "Comparing Branch: " << alias << endl;
     TString hist1name = "h1_"+ alias;
     TString hist2name = "h2_"+ alias;
@@ -366,55 +383,6 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
       bDiff +=fabs(h1->GetBinContent(iB) - h2->GetBinContent(iB));
     }
 
-    if(h1->GetNbinsX() != h2->GetNbinsX() ){
-      cout << "Branch " << v_commonBranches.at(i) << " not the same between the 2 files" << ". They will be drawn side by side" << endl;
-      c1->Divide(2,1);
-      if(!drawWithErrors) {
-	    h1->SetLineColor(kBlue);
-	    h1->SetMarkerSize(1.1);
-	    h1->SetMarkerStyle(3);
-	    h2->SetLineColor(kRed);
-	    c1->cd(1);
-	    h1->Draw();
-	    c1->cd(2);
-	    h2->Draw();
-	    leg->Draw();
-      } 
-      else {
-	    h1->SetMarkerSize(1.3);
-	    h1->SetMarkerStyle(3);
-	    h2->SetMarkerSize(1.1);
-	    h2->SetMarkerStyle(8);
-	    h2->SetMarkerColor(kRed);
-	    c1->cd(1);
-	    h1->Draw("e");
-	    c1->cd(2);
-	    h2->Draw("e");
-	    leg->Draw();
-      }
-
-      if(i < v_commonBranches.size() - 1) {
-        c1->SaveAs("diff.ps(");
-        c1->SetLogy();
-        for(int ii = 0; ii < c1->GetListOfPrimitives()->GetSize(); ii++) {
-          if(string(c1->GetListOfPrimitives()->At(ii)->ClassName()) != "TVirtualPad")
-            continue;
-          TVirtualPad *vPad = (TVirtualPad*)c1->GetListOfPrimitives()->At(ii);
-          if(vPad != NULL)
-            vPad->SetLogy();
-        }
-      } 
-      else {
-        cout << "done" << endl;
-        for(int ii = 0; ii < c1->GetListOfPrimitives()->GetSize(); ii++) {
-          if(string(c1->GetListOfPrimitives()->At(ii)->ClassName()) != "TVirtualPad") continue;
-          TVirtualPad *vPad = (TVirtualPad*)c1->GetListOfPrimitives()->At(ii);
-          if(vPad != NULL) vPad->SetLogy();
-        }
-      } 
-      continue;
-    }
-            
     if(h1->GetMaximum() >= h2->GetMaximum()) {
       
       double max = 1.1*h1->GetMaximum();
@@ -422,7 +390,7 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
       h2->SetMaximum(max);
         
       if(!drawWithErrors){
-        h1->SetLineColor(0);
+        h1->SetLineColor(kBlue);
         h1->SetMarkerSize(1.1);
         h1->SetMarkerStyle(3);
         h2->SetLineColor(kRed);
