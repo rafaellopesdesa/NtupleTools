@@ -86,11 +86,9 @@ bool areHistosTheSame(TH1F* h1, TH1F* h2) {
 
   if(TMath::Abs(range1 - range2) > 0.000001) return false;
   
-  for(int i = 1; i < h1->GetNbinsX()+1; i++) {
-    if(TMath::Abs(h1->GetBinContent(i) - h2->GetBinContent(i)) > 0.05) return false;
-  }
-  
-  return true;
+  float chi2 = h1->Chi2Test(h2, "WWNORM");
+  std::cout << " chi2: " << chi2 << std::endl;
+  return chi2 > 0.95;
 }
 //-----------------------------------------------------------------------
 
@@ -416,7 +414,7 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
       
       c1->Divide(2,1);
       if(!drawWithErrors) {
-	h1->SetLineColor(0);
+	h1->SetLineColor(kBlue);
 	h1->SetMarkerSize(1.1);
 	h1->SetMarkerStyle(3);
 	h2->SetLineColor(kRed);
@@ -506,12 +504,12 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
     h2->SetMaximum(max);
       
     if(!drawWithErrors) {
-      h1->SetLineColor(0);
+      h1->SetLineColor(kBlue);
       h1->SetMarkerSize(1.1);
       h1->SetMarkerStyle(3);
       h2->SetLineColor(kRed);
-      h1->Draw();
-      h2->Draw("SAMEh*");
+      h1->Draw("h*");
+      h2->Draw("SAME");
       leg->Draw();
     } else {
       h1->SetMarkerSize(1.3);
