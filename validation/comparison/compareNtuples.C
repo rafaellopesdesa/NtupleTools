@@ -63,10 +63,26 @@ bool areHistosTheSame(TH1F* h1, TH1F* h2){
   float range2 = h2->GetBinCenter(1) - h2->GetBinCenter(h2->GetNbinsX());
 
   if(TMath::Abs(range1 - range2) > 0.000001) return false;
-  
-  float chi2 = h1->Chi2Test(h2, "WWNORM");
-  std::cout << " chi2: " << chi2 << std::endl;
-  return chi2 > 0.95;
+ 
+  float prob = h1->Chi2Test(h2, "WWNORM"); // = 1 if consistent, = 0 if inconsistent 
+
+  //if there is 1 filled bin, chi2test returns 0, so we manually find and compare this bin
+  if(prob < 0.0001) {
+      int nNonZeroBins = 0;
+      int iNonZeroBin  = 0;
+      for(int i = 1; i < h1->GetNbinsX()+1; i++) {
+          if(nNonZeroBins > 1) break;
+          if(h1->GetBinContent(i) > 0.0 && h2->GetBinContent(i) > 0.0 ) {
+              nNonZeroBins += 1;
+              iNonZeroBin = i;
+          }
+      }
+      if(nNonZeroBins == 1) {
+          // check if the single bin that has entries is within 1% between h1 and h2
+          if( 1.0*(h1->GetBinContent(iNonZeroBin)-h2->GetBinContent(iNonZeroBin))/h1->GetBinContent(iNonZeroBin) < 0.01 ) prob = 1.0;
+      }
+  }
+  return prob > 0.95;
 }
 
 //-----------------------------------------------------------------------
@@ -200,7 +216,7 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
     
     h1->Scale(1./h1->GetEntries());
     if(!drawWithErrors) {
-      h1->SetLineColor(0);
+      h1->SetLineColor(kBlue);
       h1->SetMarkerSize(1.1);
       h1->SetMarkerStyle(3);
     } 
@@ -284,6 +300,7 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
   for(unsigned int i =  0; i < v_commonBranches.size(); i++) {
   
     TString alias = v_commonBranches.at(i);
+
     cout << "Comparing Branch: " << alias << endl;
     TString hist1name = "h1_"+ alias;
     TString hist2name = "h2_"+ alias;
@@ -422,7 +439,7 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
       h2->SetMaximum(max);
         
       if(!drawWithErrors){
-        h1->SetLineColor(0);
+        h1->SetLineColor(kBlue);
         h1->SetMarkerSize(1.1);
         h1->SetMarkerStyle(3);
         h2->SetLineColor(kRed);
