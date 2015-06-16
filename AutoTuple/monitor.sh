@@ -16,6 +16,14 @@ if [ $# -eq 0 ]
   exit 
 fi
 
+#Check for lumiBlock file
+if [ -e LumisPerJob.txt ] 
+then
+  grep -r "Aborting" LumisPerJob.txt
+  echo "Aborting!  One of your samples is invalid."
+  return 0
+fi
+
 #Print status to screen
 echo " " 
 echo " " 
