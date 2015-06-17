@@ -20,8 +20,11 @@ fi
 if [ -e LumisPerJob.txt ] 
 then
   grep -r "Aborting" LumisPerJob.txt
-  echo "Aborting!  One of your samples is invalid."
-  return 0
+  if [ "$?" == "0" ] 
+  then
+    echo "Aborting!  One of your samples is invalid."
+    return 0
+  fi
 fi
 
 #Print status to screen
@@ -190,6 +193,7 @@ do
         then
           echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
           echo "<font color=\"blue\"> &nbsp; &nbsp; <b> This task be finished!!!! nEventsIn: $nIn nEventsOut: $nOut <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
+          echo "<font color=\"black\"> &nbsp; &nbsp; <b> Location: /hadoop/cms/store/group/snt/$theDir/$filename/$tagDir <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
           echo "$filename $nIn $nOut" >> crab_status_logs/isdone.txt
           let "fileNumber += 1"
           continue

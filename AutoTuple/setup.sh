@@ -35,6 +35,7 @@ cp ../../$1 .
 cp ../../monitor.sh . 
 cp ../../process.py .
 cp ../../pirate.txt .
+cp ../../theDir.txt .
 cp ../../FindLumisPerJob.sh . 
 cp ../../das_client.py . 
 cp ../../crabPic.png .
