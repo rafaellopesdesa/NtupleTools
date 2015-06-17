@@ -36,6 +36,11 @@ while (lnum <= inFile_size):
   os.system('./FindLumisPerJob.sh ' + parts[0] + ' >> LumisPerJob.txt')
   lnum+=1
 
+for line in open("LumisPerJob.txt"):
+  if "Aborting" in line: 
+    print "One of your samples is invalid!  See LumisPerJob.txt for details."
+    sys.exit() 
+
 lnum = 3
 redoCrab = 2
 while (lnum <= inFile_size):
