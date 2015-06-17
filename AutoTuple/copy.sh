@@ -1,4 +1,4 @@
-0;95;c#!/bin/bash
+#!/bin/bash
 
 dataSet=$1
 CMS3tag=$2
