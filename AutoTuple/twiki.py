@@ -89,6 +89,8 @@ which = 0
 while (which != 1 and which != 2 and which != 3): 
   which = int(raw_input("Which one do you want?  Type 1 for phys14, 2 for run2_25ns, or 3 for run2_50ns "))
 
+hadoopDirs = ["phys14", "run2_25ns", "run2_50ns"]
+os.system("echo \"" + hadoopDirs[which-1] + "\" > theDir.txt")
 for link in br.links():
   if (which == 1 and link.url == '/tastwiki/bin/view/CMS/Phys14Samples'): br.follow_link(link)
   if (which == 2 and link.url == '/tastwiki/bin/view/CMS/Run2Samples_25ns'): br.follow_link(link)
