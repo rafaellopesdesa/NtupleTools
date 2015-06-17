@@ -1,4 +1,4 @@
-#!/bin/bash
+0;95;c#!/bin/bash
 
 dataSet=$1
 CMS3tag=$2
@@ -26,6 +26,7 @@ USERNAME="$USER"
 if [ "$USERNAME" == "dsklein" ]; then USERNAME="dklein"; fi
 if [ "$USERNAME" == "iandyckes" ]; then USERNAME="gdyckes"; fi
 if [ "$USERNAME" == "mderdzinski" ]; then USERNAME="mderdzin"; fi
+if [ "$USERNAME" == "rclsa" ]; then USERNAME="rcoelhol"; fi
 
 #check CMS3
 nRedo=`grep -r "Too few merged events\!" copy_log_$shortName.log | awk '{print $5}'`
