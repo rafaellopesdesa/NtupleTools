@@ -15,6 +15,7 @@ user = getpass.getuser()
 if (user == "dsklein"): user = "dklein";
 if (user == "iandyckes"): user = "gdyckes";
 if (user == "mderdzinski"): user = "mderdzin";
+if (user == "rclsa"): user = "rcoelhol";
 user2 = getpass.getuser()
 args = sys.argv
 file = args[1]
