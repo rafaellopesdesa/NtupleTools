@@ -11,3 +11,8 @@ This script checks which datasets are valid and not present at T2_US_UCSD, and l
   ```
   
   3. Use output file to make a PhEDEx request (https://cmsweb.cern.ch/phedex/prod/Info::Main)
+
+###To do list:
+- Error catching
+- Better solution for DAS query timeout
+- protection from bad inputs

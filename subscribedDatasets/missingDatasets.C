@@ -51,7 +51,7 @@ int missingDatasets(TString input="allsamples.txt", TString output = "outfile.tx
       //if sample is valid, add to vector of missing samples
       if( status == "VALID" && !atUCSD) {
       	das_failed = false;
-      	cout << line << " missing , will add." << status << endl;
+	printColor(dataset + " missing, will add.", 92, humanUser);
 	missing.push_back(line);
       }
 
