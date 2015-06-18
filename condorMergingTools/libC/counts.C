@@ -7,7 +7,7 @@ void counts(TString folder, bool do_effective = false)
     ch->Add(folder+"/*.root");
     if(do_effective){
       int pos_weight = ch->GetEntries("genps_weight > 0");
-      int neg_weight = ch->GetEntries("genps_weight < 0");
+      int neg_weight = ch->GetEntries() - pos_weight;
       int nevents_effective = pos_weight - neg_weight;
       std::cout << "nevents_effective=" << nevents_effective << std::endl;
     }
