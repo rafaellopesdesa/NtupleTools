@@ -16,6 +16,17 @@ if [ $# -eq 0 ]
   exit 
 fi
 
+#Check for lumiBlock file
+if [ -e LumisPerJob.txt ] 
+then
+  grep -r "Aborting" LumisPerJob.txt
+  if [ "$?" == "0" ] 
+  then
+    echo "Aborting!  One of your samples is invalid."
+    return 0
+  fi
+fi
+
 #Print status to screen
 echo " " 
 echo " " 
@@ -71,6 +82,9 @@ if [ ! -d crab_status_logs ]; then mkdir crab_status_logs; fi
 
 #shouldContinue to go false when all jobs are done
 shouldContinue="true"
+
+#use the correct sample directory which we get from twiki.py
+if [ -e ../../theDir.txt ]; then theDir=$(cat ../../theDir.txt); fi
 
 #remove old post-processing logs
 rm crab_status_logs/pp.txt 2>/dev/null 
@@ -145,7 +159,7 @@ do
     then
       root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/user/$USER/$short_filename/crab_$filename/$dateTime/0000/\"\) > crab_status_logs/temp2.txt 2>&1
       nIn=`grep -r "nEntries" crab_status_logs/temp2.txt | tail -1 | awk '{print $NF}'`
-      root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/group/snt/$thedir/$filename/$tagDir\"\) > crab_status_logs/temp.txt 2>&1
+      root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/group/snt/$theDir/$filename/$tagDir\"\) > crab_status_logs/temp.txt 2>&1
       grep -r "trying to recover" crab_status_logs/temp.txt &> /dev/null
       if [ "$?" == "0" ] 
       then 
@@ -162,7 +176,7 @@ do
         if [ "${NREDOPP[$fileNumber]}" -lt "3" ] 
         then
           echo "<font color=\"red\"> &nbsp; &nbsp; <b> Garrr!  More events out than in!  Post-processing again.... <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
-          rm /hadoop/cms/store/group/snt/$thedir/$filename/$tagDir/*.root 2> /dev/null
+          rm /hadoop/cms/store/group/snt/$theDir/$filename/$tagDir/*.root 2> /dev/null
           NREDOPP[$fileNumber]=$(( ${NREDOPP[$fileNumber]} + 1 ))
           WHICHDONE[$fileNumber]="true" 
         else
@@ -179,6 +193,7 @@ do
         then
           echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
           echo "<font color=\"blue\"> &nbsp; &nbsp; <b> This task be finished!!!! nEventsIn: $nIn nEventsOut: $nOut <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
+          echo "<font color=\"black\"> &nbsp; &nbsp; <b> Location: /hadoop/cms/store/group/snt/$theDir/$filename/$tagDir <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
           echo "$filename $nIn $nOut" >> crab_status_logs/isdone.txt
           let "fileNumber += 1"
           continue
@@ -188,9 +203,9 @@ do
           numbers=`grep -r "$filename" crab_status_logs/copy.txt | grep "trying to recover" | awk '{print $5}' | sed 's/\//\ /g' | awk '{print $NF}' | sed 's/_/\ /g' | awk '{print $NF}' | sed 's/\./\ /g' | awk '{print $1}'`
           for i in $numbers
           do
-            rm /hadoop/cms/store/group/snt/$thedir/$filename/$tagDir/merged_ntuple_$i.root
+            rm /hadoop/cms/store/group/snt/$theDir/$filename/$tagDir/merged_ntuple_$i.root
           done
-          mv /hadoop/cms/store/group/snt/$thedir/$filename/$tagDir/*.root /hadoop/cms/store/user/$USER/$short_filename/crab_$filename/CMS3_$tagDir/merged/
+          mv /hadoop/cms/store/group/snt/$theDir/$filename/$tagDir/*.root /hadoop/cms/store/user/$USER/$short_filename/crab_$filename/CMS3_$tagDir/merged/
           WHICHDONE[$fileNumber]="true"
           echo "<font color=\"red\"> &nbsp; &nbsp; <b> Shiver me timbers!  There was a problem copying this file.  File $i is corrupt. Fixing..... nEventsIn: $nIn.  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
           let "fileNumber += 1"
@@ -212,7 +227,7 @@ do
       then
           echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
           numbers=`grep -r "$filename" crab_status_logs/copy.txt | grep "trying to recover" | awk '{print $5}' | sed 's/\//\ /g' | awk '{print $NF}' | sed 's/_/\ /g' | awk '{print $NF}' | sed 's/\./\ /g' | awk '{print $1}'`
-          rm /hadoop/cms/store/group/snt/$thedir/$filename/$tagDir/*.root
+          rm /hadoop/cms/store/group/snt/$theDir/$filename/$tagDir/*.root
           WHICHDONE[$fileNumber]="true"
           echo "<font color=\"red\"> &nbsp; &nbsp; <b> Shiver me timbers!  Did not post-process, but found a corrupt file in the output dirrrectory on the cmstas hadoop.... </b> <BR> Deleting everything and redoing it.  nEventsIn: $nIn.  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
           python process.py $file $fileNumber $dateTime &
@@ -247,7 +262,8 @@ do
           isDonePP=`grep -r "$filename" crab_status_logs/pp.txt | tail -1 | awk '{print $2}'`
           if [ "$isDonePP" == "done" ] 
           then
-            echo "<font color=\"blue\"> &nbsp; &nbsp; <b> Post-Processing is finished!  nEventsIn: $nIn  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
+            nOut=`grep -r "nEntries" crab_status_logs/temp.txt | tail -1 | awk '{print $NF}'`
+            echo "<font color=\"blue\"> &nbsp; &nbsp; <b> Post-Processing is finished!  nEventsIn: $nIn  nEventsOut: $nOut  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
             WHICHDONE[$fileNumber]="done"
           elif [ "$isDonePP" == "alreadyThere" ] 
           then
@@ -342,7 +358,34 @@ do
     isQueued="$?"
     if [ "$isQueued" == "0" ]
     then
-      echo '<font color="blue"> &nbsp; &nbsp; <b> Task is Queued!! <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
+      # if jobs queued, write a file that has timestamp for initial queue time
+      queued_filename="${status_filename%%.txt}.queued"
+      if [ -e $queued_filename ]; then
+        # if queued file already exists, then compare it with current timestamp
+        timeThen=$(cat $queued_filename)
+        timeNow=$(date +%s)
+        minsQueued=$(( ($timeNow-$timeThen)/60 ))
+        echo '<font color="blue"> &nbsp; &nbsp; <b> Task has been queued for '"$minsQueued"' minutes!! <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
+        if [ $minsQueued -gt $((12*60)) ]; then
+          echo '<font color="red"> &nbsp; &nbsp; <b> Task has been queued for more than 12 hours. Resubmitting!! <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
+          rm -rf crab_$crab_filename &> /dev/null
+          ./FindLumisPerJob.sh $inputDS > LumisPerJob_temp.txt
+          numLumiPerJob=`less LumisPerJob_temp.txt`
+          rm LumisPerJob_temp.txt
+          NCRABREDO[$fileNumber]=$(( ${NCRABREDO[$fileNumber]} + 1 ))
+          if [ "$sparms" == "" ]
+          then
+            python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d $inputDS -t $CMS3tag -gtag $gtag -isData $isData -lumisPerJob $numLumiPerJob &> /dev/null
+          else
+            python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d $inputDS -t $CMS3tag -gtag $gtag -isData $isData -lumisPerJob $numLumiPerJob -sParms $sparms &> /dev/null
+          fi
+          crab submit -c cfg/$crab_filename.py &> /dev/null
+        fi
+      else
+        echo '<font color="blue"> &nbsp; &nbsp; <b> Task is Queued!! <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
+        echo "$(date +%s)" >> $queued_filename
+      fi
+
       let "fileNumber += 1"
       continue
     fi

@@ -6,14 +6,16 @@ import time
 import datetime
 import getpass
 import fileinput
+import commands
 
 #Switches
-dir2 = "run2";
+dir2 = commands.getstatusoutput("cat theDir.txt")[1] #run2_25ns, run2_50ns, etc.
 
 user = getpass.getuser()
 if (user == "dsklein"): user = "dklein";
 if (user == "iandyckes"): user = "gdyckes";
 if (user == "mderdzinski"): user = "mderdzin";
+if (user == "rclsa"): user = "rcoelhol";
 user2 = getpass.getuser()
 args = sys.argv
 file = args[1]

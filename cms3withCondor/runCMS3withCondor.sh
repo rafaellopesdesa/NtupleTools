@@ -4,10 +4,10 @@
   #This should have the first line being the directory you want to run on (/store/...)
   #Subsequent lines should be the actual file names relative to that dir
   #(no way to look them up remotely, have to go to eos)
-instructions=t5qqqqww_1200_1000_800.txt
+instructions=SS_samples/$1.txt
 
 #State the absolute output path (in hadoop) where output should go
-outputPath=/hadoop/cms/store/user/$USER/condor/SSPrivate/v1.08/T5qqqqWW_1200_1000_800/
+outputPath=/hadoop/cms/store/user/$USER/condor/SSPrivate/v07-02-08/$1/
 
 #State the CMS3 tag you want to use
 cms3tag=CMS3_V07-02-08

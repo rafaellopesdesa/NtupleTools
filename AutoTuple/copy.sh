@@ -26,6 +26,7 @@ USERNAME="$USER"
 if [ "$USERNAME" == "dsklein" ]; then USERNAME="dklein"; fi
 if [ "$USERNAME" == "iandyckes" ]; then USERNAME="gdyckes"; fi
 if [ "$USERNAME" == "mderdzinski" ]; then USERNAME="mderdzin"; fi
+if [ "$USERNAME" == "rclsa" ]; then USERNAME="rcoelhol"; fi
 
 #check CMS3
 nRedo=`grep -r "Too few merged events\!" copy_log_$shortName.log | awk '{print $5}'`
@@ -48,9 +49,13 @@ then
   #Resubmit merge jobs
   if [ "$nRedo" == "" ]; then nRedo2=0; else nRedo2=$(( $nRedo + 1 )); fi
   sed -i "s/Too few merged events! $nRedo/Too few merged events! $nRedo2/" copy_log_$shortName.log 
-  #rm /hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$CMS3tag/merged/*.root
-  echo "Should resubmit here!! Fix me!!" 
-  #python process.py $file $fileNumber $dateTime &
+  rm /hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$CMS3tag/merged/*.root
+  #echo "Should resubmit here!! Fix me!!" 
+  fileNumber=$(grep -n $dataSet *.txt | grep -v updateTwiki | cut -d ':' -f2)
+  fileNumber=$((fileNumber - 1))
+  file=$(grep -n $dataSet *.txt | grep -v updateTwiki | cut -d ':' -f1)
+  echo "python process.py $file $fileNumber $dateTime &"
+  python process.py $file $fileNumber $dateTime &
 else
   #Copy to bad dir
   mkdir /hadoop/cms/store/group/snt/$thedir/$longName 2> /dev/null
