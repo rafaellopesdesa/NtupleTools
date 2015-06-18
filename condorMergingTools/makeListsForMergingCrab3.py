@@ -210,6 +210,8 @@ if(overrideCrab):
     ### get number of events in a TChain of root files in datapath
     status, macroData = commands.getstatusoutput("root -l -b -q -n 'libC/counts.C(\"%s\")' | grep nevents" % datapath)
     totalNumEventsRun = int(macroData.split("=")[-1])
+    status, macroData = commands.getstatusoutput("root -l -b -q -n 'libC/counts.C(\"%s\", true)' | grep nevents" % datapath)
+    effectiveNumEventsRun = int(macroData.split("=")[-1])#accounts for negative weighted events in NLO samples
 else:
     getNumEventsRun(crabpath)
 
@@ -219,7 +221,7 @@ print '+++++++++++++++++++++++++++++'
 
 print "creating file metaData.txt for postprocessing..."
 f = open("%smergeFiles/metaData.txt" %(crabpath),"w")
-f.write("n: %s\nk: %s\nf: %s\nx: %s\n" %(str(totalNumEventsRun),kFactor,filtEff,xSection))
+f.write("n: %s\neffN: %s\nk: %s\nf: %s\nx: %s\n" %(str(totalNumEventsRun),str(effectiveNumEventsRun),kFactor,filtEff,xSection))
 cmd = "ls %s/mergeFiles/mergeLists/ | awk '{print $1}'" %(crabpath) 
 output = commands.getoutput(cmd).split('\n')
 for listName in output:
