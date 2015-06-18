@@ -15,7 +15,7 @@ void printColor(const char* message, const int color, bool human) {
 }
 
 
-int missingDatasets(TString input="test.txt", TString output = "outfile.txt", bool humanUser = true) {
+int missingDatasets(TString input="allsamples.txt", TString output = "outfile.txt", bool humanUser = true) {
   
   //open text file with dataset list
   std::ifstream infile;
