@@ -2,9 +2,22 @@
 
 echo "Running monitor.sh"
 
-OUT=/nfs-7/userdata/dataTuple/dataTupleMonitor.txt
+if [ $# -eq 0 ] 
+  then 
+    echo "No BASEPATH specified in monitor.sh!"
+    exit
+  else
+    BASEPATH=$1
+fi
 
-sed 's./. .g' /nfs-7/userdata/dataTuple/input.txt | awk '{print $1}' > listOfDatasets.txt #replace "/" by " " and then print out the first column
+if [ ! -d $BASEPATH ]
+then
+  echo "BASEPATH monitor.sh does not exist!"
+fi
+
+OUT=$BASEPATH/dataTupleMonitor.txt
+
+sed 's./. .g' $BASEPATH/input.txt | awk '{print $1}' > listOfDatasets.txt #replace "/" by " " and then print out the first column
 
 echo "Last updated: `date`" > $OUT
 echo "" >> $OUT
@@ -25,7 +38,7 @@ while read line
 do
   DATASET=$line
   NTOTAL=`cat masterList.txt | grep $line | wc -l`
-  NCOMPLETED=`cat /nfs-7/userdata/dataTuple/completedList.txt | grep $line | wc -l`
+  NCOMPLETED=`cat $BASEPATH/completedList.txt | grep $line | wc -l`
   if [ -e runningList.txt ]; then NJOBSRUNNING=`cat runningList.txt | grep $line | wc -l`; fi
   if [ -e idleList.txt ]; then NJOBSIDLE=`cat idleList.txt | grep $line | wc -l`; fi
   if [ -e heldList.txt ]; then NJOBSHELD=`cat heldList.txt | grep $line | wc -l`; fi

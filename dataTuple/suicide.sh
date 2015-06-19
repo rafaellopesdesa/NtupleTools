@@ -1,8 +1,16 @@
 #!/bin/bash
 
-if [ -e /nfs-7/userdata/dataTuple/suicide.txt ] 
+if [ $# -eq 0 ] 
+  then 
+    echo "No BASEPATH specified in suicide.sh!"
+    exit
+  else
+    BASEPATH=$1
+fi
+
+if [ -e $BASEPATH/suicide.txt ] 
 then
-  if [ -e /nfs-7/userdata/dataTuple/running.pid ]
+  if [ -e $BASEPATH/running.pid ]
   then
     while read line 
     do
@@ -11,9 +19,9 @@ then
       jobID=$line
     fi
     echo "jobID: $jobID"
-    done < /nfs-7/userdata/dataTuple/running.pid
+    done < $BASEPATH/running.pid
   fi
 
-  rm -r /nfs-7/userdata/dataTuple/running.pid > /dev/null 2>&1
+  rm -r $BASEPATH/running.pid > /dev/null 2>&1
   crontab -r 
 fi

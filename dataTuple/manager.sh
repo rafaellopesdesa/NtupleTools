@@ -2,6 +2,19 @@
 
 #This is the manager that calls all the other pieces.  This should itself be called every N minutes.  
 
+#Check arguments, set BASEPATH
+if [ $# -eq 0 ] 
+  then 
+    BASEPATH="$PWD/basepath"
+  else
+    BASEPATH=$1
+fi
+
+if [ ! -d $BASEPATH ]
+then
+  mkdir -p $BASEPATH
+fi
+
 #Set CMS3 tag to use
 CMS3tag=CMS3_V07-02-08
 
@@ -9,15 +22,15 @@ CMS3tag=CMS3_V07-02-08
 MAX_NEVENTS=10
 
 #Don't allow more than one instance to run
-if [ -e /nfs-7/userdata/dataTuple/running.pid ] 
+if [ -e $BASEPATH/running.pid ] 
 then
   echo "An instance of manager is already running"
   exit 1
 else
   #store process info in pid file
-  echo "Current time is: `date`" > /nfs-7/userdata/dataTuple/running.pid
-  echo "manager running on `hostname`" >> /nfs-7/userdata/dataTuple/running.pid
-  echo "PID = $$" >> /nfs-7/userdata/dataTuple/running.pid
+  echo "Current time is: `date`" > $BASEPATH/running.pid
+  echo "manager running on `hostname`" >> $BASEPATH/running.pid
+  echo "PID = $$" >> $BASEPATH/running.pid
 
   #also store info in log file that catches output
   echo "Current time is: `date`"
@@ -72,13 +85,13 @@ then
 fi
 
 #Create completed list
-if [ ! -e /nfs-7/userdata/dataTuple/completedList.txt ] 
+if [ ! -e $BASEPATH/completedList.txt ] 
 then
-  touch /nfs-7/userdata/dataTuple/completedList.txt
+  touch $BASEPATH/completedList.txt
 fi
 
-#change permissions on nfs-7 text files
-chmod 777 /nfs-7/userdata/dataTuple/* > /dev/null 2>&1 
+#change permissions on text files
+chmod 777 $BASEPATH/* > /dev/null 2>&1 
 
 #Make sure you're not running too many jobs
 . nJobsRunning.sh
@@ -108,14 +121,14 @@ then
 fi
 
 #1. DBS query to generate masterList with files on input.txt.
-echo "Populating masterList.txt with files for datasets in /nfs-7/userdata/dataTuple/input.txt"
-. GenerateMasterList.sh
+echo "Populating masterList.txt with files for datasets in $BASEPATH/input.txt"
+. GenerateMasterList.sh $BASEPATH
 echo "masterList.txt written"
 
 #2. Diff between masterList and completedList to make notDoneList.
 echo "Getting list of files that are on masterList but not on completedList.  Output in notDoneList.txt"
 
-sort /nfs-7/userdata/dataTuple/completedList.txt > temp33.txt
+sort $BASEPATH/completedList.txt > temp33.txt
 
 sort $PWD/masterList.txt > temp32.txt
 
@@ -229,7 +242,7 @@ do
         cp ../condorMergingTools/Makefile . 
         make
       fi
-      . checkFile.sh $outputPath/$outputDir/$fileName $currentFile
+      . checkFile.sh $BASEPATH $outputPath/$outputDir/$fileName $currentFile
       continue
     fi
   fi
@@ -294,6 +307,6 @@ fi
 
 . monitor.sh
 
-rm -f /nfs-7/userdata/dataTuple/running.pid > /dev/null 2>&1 
+rm -f $BASEPATH/running.pid > /dev/null 2>&1 
 
 echo "done!"

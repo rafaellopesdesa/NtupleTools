@@ -1,3 +1,17 @@
+#Check arguments, set BASEPATH
+if [ $# -eq 0 ] 
+  then 
+    BASEPATH="$PWD/basepath"
+  else
+    BASEPATH=$1
+fi
+
+if [ ! -d $BASEPATH ]
+then
+  mkdir -p $BASEPATH
+fi
+
+
 chmod +x ./*.sh
 chmod +x ./*.py
 if [ -e submitList.txt ]
@@ -24,9 +38,9 @@ then
   rm cycleNumber.txt
 fi 
 
-if [ -e /nfs-7/userdata/dataTuple/suicide.txt ]
+if [ -e $BASEPATH/suicide.txt ]
 then
-  rm -f /nfs-7/userdata/dataTuple/suicide.txt
+  rm -f $BASEPATH/suicide.txt
 fi
 
 #Check Proxy
@@ -39,7 +53,7 @@ fi
 
 #Submit
 crontab -l > mycron 2>/dev/null
-echo "* * * * * cd ${PWD} && /bin/sh ${PWD}/manager.sh >> /nfs-7/userdata/dataTuple/dataTuple.log 2>&1" >> mycron;
-echo "* * * * * cd ${PWD} && /bin/sh suicide.sh" >> mycron
+echo "* * * * * cd ${PWD} && /bin/sh ${PWD}/manager.sh $BASEPATH >> $BASEPATH/dataTuple.log 2>&1" >> mycron;
+echo "* * * * * cd ${PWD} && /bin/sh suicide.sh $BASEPATH" >> mycron
 crontab mycron
 rm mycron
