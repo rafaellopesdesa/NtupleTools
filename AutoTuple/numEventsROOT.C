@@ -1,8 +1,8 @@
-int numEventsROOT(char* file){
+void numEventsROOT(std::string file){
 
   TChain *chain = new TChain("Events");
-  cout << Form("%s/*.root", file) << endl;
-  chain->Add(Form("%s/*.root", file));
+  cout << Form("%s/*.root", file.c_str()) << endl;
+  chain->Add(Form("%s/*.root", file.c_str()));
   cout << file << " nEntries: " << chain->GetEntries() << endl;
 
 }
