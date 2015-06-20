@@ -13,7 +13,7 @@ containsElement () {
 if [ $# -eq 0 ] 
   then 
   echo "No arguments, mate!  Need the instructions file....." 
-  exit 
+  return 0 
 fi
 
 #Check for lumiBlock file
