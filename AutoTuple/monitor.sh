@@ -302,7 +302,7 @@ do
       while [ "$numDirs" -gt "1" ]
       do
         if [ ! -e /hadoop/cms/store/user/$USER/$short_filename/crab_$filename/$dateTime/000$(( $numDirs-1 )) ]; then echo "does not exist, not copying"; continue; fi
-        mv /hadoop/cms/store/user/$USER/$short_filename/crab_$filename/$dateTime/000$(( $numDirs-1 )) /hadoop/cms/store/user/$USER/$short_filename/crab_$filename/$dateTime/0000/
+        mv /hadoop/cms/store/user/$USER/$short_filename/crab_$filename/$dateTime/000$(( $numDirs-1 ))/* /hadoop/cms/store/user/$USER/$short_filename/crab_$filename/$dateTime/0000/
          rmdir /hadoop/cms/store/user/$USER/$short_filename/crab_$filename/$dateTime/000$(( $numDirs-1 ))
          numDirs=$(( $numDirs - 1 )) 
       done
