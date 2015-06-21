@@ -6,7 +6,12 @@
 # ./submitMergeJobs.sh cfg/sample_cfg.sh
 
 configFile=$1
-source $configFile
+if [ "$isDataTuple" == "1" ]
+then
+  workingDirectory=$PWD
+else
+  source $configFile
+fi
 
 #ensures that there is a directory to stageout to
 if [ ! -d $outputDir ]; then
@@ -40,6 +45,7 @@ numjobssubmitted=0
 for list in $filesList; do
 
 	inputList=${inputListDirectory}$list
+    if [ "$isDataTuple" == "1" ]; then inputList=$list; fi
 	inputArguments="$inputList $mData $outputDir"
 	inputFiles=${inputList},${mData},$executableScript,$workingDirectory/libC/mergeScript.C,$workingDirectory/sweepRoot,$workingDirectory/libC/addBranches.C
 
