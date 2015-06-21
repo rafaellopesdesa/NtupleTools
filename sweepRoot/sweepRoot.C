@@ -11,7 +11,9 @@
 #include <string>
 #include <vector>
 #include "TFile.h"
+#include "TTree.h"
 #include "TObject.h"
+#include "TH1F.h"
 
 void usage() {
    std::cout << "Usage: sweepRoot [-b] [-g] [-x] [-r] [-d] [-o TObject::GetName()] file1 [file2]..." << std::endl;
@@ -22,6 +24,7 @@ void usage() {
    std::cout << "    -r        prefix rfio" << std::endl;
    std::cout << "    -d        prefix dcache" << std::endl;
    std::cout << "    -o        check for TObject of given name" << std::endl;
+   std::cout << "    -t        check for TTree of given name" << std::endl;
    std::cout << std::endl;
    exit(1);
 }
@@ -49,6 +52,7 @@ int main(int argc, char** argv) {
    bool useRfio     = false;
    bool useDcache   = false;
    std::string name = "";
+   std::string tree_name = "";
 
    int shift = 1;
    if (argc > 1) {
@@ -93,6 +97,12 @@ int main(int argc, char** argv) {
          if (tmp == "-o") {
             if (it == argc-1) usage();
             name = std::string(argv[it+1]);
+            shift += 2;
+         }
+         // check for TTree of given name
+         if (tmp == "-t") {
+            if (it == argc-1) usage();
+            tree_name = std::string(argv[it+1]);
             shift += 2;
          }
       }
@@ -141,6 +151,23 @@ int main(int argc, char** argv) {
             if (doPrintBad) printbad.push_back(target);
             ++nbad;
             continue;
+         }
+      }
+
+      /****************/
+      /* check tree */
+      /****************/
+      if (tree_name != "") {
+         TTree* tree = (TTree*)f->Get(tree_name.c_str());
+         if (tree->GetEntriesFast() > 0) {
+           TH1F* h_pfmet = new TH1F("h_pfmet", "h_pfmet", 1000, 0, 1000);
+           tree->Draw("evt_pfmet >> h_pfmet");
+           float avg_pfmet = h_pfmet->GetMean(1);
+           if (avg_pfmet < 0.1 || avg_pfmet > 10000){
+             //std::cout << "bad!" << std::endl;
+             ++nbad;
+             continue;
+           }
          }
       }
 
