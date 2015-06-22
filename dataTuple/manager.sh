@@ -2,6 +2,8 @@
 
 #This is the manager that calls all the other pieces.  This should itself be called every N minutes.  
 
+echo " "
+
 #Check arguments, set BASEPATH, JOBTYPE
 while getopts ":b:t:" opt; do
   case $opt in
@@ -44,7 +46,7 @@ fi
 CMS3tag=CMS3_V07-02-08
 
 #State the maxmimum number of events
-MAX_NEVENTS=-1 #all events
+MAX_NEVENTS=2500 #all events
 
 #Don't allow more than one instance to run
 if [ -e $BASEPATH/running.pid ] 
