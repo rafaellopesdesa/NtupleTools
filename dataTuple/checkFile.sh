@@ -40,6 +40,7 @@ rm validFileOutput.txt
 
 currentNumber=0
 currentSize=0
+newFileNevents=0
 
 #If the file is good, add it to list for post-processing
 if [ "$isGood" == "1" ] 
