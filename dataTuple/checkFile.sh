@@ -11,6 +11,11 @@ fi
 
 isGood=0
 
+if [ ! -d $BASEPATH/fileLists ] 
+then
+  mkdir -p $BASEPATH/fileLists
+fi
+
 readarray -t results < validFileOutput.txt
 for i in "${results[@]}"
 do
@@ -33,10 +38,14 @@ done
 
 rm validFileOutput.txt
 
+currentNumber=0
+currentSize=0
+
 #If the file is good, add it to list for post-processing
 if [ "$isGood" == "1" ] 
 then
   taskName=`echo $2 | tr '/' ' ' |  awk '{print $3"_"$4"_"$5"_"$6}'`
+  if [ ! -d $BASEPATH/fileLists/mergedLists/$taskName ]; then mkdir -p $BASEPATH/fileLists/mergedLists/$taskName; fi
   mergedFileNumber=`less $BASEPATH/mergedLists/$taskName/status.txt | head -1 | awk '{print $3}'`
   echo $2 >> $BASEPATH/mergedLists/$taskName/merged_list_$mergedFileNumber.txt 
   currentSize=`less $BASEPATH/mergedLists/$taskName/status.txt | head -2 | tail -1 | awk '{print $3}'`
