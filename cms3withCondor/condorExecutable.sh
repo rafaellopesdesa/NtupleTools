@@ -35,7 +35,7 @@ source /cvmfs/cms.cern.ch/cmsset_default.sh
 #source /cvmfs/cms.cern.ch/slc6_amd64_gcc491/lcg/root/5.34.18/bin/thisroot.sh
 
 pushd .
-cd /cvmfs/cms.cern.ch/slc6_amd64_gcc481/cms/cmssw/CMSSW_7_4_1_patch1/src/
+cd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_1_patch1/src/
 eval `scramv1 runtime -sh`
 popd
 
