@@ -63,7 +63,13 @@ int missingDatasets(TString input="allsamples.txt", TString output = "outfile.tx
       //if sample in production, skip and tell user
       else if( status == "PRODUCTION") {
       	das_failed = false;
-	printColor(dataset + " in Production", 92, humanUser);
+	printColor(dataset + " in PRODUCTION", 92, humanUser);
+      }
+
+      //is sample is invalid, skip and tell user
+      else if( status == "INVALID") {
+      	das_failed = false;
+	printColor(dataset + " is INVALID", 91, humanUser);
       }
 
       else if (loop_count == 2) printColor(dataset + " DAS QUERY FAILED 3 TIMES. Giving up.", 91, humanUser);
