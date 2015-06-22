@@ -80,28 +80,31 @@ fi
 
 cd $PWD
 
-#Make sure cms3withCondor exists
-if [ ! -d cms3withCondor ] && [ -d ../cms3withCondor ]
+if [ $JOBTYPE == "cms3" ]
 then
-  cp -r ../cms3withCondor .
-  sed -i s/isDataTupleCMS3flagged=\"false\"/isDataTupleCMS3flagged=\"true\"/g cms3withCondor/submit.sh
-elif [ ! -d cms3withCondor ]
-then
-  echo "Cannot find cms3withCondor"
-  exit 1
+  #Make sure cms3withCondor exists
+  if [ ! -d cms3withCondor ] && [ -d ../cms3withCondor ]
+  then
+    cp -r ../cms3withCondor .
+    sed -i s/isDataTupleCMS3flagged=\"false\"/isDataTupleCMS3flagged=\"true\"/g cms3withCondor/submit.sh
+  elif [ ! -d cms3withCondor ]
+  then
+    echo "Cannot find cms3withCondor"
+    exit 1
+  fi
+
+  cd cms3withCondor
+
+  #Delete files that stageout in home area
+  rm *.root 2> /dev/null 
+
+  #Set PATH to run scripts in here
+  if [[ ":$PATH:" != *":$PWD:"* ]]; then
+      PATH="${PATH:+"$PATH:"}$PWD"
+  fi
+
+  cd ..
 fi
-
-cd cms3withCondor
-
-#Delete files that stageout in home area
-rm *.root 2> /dev/null 
-
-#Set PATH to run scripts in here
-if [[ ":$PATH:" != *":$PWD:"* ]]; then
-    PATH="${PATH:+"$PATH:"}$PWD"
-fi
-
-cd ..
 
 #Create submit list
 if [ -e submitList.txt ] 

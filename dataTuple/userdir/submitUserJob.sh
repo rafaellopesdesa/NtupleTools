@@ -13,6 +13,9 @@ do echo "No Proxy found issuing \"voms-proxy-init -voms cms\""
    voms-proxy-init -hours 168 -voms cms 
 done
 
+echo "\n"
+cat $files
+echo "\n"
 
 PSET="pset.py"
 libCMSSW="libCMSSW.tar.gz"
