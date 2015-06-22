@@ -1,4 +1,4 @@
-#This takes two arguments
+#This takes 2-3 arguments
   #1) the directory in /nfs-7/userdata/dataTuple/mergedLists/
   #2) the number file you want to make or remake
   #3) the basepath.  For CMS3 resubmissions, this is /nfs-7/userdata/dataTuple
