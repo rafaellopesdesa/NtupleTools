@@ -268,8 +268,8 @@ do
     else
       if [ ! -e sweepRoot.o ] 
       then
-        cp ../condorMergingTools/libC/sweepRoot.C . 
-        cp ../condorMergingTools/Makefile . 
+        cp ../sweepRoot/libC/sweepRoot.C . 
+        cp ../sweepRoot/Makefile . 
         make
       fi
       . checkFile.sh $BASEPATH $outputPath/$outputDir/$fileName $currentFile
