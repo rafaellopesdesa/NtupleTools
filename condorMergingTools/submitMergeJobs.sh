@@ -6,7 +6,12 @@
 # ./submitMergeJobs.sh cfg/sample_cfg.sh
 
 configFile=$1
-source $configFile
+if [ "$isDataTuple" == "1" ]
+then
+  workingDirectory=$PWD
+else
+  source $configFile
+fi
 
 #ensures that there is a directory to stageout to
 if [ ! -d $outputDir ]; then
@@ -40,8 +45,9 @@ numjobssubmitted=0
 for list in $filesList; do
 
 	inputList=${inputListDirectory}$list
+    if [ "$isDataTuple" == "1" ]; then inputList=$list; fi
 	inputArguments="$inputList $mData $outputDir"
-	inputFiles=${inputList},${mData},$executableScript,$workingDirectory/libC/mergeScript.C,$workingDirectory/sweepRoot,$workingDirectory/libC/addBranches.C
+	inputFiles=${inputList},${mData},$executableScript,$workingDirectory/libC/mergeScript.C,$workingDirectory/../sweepRoot/sweepRoot,$workingDirectory/libC/addBranches.C
 
 # this takes care of "resubmission. When all your condor jobs are done, this will check that the files are there, and if they are not, it will resubmit a job. If you find a job that has output a corrupted file (which it shouldn't unless stageout fails) just delete the file and run this script again."
 	outFileName=`echo $list | sed 's/list/ntuple/g' | sed 's/txt/root/g'`
