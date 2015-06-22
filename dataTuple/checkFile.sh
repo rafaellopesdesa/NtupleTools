@@ -45,15 +45,15 @@ newFileNevents=0
 #If the file is good, add it to list for post-processing
 if [ "$isGood" == "1" ] 
 then
-  taskName=`echo $2 | tr '/' ' ' |  awk '{print $3"_"$4"_"$5"_"$6}'`
+  taskName=`echo $3 | tr '/' ' ' |  awk '{print $3"_"$4"_"$5"_"$6}'`
   if [ ! -d $BASEPATH/fileLists/mergedLists/$taskName ]; then mkdir -p $BASEPATH/fileLists/mergedLists/$taskName; fi
   mergedFileNumber=`less $BASEPATH/mergedLists/$taskName/status.txt | head -1 | awk '{print $3}'`
-  echo $2 >> $BASEPATH/mergedLists/$taskName/merged_list_$mergedFileNumber.txt 
+  echo $3 >> $BASEPATH/mergedLists/$taskName/merged_list_$mergedFileNumber.txt 
   currentSize=`less $BASEPATH/mergedLists/$taskName/status.txt | head -2 | tail -1 | awk '{print $3}'`
   currentNumber=`less $BASEPATH/mergedLists/$taskName/status.txt | head -3 | tail -1 | awk '{print $3}'`
-  newFileSize=`ls -l $1 | awk '{print $5}'`
+  newFileSize=`ls -l $2 | awk '{print $5}'`
   newTotalSize=$(( $newFileSize + $currentSize ))
-  newFileNevents=`root -b -q getNevents.C\(\"$1\"\) &> blah.txt; less blah.txt | tail -1 | cut -c 1-5 --complement ; rm blah.txt`
+  newFileNevents=`root -b -q getNevents.C\(\"$2\"\) &> blah.txt; less blah.txt | tail -1 | cut -c 1-5 --complement ; rm blah.txt`
   newTotalNevents=$(( $currentNumber + $newFileNevents ))
   sed -i "s/current\ size\ (bytes).*/current size (bytes): $newTotalSize/" $BASEPATH/mergedLists/$taskName/status.txt
   sed -i "s/current\ nEvents.*/current nEvents: $newTotalNevents/" $BASEPATH/mergedLists/$taskName/status.txt
