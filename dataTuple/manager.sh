@@ -233,7 +233,7 @@ do
   echo "outputDir: $outputDir"
   if [ ! -d $outputPath/$outputDir ]
   then
-    mkdir $outputPath/$outputDir
+    mkdir -p $outputPath/$outputDir
   fi
 
   #e. If not on run list, check if the output file is present and valid. If not present and valid, mark for submission and on to step 5.
