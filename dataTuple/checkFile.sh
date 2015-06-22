@@ -43,7 +43,7 @@ then
   currentNumber=`less $BASEPATH/mergedLists/$taskName/status.txt | head -3 | tail -1 | awk '{print $3}'`
   newFileSize=`ls -l $1 | awk '{print $5}'`
   newTotalSize=$(( $newFileSize + $currentSize ))
-  newFileNevents=`rot getNevents.C\(\"$1\"\) &> blah.txt; less blah.txt | tail -1 | cut -c 1-5 --complement ; rm blah.txt`
+  newFileNevents=`root -b -q getNevents.C\(\"$1\"\) &> blah.txt; less blah.txt | tail -1 | cut -c 1-5 --complement ; rm blah.txt`
   newTotalNevents=$(( $currentNumber + $newFileNevents ))
   sed -i "s/current\ size\ (bytes).*/current size (bytes): $newTotalSize/" $BASEPATH/mergedLists/$taskName/status.txt
   sed -i "s/current\ nEvents.*/current nEvents: $newTotalNevents/" $BASEPATH/mergedLists/$taskName/status.txt
