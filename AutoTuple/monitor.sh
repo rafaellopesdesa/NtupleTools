@@ -145,6 +145,30 @@ do
     status_filename="crab_status_logs/${crab_filename}_log.txt"
     tagDir=`echo $CMS3tag | cut -c 6-`
 
+    #if crab directory doesn't exist (i.e. was added), make and submit crab jobs
+    if ! [ -d crab_$filename ]
+    then
+      if [ "${NCRABREDO[$fileNumber]}" -lt "2" ] 
+      then
+        echo '<font color="red"> &nbsp; &nbsp; <b> New crab task! Submitting..... <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
+        ./FindLumisPerJob.sh $inputDS > LumisPerJob_temp.txt
+        numLumiPerJob=`less LumisPerJob_temp.txt`
+        rm LumisPerJob_temp.txt
+        NCRABREDO[$fileNumber]=$(( ${NCRABREDO[$fileNumber]} + 1 ))
+        if [ "$sparms" == "" ]
+        then
+          python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d $inputDS -t $CMS3tag -gtag $gtag -isData $isData -lumisPerJob $numLumiPerJob &> /dev/null
+        else
+          python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d $inputDS -t $CMS3tag -gtag $gtag -isData $isData -lumisPerJob $numLumiPerJob -sParms $sparms &> /dev/null
+        fi
+        crab submit -c cfg/$crab_filename.py &> /dev/null
+      else
+        echo '<font color="red"> &nbsp; &nbsp; <b> Avast!  Blasted Crab Task Failed even after we resubmitted!! Giving up..... <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
+      fi
+      let "fileNumber += 1"
+      continue
+    fi
+    
     #date and time
     if [ -e crab_$filename/crab.log ] 
     then
