@@ -30,17 +30,17 @@ fi
 
 #Set environment
 export CMS_PATH=/cvmfs/cms.cern.ch
-export SCRAM_ARCH=slc6_amd64_gcc481
+export SCRAM_ARCH=slc6_amd64_gcc491
 source /cvmfs/cms.cern.ch/cmsset_default.sh
-source /cvmfs/cms.cern.ch/slc6_amd64_gcc481/lcg/root/5.34.18/bin/thisroot.sh
+#source /cvmfs/cms.cern.ch/slc6_amd64_gcc491/lcg/root/5.34.18/bin/thisroot.sh
 
 pushd .
-cd /cvmfs/cms.cern.ch/slc6_amd64_gcc481/cms/cmssw/CMSSW_7_2_0/src/
+cd /cvmfs/cms.cern.ch/slc6_amd64_gcc481/cms/cmssw/CMSSW_7_4_1_patch1/src/
 eval `scramv1 runtime -sh`
 popd
 
 #The lib and python directories come from the libCMS3 tarball
-export LD_LIBRARY_PATH=$PWD/lib/slc6_amd64_gcc481:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$PWD/lib/slc6_amd64_gcc491:$LD_LIBRARY_PATH
 export PATH=$PWD:$PATH
 export PYTHONPATH=$PWD/python:$PYTHONPATH
 
