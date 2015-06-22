@@ -6,6 +6,9 @@ if [ "$nJobsRunning" == "ID" ]
 then
   return 1
 fi
+
+nJobsRunning=`echo $nJobsRunning | rev | cut -c 1-2 --complement | rev`
+
 if [ "$nJobsRunning" -gt "2000" ]
 then
   echo "Data Tuple Warning!  You are running more than 2000 jobs." | /bin/mail -r "george@physics.ucsb.edu" -s "[dataTuple] warning" "george@physics.ucsb.edu, jgran@physics.ucsb.edu" 
