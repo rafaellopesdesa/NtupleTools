@@ -1,8 +1,21 @@
 #!/bin/bash
 
+if [ $# -eq 0 ] 
+  then 
+    echo "No BASEPATH specified in GenerateMasterList.sh!"
+    exit
+  else
+    BASEPATH=$1
+fi
+
+if [ ! -d $BASEPATH ]
+then
+  echo "BASEPATH in GenerateMasterList.sh does not exist!"
+fi
+
 > masterList.txt
 
-readarray -t samples < /nfs-7/userdata/dataTuple/input.txt
+readarray -t samples < $BASEPATH/input.txt
 for i in "${samples[@]}"
 do
   input_from_das=`./das_client.py --query="file dataset= $i site=T2_US_*"` #need to use --limit=0 to pick up all files!

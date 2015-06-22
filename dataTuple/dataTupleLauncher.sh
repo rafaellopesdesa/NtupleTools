@@ -1,3 +1,37 @@
+#Check arguments, set BASEPATH, JOBTYPE
+while getopts ":b:t:" opt; do
+  case $opt in
+    b) BASEPATH="$OPTARG";;
+    t)
+       if [ $OPTARG == "cms3" ]
+       then
+         JOBTYPE="$OPTARG"
+       elif [ $OPTARG == "user" ]
+       then
+         JOBTYPE="$OPTARG"
+       else
+         echo "Invalid argument \"-t $OPTARG\"." >&2
+         echo "Acceptable arguments for -t flag are \"cms3\" and \"user\"."
+         exit 1
+       fi
+    ;;
+    \?) echo "Invalid option -$OPTARG" >&2; exit 1;;
+    : ) echo "Missing option argument for -$OPTARG" >&2; exit 1;;
+    * ) echo "Unimplemented option: -$OPTARG" >&2; exit 1;;
+  esac
+done
+
+if [ ! -d $BASEPATH ]
+then
+  mkdir -p $BASEPATH
+fi
+
+if [ ! -d $BASEPATH ]
+then
+  "BASEPATH $BASEPATH does not exist and could not be created."
+  exit 1
+fi
+
 chmod +x ./*.sh
 chmod +x ./*.py
 if [ -e submitList.txt ]
@@ -24,9 +58,9 @@ then
   rm cycleNumber.txt
 fi 
 
-if [ -e /nfs-7/userdata/dataTuple/suicide.txt ]
+if [ -e $BASEPATH/suicide.txt ]
 then
-  rm -f /nfs-7/userdata/dataTuple/suicide.txt
+  rm -f $BASEPATH/suicide.txt
 fi
 
 #Check Proxy
@@ -39,7 +73,7 @@ fi
 
 #Submit
 crontab -l > mycron 2>/dev/null
-echo "* * * * * cd ${PWD} && /bin/sh ${PWD}/manager.sh >> /nfs-7/userdata/dataTuple/dataTuple.log 2>&1" >> mycron;
-echo "* * * * * cd ${PWD} && /bin/sh suicide.sh" >> mycron
+echo "* * * * * cd ${PWD} && /bin/sh ${PWD}/manager.sh -b $BASEPATH -t $JOBTYPE >> $BASEPATH/dataTuple.log 2>&1" >> mycron;
+echo "* * * * * cd ${PWD} && /bin/sh suicide.sh $BASEPATH" >> mycron
 crontab mycron
 rm mycron

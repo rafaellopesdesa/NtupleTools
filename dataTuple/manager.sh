@@ -2,22 +2,60 @@
 
 #This is the manager that calls all the other pieces.  This should itself be called every N minutes.  
 
+#Check arguments, set BASEPATH, JOBTYPE
+while getopts ":b:t:" opt; do
+  case $opt in
+    b) BASEPATH="$OPTARG";;
+    t)
+       if [ $OPTARG == "cms3" ]
+       then
+         JOBTYPE="$OPTARG"
+       elif [ $OPTARG == "user" ]
+       then
+         JOBTYPE="$OPTARG"
+       else
+         echo "Invalid argument \"-t $OPTARG\"." >&2
+         echo "Acceptable arguments for -t flag are \"cms3\" and \"user\"."
+         exit 1
+       fi
+    ;;
+    \?) echo "Invalid option -$OPTARG" >&2; exit 1;;
+    : ) echo "Missing option argument for -$OPTARG" >&2; exit 1;;
+    * ) echo "Unimplemented option: -$OPTARG" >&2; exit 1;;
+  esac
+done
+
+echo "manager running with options:"
+echo "JOBTYPE = $JOBTYPE"
+echo "BASEPATH = $BASEPATH"
+
+if [ ! -d $BASEPATH ]
+then
+  mkdir -p $BASEPATH
+fi
+
+if [ ! -d $BASEPATH ]
+then
+  "BASEPATH $BASEPATH does not exist and could not be created."
+  exit 1
+fi
+
 #Set CMS3 tag to use
 CMS3tag=CMS3_V07-02-08
 
 #State the maxmimum number of events
-MAX_NEVENTS=10
+MAX_NEVENTS=-1 #all events
 
 #Don't allow more than one instance to run
-if [ -e /nfs-7/userdata/dataTuple/running.pid ] 
+if [ -e $BASEPATH/running.pid ] 
 then
   echo "An instance of manager is already running"
   exit 1
 else
   #store process info in pid file
-  echo "Current time is: `date`" > /nfs-7/userdata/dataTuple/running.pid
-  echo "manager running on `hostname`" >> /nfs-7/userdata/dataTuple/running.pid
-  echo "PID = $$" >> /nfs-7/userdata/dataTuple/running.pid
+  echo "Current time is: `date`" > $BASEPATH/running.pid
+  echo "manager running on `hostname`" >> $BASEPATH/running.pid
+  echo "PID = $$" >> $BASEPATH/running.pid
 
   #also store info in log file that catches output
   echo "Current time is: `date`"
@@ -42,28 +80,31 @@ fi
 
 cd $PWD
 
-#Make sure cms3withCondor exists
-if [ ! -d cms3withCondor ] && [ -d ../cms3withCondor ]
+if [ $JOBTYPE == "cms3" ]
 then
-  cp -r ../cms3withCondor .
-  sed -i s/isDataTupleCMS3flagged=\"false\"/isDataTupleCMS3flagged=\"true\"/g cms3withCondor/submit.sh
-elif [ ! -d cms3withCondor ]
-then
-  echo "Cannot find cms3withCondor"
-  exit 1
+  #Make sure cms3withCondor exists
+  if [ ! -d cms3withCondor ] && [ -d ../cms3withCondor ]
+  then
+    cp -r ../cms3withCondor .
+    sed -i s/isDataTupleCMS3flagged=\"false\"/isDataTupleCMS3flagged=\"true\"/g cms3withCondor/submit.sh
+  elif [ ! -d cms3withCondor ]
+  then
+    echo "Cannot find cms3withCondor"
+    exit 1
+  fi
+
+  cd cms3withCondor
+
+  #Delete files that stageout in home area
+  rm *.root 2> /dev/null 
+
+  #Set PATH to run scripts in here
+  if [[ ":$PATH:" != *":$PWD:"* ]]; then
+      PATH="${PATH:+"$PATH:"}$PWD"
+  fi
+
+  cd ..
 fi
-
-cd cms3withCondor
-
-#Delete files that stageout in home area
-rm *.root 2> /dev/null 
-
-#Set PATH to run scripts in here
-if [[ ":$PATH:" != *":$PWD:"* ]]; then
-    PATH="${PATH:+"$PATH:"}$PWD"
-fi
-
-cd ..
 
 #Create submit list
 if [ -e submitList.txt ] 
@@ -72,13 +113,13 @@ then
 fi
 
 #Create completed list
-if [ ! -e /nfs-7/userdata/dataTuple/completedList.txt ] 
+if [ ! -e $BASEPATH/completedList.txt ] 
 then
-  touch /nfs-7/userdata/dataTuple/completedList.txt
+  touch $BASEPATH/completedList.txt
 fi
 
-#change permissions on nfs-7 text files
-chmod 777 /nfs-7/userdata/dataTuple/* > /dev/null 2>&1 
+#change permissions on text files
+chmod 777 $BASEPATH/* > /dev/null 2>&1 
 
 #Make sure you're not running too many jobs
 . nJobsRunning.sh
@@ -108,14 +149,14 @@ then
 fi
 
 #1. DBS query to generate masterList with files on input.txt.
-echo "Populating masterList.txt with files for datasets in /nfs-7/userdata/dataTuple/input.txt"
-. GenerateMasterList.sh
+echo "Populating masterList.txt with files for datasets in $BASEPATH/input.txt"
+. GenerateMasterList.sh $BASEPATH
 echo "masterList.txt written"
 
 #2. Diff between masterList and completedList to make notDoneList.
 echo "Getting list of files that are on masterList but not on completedList.  Output in notDoneList.txt"
 
-sort /nfs-7/userdata/dataTuple/completedList.txt > temp33.txt
+sort $BASEPATH/completedList.txt > temp33.txt
 
 sort $PWD/masterList.txt > temp32.txt
 
@@ -229,7 +270,7 @@ do
         cp ../condorMergingTools/Makefile . 
         make
       fi
-      . checkFile.sh $outputPath/$outputDir/$fileName $currentFile
+      . checkFile.sh $BASEPATH $outputPath/$outputDir/$fileName $currentFile
       continue
     fi
   fi
@@ -292,8 +333,8 @@ then
 
 fi
 
-. monitor.sh
+. monitor.sh $BASEPATH
 
-rm -f /nfs-7/userdata/dataTuple/running.pid > /dev/null 2>&1 
+rm -f $BASEPATH/running.pid > /dev/null 2>&1 
 
 echo "done!"

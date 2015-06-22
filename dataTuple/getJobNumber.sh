@@ -1,6 +1,14 @@
 #!/bin/bash 
 
-tac cms3withCondor/submit_logs/condor_$1.log > temp_tac.log #reverse the file
+if [ $JOBTYPE == "cms3" ] 
+then
+  tac cms3withCondor/submit_logs/condor_$1.log > temp_tac.log #reverse the file
+elif [ $JOBTYPE == "user" ] 
+then
+  tac userdir/submit_logs/condor_$1.log > temp_tac.log #reverse the file
+fi
+
+
 
 #Feed this program the date and number
 found_cluster=false
@@ -23,6 +31,5 @@ do
 done < temp_tac.log
 
 rm temp_tac.log
-#done < cms3withCondor/submit_logs/condor_$1.log
 
 jobid=$cluster.$process

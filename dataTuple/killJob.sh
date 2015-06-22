@@ -1,3 +1,10 @@
 #!/bin/bash
 
-touch /nfs-7/userdata/dataTuple/suicide.txt
+if [ $# -eq 0 ] 
+  then 
+    BASEPATH="$PWD/basepath"
+  else
+    BASEPATH=$1
+fi
+
+touch $BASEPATH/suicide.txt
