@@ -10,9 +10,11 @@ if [ $# -eq 0 ]
     BASEPATH=$1
 fi
 
+echo $BASEPATH
+
 if [ ! -d $BASEPATH ]
 then
-  echo "BASEPATH monitor.sh does not exist!"
+  echo "BASEPATH in monitor.sh does not exist!"
 fi
 
 OUT=$BASEPATH/dataTupleMonitor.txt

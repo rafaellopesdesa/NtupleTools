@@ -2,24 +2,49 @@
 
 #This is the manager that calls all the other pieces.  This should itself be called every N minutes.  
 
-#Check arguments, set BASEPATH
-if [ $# -eq 0 ] 
-  then 
-    BASEPATH="$PWD/basepath"
-  else
-    BASEPATH=$1
-fi
+#Check arguments, set BASEPATH, JOBTYPE
+while getopts ":b:t:" opt; do
+  case $opt in
+    b) BASEPATH="$OPTARG";;
+    t)
+       if [ $OPTARG == "cms3" ]
+       then
+         JOBTYPE="$OPTARG"
+       elif [ $OPTARG == "user" ]
+       then
+         JOBTYPE="$OPTARG"
+       else
+         echo "Invalid argument \"-t $OPTARG\"." >&2
+         echo "Acceptable arguments for -t flag are \"cms3\" and \"user\"."
+         exit 1
+       fi
+    ;;
+    \?) echo "Invalid option -$OPTARG" >&2; exit 1;;
+    : ) echo "Missing option argument for -$OPTARG" >&2; exit 1;;
+    * ) echo "Unimplemented option: -$OPTARG" >&2; exit 1;;
+  esac
+done
+
+echo "manager running with options:"
+echo "JOBTYPE = $JOBTYPE"
+echo "BASEPATH = $BASEPATH"
 
 if [ ! -d $BASEPATH ]
 then
   mkdir -p $BASEPATH
 fi
 
+if [ ! -d $BASEPATH ]
+then
+  "BASEPATH $BASEPATH does not exist and could not be created."
+  exit 1
+fi
+
 #Set CMS3 tag to use
 CMS3tag=CMS3_V07-02-08
 
 #State the maxmimum number of events
-MAX_NEVENTS=10
+MAX_NEVENTS=-1 #all events
 
 #Don't allow more than one instance to run
 if [ -e $BASEPATH/running.pid ] 
@@ -305,7 +330,7 @@ then
 
 fi
 
-. monitor.sh
+. monitor.sh $BASEPATH
 
 rm -f $BASEPATH/running.pid > /dev/null 2>&1 
 
