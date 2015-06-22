@@ -72,7 +72,10 @@ int missingDatasets(TString input="allsamples.txt", TString output = "outfile.tx
 	printColor(dataset + " is INVALID", 91, humanUser);
       }
 
-      else if (loop_count == 2) printColor(dataset + " DAS QUERY FAILED 3 TIMES. Giving up.", 91, humanUser);
+      else if (loop_count == 2) {
+	printColor(dataset + " DAS QUERY FAILED 3 TIMES. Adding, to output, giving up.", 91, humanUser);
+	missing.push_back(line);
+      }
       
       else printColor("DAS QUERY FAILED, trying again.", 93, humanUser);
          
