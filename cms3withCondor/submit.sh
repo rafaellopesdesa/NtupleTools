@@ -7,7 +7,7 @@ CMS3_TAG=$4
 MAX_NEVENTS=$5
 DO_NTUPLE_NUMBER=$6
 
-GLOBAL_TAG="PHYS14_25_V2::All"
+GLOBAL_TAG="MCRUN2_74_V9"
 
 while  ! voms-proxy-info -exist
 do echo "No Proxy found issuing \"voms-proxy-init -voms cms\""

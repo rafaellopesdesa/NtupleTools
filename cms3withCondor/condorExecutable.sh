@@ -1,8 +1,8 @@
 #!/bin/bash
 
-if (( $# != 6 )); then
+if (( $# != 7 )); then
     echo "Illegal number of arguments."
-    return 1
+    exit 1
 fi
 
 HOME=`pwd`
