@@ -7,7 +7,16 @@ then
   echo "BASEPATH in checkFile.sh does not exist!"
 fi
 
-./sweepRoot -o Events -t Events $2 > validFileOutput.txt
+if [ "$JOBTYPE" == "cms3" ]
+then
+  ./sweepRoot -o Events -t Events $2 > validFileOutput.txt
+elif [ "$JOBTYPE" == "user" ]
+then
+  ./sweepRoot -o Events $2 > validFileOutput.txt
+else
+  echo "JOBTYPE not recognized"
+  exit 1
+fi
 
 isGood=0
 
