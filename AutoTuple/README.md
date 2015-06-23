@@ -15,8 +15,9 @@ In principle, this should handle all aspects of CMS3 making, from submission to 
 
 ###To inject new jobs after you started the AutoTupler:
 - Stop monitor.sh
-- Modify your instructions files (Adding lines or correcting typos) in your crab directory.
+- Modify your instructions files (Adding lines or correcting typos) in your crab directory. 
 - Resume monitor.sh with the new instructions file with ". monitor.sh instructions.txt" (no quotes). The AutoTupler should find any new datasets and create tasks for them if they do not yet exist.
+- WARNING: Make sure the datasets you add have the same tags! The current version of the Autotupler only supports instructions files where all datasets use the same tags.
 
 ###To restart:
   - If you interrupt it, can resume with ". monitor.sh instructions.txt" (no quotes)
