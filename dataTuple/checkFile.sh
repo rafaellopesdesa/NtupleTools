@@ -64,7 +64,7 @@ then
   fi
   mergedFileNumber=`less $BASEPATH/mergedLists/$taskName/status.txt | head -1 | awk '{print $3}'`
   echo $3 >> $BASEPATH/mergedLists/$taskName/merged_list_$mergedFileNumber.txt 
-  currentSize=`less $BASEPATH/mergedLists/$taskName/status.txt | head -2 | tail -1 | awk '{print $3}'`
+  currentSize=`less $BASEPATH/mergedLists/$taskName/status.txt | head -2 | tail -1 | awk '{print $4}'`
   currentNumber=`less $BASEPATH/mergedLists/$taskName/status.txt | head -3 | tail -1 | awk '{print $3}'`
   newFileSize=`ls -l $2 | awk '{print $5}'`
   newTotalSize=$(( $newFileSize + $currentSize ))
