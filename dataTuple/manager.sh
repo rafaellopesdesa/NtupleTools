@@ -43,7 +43,7 @@ then
 fi
 
 #Set CMS3 tag to use
-CMS3tag=CMS3_V07-02-08
+CMS3tag=CMS3_V07-04-03
 
 #State the maxmimum number of events
 MAX_NEVENTS=2500 #all events
