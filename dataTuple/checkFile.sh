@@ -45,14 +45,6 @@ do
   fi
 done
 
-if [ ! -e $BASEPATH/mergedLists/$taskName/status.txt ]
-then
-  echo "currently filling: 0" >> $BASEPATH/mergedLists/$taskName/status.txt
-  echo "current size (bytes): 0" >> $BASEPATH/mergedLists/$taskName/status.txt
-  echo "current nEvents: 0" >> $BASEPATH/mergedLists/$taskName/status.txt
-fi
-
-
 rm validFileOutput.txt
 
 currentNumber=0
@@ -63,7 +55,13 @@ newFileNevents=0
 if [ "$isGood" == "1" ] 
 then
   taskName=`echo $3 | tr '/' ' ' |  awk '{print $3"_"$4"_"$5"_"$6}'`
-  if [ ! -d $BASEPATH/fileLists/mergedLists/$taskName ]; then mkdir -p $BASEPATH/fileLists/mergedLists/$taskName; fi
+  if [ ! -d $BASEPATH/mergedLists/$taskName ]; then mkdir -p $BASEPATH/mergedLists/$taskName; fi
+  if [ ! -e $BASEPATH/mergedLists/$taskName/status.txt ]
+  then
+    echo "currently filling: 0" >> $BASEPATH/mergedLists/$taskName/status.txt
+    echo "current size (bytes): 0" >> $BASEPATH/mergedLists/$taskName/status.txt
+    echo "current nEvents: 0" >> $BASEPATH/mergedLists/$taskName/status.txt
+  fi
   mergedFileNumber=`less $BASEPATH/mergedLists/$taskName/status.txt | head -1 | awk '{print $3}'`
   echo $3 >> $BASEPATH/mergedLists/$taskName/merged_list_$mergedFileNumber.txt 
   currentSize=`less $BASEPATH/mergedLists/$taskName/status.txt | head -2 | tail -1 | awk '{print $3}'`
