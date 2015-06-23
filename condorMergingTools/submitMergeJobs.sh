@@ -42,7 +42,10 @@ fi
 #make sweepRoot if it doesn't exist
 if [ ! -e sweepRoot.tar.gz ] 
 then
-  tar -czf sweeproot.tar.gz ../sweepRoot/sweepRoot.C ../sweepRoot/MakeFile
+  pushd ../sweepRoot
+  tar -czf sweepRoot.tar.gz sweepRoot.C Makefile
+  popd
+  mv ../sweepRoot/sweepRoot.tar.gz . 
 fi
 
 numjobssubmitted=0

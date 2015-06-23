@@ -3,9 +3,10 @@
 files=$1
 TIME=$2
 OUTPUT_DIR=$3
-DO_NTUPLE_NUMBER=$4
+CMS3_TAG=$4
+MAX_NEVENTS=$5
+DO_NTUPLE_NUMBER=$6
 
-CMS3_TAG="CMS3_V07-04-03"
 GLOBAL_TAG="MCRUN2_74_V9"
 
 while  ! voms-proxy-info -exist
@@ -21,12 +22,13 @@ else
   echo "libCMS3 file does not exist, will make on the fly."
   chmod 744 make_libCMS3.sh
   ./make_libCMS3.sh $CMS3_TAG
-  if [ -e "libCMS3=lib_${CMS3_TAG}.tar.gz" ]
+  if [ -e "lib_${CMS3_TAG}.tar.gz" ]
   then
     libCMS3=lib_${CMS3_TAG}.tar.gz
+    cp lib_${CMS3_TAG}.tar.gz /nfs-7/userdata/libCMS3/
   else
     echo "Failed to make libCMS3 tarball on the fly!"
-    exit 1
+    return 1
   fi
 fi
 
@@ -59,21 +61,23 @@ do
 
   let "number=$number+1"
 
+  if [ "$line" == "" ]; then continue; fi
+
   INPUT_FILE_NAME=$line
 
-  if (( $# == 4 )) && [ "$DO_NTUPLE_NUMBER" == "true" ]
+  if (( $# == 6 )) && [ "$DO_NTUPLE_NUMBER" == "true" ]
   then
     OUTPUT_FILE_NAME="ntuple_$number.root"
-  elif (( $# == 4 )) && [ "$DO_NTUPLE_NUMBER" != "true" ]
+  elif (( $# == 6 )) && [ "$DO_NTUPLE_NUMBER" != "true" ]
   then
     echo "Need to supply OUTPUT_FILE_NAME argument or set DO_NTUPLE_NUMBER = true"
     exit 1
-  elif (( $# == 5 )) && [ "$DO_NTUPLE_NUMBER" == "true" ]
+  elif (( $# == 7 )) && [ "$DO_NTUPLE_NUMBER" == "true" ]
   then
     echo "Error: If passing OUTPUT_FILE_NAME argument, must set DO_NTUPLE_NUMBER = false"
     exit 1
   else
-    OUTPUT_FILE_NAME=$5
+    OUTPUT_FILE_NAME=$7
   fi
 
   echo "
@@ -92,7 +96,7 @@ do
   x509userproxy=${PROXY}
   executable=condorExecutable.sh
   transfer_executable=True
-  arguments=$PSET $libCMS3 $GLOBAL_TAG $INPUT_FILE_NAME $OUTPUT_DIR $OUTPUT_FILE_NAME
+  arguments=$PSET $libCMS3 $GLOBAL_TAG $INPUT_FILE_NAME $OUTPUT_DIR $OUTPUT_FILE_NAME $MAX_NEVENTS
   queue
   " > ${JOBCFGDIR}/condor_$OUTPUT_FILE_NAME.cmd
   
