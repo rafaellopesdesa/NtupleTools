@@ -8,12 +8,12 @@
 sample=$1
 number=$2
 
-if [ "$#" -gt "2" ]
-then
-  BASEPATH=$3
-else
-  BASEPATH="$PWD/$BASEPATH"
-fi
+#if [ "$#" -gt "2" ]
+#then
+#  BASEPATH=$3
+#else
+#  BASEPATH="$PWD/$BASEPATH"
+#fi
 
 #Set the environment variables
 export inputListDirectory=$BASEPATH/mergedLists/$sample/merged_list_$number.txt

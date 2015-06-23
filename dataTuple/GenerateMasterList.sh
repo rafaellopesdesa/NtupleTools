@@ -1,13 +1,5 @@
 #!/bin/bash
 
-if [ $# -eq 0 ] 
-  then 
-    echo "No BASEPATH specified in GenerateMasterList.sh!"
-    exit
-  else
-    BASEPATH=$1
-fi
-
 if [ ! -d $BASEPATH ]
 then
   echo "BASEPATH in GenerateMasterList.sh does not exist!"
@@ -18,7 +10,7 @@ fi
 readarray -t samples < $BASEPATH/input.txt
 for i in "${samples[@]}"
 do
-  input_from_das=`./das_client.py --query="file dataset= $i site=T2_US_*"` #need to use --limit=0 to pick up all files!
+  input_from_das=`./das_client.py --query="file dataset= $i site=T2_US_*" --limit=10` #need to use --limit=0 to pick up all files!
   echo "$input_from_das" | grep "status: fail"
   if [ $? == 0 ]
   then 

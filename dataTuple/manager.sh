@@ -140,7 +140,7 @@ rm cycleNumber.txt > /dev/null
 echo $(( $cycleNumber+1 )) > cycleNumber.txt
 
 #Set Output Path
-outputPath="/hadoop/cms/store/user/$USER/condor/dataNtupling"
+outputPath="/hadoop/cms/store/user/$USER/userjob_test"
 
 #0. Check Proxy
 . checkProxy.sh
@@ -152,7 +152,7 @@ fi
 
 #1. DBS query to generate masterList with files on input.txt.
 echo "Populating masterList.txt with files for datasets in $BASEPATH/input.txt"
-. GenerateMasterList.sh $BASEPATH
+. GenerateMasterList.sh
 echo "masterList.txt written"
 
 #2. Diff between masterList and completedList to make notDoneList.
@@ -335,7 +335,7 @@ then
 
 fi
 
-. monitor.sh $BASEPATH
+. monitor.sh
 
 rm -f $BASEPATH/running.pid > /dev/null 2>&1 
 

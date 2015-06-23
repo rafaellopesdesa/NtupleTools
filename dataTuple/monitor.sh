@@ -2,19 +2,10 @@
 
 echo "Running monitor.sh"
 
-if [ $# -eq 0 ] 
-  then 
-    echo "No BASEPATH specified in monitor.sh!"
-    exit
-  else
-    BASEPATH=$1
-fi
-
-echo $BASEPATH
-
 if [ ! -d $BASEPATH ]
 then
   echo "BASEPATH in monitor.sh does not exist!"
+  exit 1
 fi
 
 OUT=$BASEPATH/dataTupleMonitor.txt
