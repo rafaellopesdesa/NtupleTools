@@ -75,13 +75,13 @@ if [ ! -e "sweepRoot.tar.gz" ]; then
 fi
 
 #make sweepRoot
-mkdir sweepRoot
-mv sweepRoot.tar.gz sweepRoot/
-cd sweepRoot
+mkdir sweepRootStuff
+mv sweepRoot.tar.gz sweepRootStuff/
+cd sweepRootStuff
 tar -xzvf sweepRoot.tar.gz
 make
 cd ..
-cp sweepRoot/sweepRoot . 
+mv sweepRootStuff/sweepRoot . 
 
 #runs merging script, and if it fails tries one more time.
 root -b -q -l "mergeScript.C (\"$inputList\",\"merged_ntuple.root\")"
