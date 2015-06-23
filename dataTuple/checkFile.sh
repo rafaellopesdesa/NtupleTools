@@ -77,17 +77,17 @@ then
   if [ "$newTotalSize" -gt "300000000" ]
   then
     #(a) Reset counters for this script
-    sed -i "s/currently filling.*/currently filling: $(( $mergedFileNmuber + 1 ))/" $BASEPATH/mergedLists/$taskName/status.txt
+    sed -i "s/currently filling.*/currently filling: $(( $mergedFileNumber + 1 ))/" $BASEPATH/mergedLists/$taskName/status.txt
     sed -i "s/current\ size\ (bytes).*/current size (bytes): 0/" $BASEPATH/mergedLists/$taskName/status.txt
     sed -i "s/current\ nEvents.*/current nEvents: 0/" $BASEPATH/mergedLists/$taskName/status.txt
     #(b) Write the meta data file
-    echo "n: $newTotalNevents" >> $BASEPATH/mergedLists/$taskName/metaData_$merged_file_number.txt
-    echo "k: 1" >> $BASEPATH/mergedLists/$taskName/metaData_$merged_file_number.txt
-    echo "f: 1" >> $BASEPATH/mergedLists/$taskName/metaData_$merged_file_number.txt
-    echo "x: 1" >> $BASEPATH/mergedLists/$taskName/metaData_$merged_file_number.txt
-    echo "file: merged_list_$merged_file_number.txt" >> $BASEPATH/mergedLists/$taskName/metaData_$merged_file_number.txt
+    echo "n: $newTotalNevents" >> $BASEPATH/mergedLists/$taskName/metaData_$mergedFileNumber.txt
+    echo "k: 1" >> $BASEPATH/mergedLists/$taskName/metaData_$mergedFileNumber.txt
+    echo "f: 1" >> $BASEPATH/mergedLists/$taskName/metaData_$mergedFileNumber.txt
+    echo "x: 1" >> $BASEPATH/mergedLists/$taskName/metaData_$mergedFileNumber.txt
+    echo "file: merged_list_$mergedFileNumber.txt" >> $BASEPATH/mergedLists/$taskName/metaData_$mergedFileNumber.txt
     #(c) Submit it
-    . submitPPJob.sh $taskName $merged_file_number
+    . submitPPJob.sh $taskName $mergedFileNumber
   fi
 
 fi
