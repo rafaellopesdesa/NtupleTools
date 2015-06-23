@@ -266,11 +266,12 @@ do
         echo `echo $currentFile | awk ' { print $1 }'` >> filesToSubmit.txt
       fi
     else
-      if [ ! -e sweepRoot.o ] 
+      if [ ! -e sweepRoot ] 
       then
-        cp ../sweepRoot/libC/sweepRoot.C . 
-        cp ../sweepRoot/Makefile . 
+        pushd ../sweepRoot
         make
+        popd
+        cp ../sweepRoot/sweepRoot .
       fi
       . checkFile.sh $BASEPATH $outputPath/$outputDir/$fileName $currentFile
       continue
@@ -313,6 +314,7 @@ then
     outputName=$(python getFileName.py $currentLine 2>&1)
     outputDir=$(python getDirName.py $currentLine 2>&1)
     . submitJob.sh filesToSubmit.txt $currentTime $outputPath/$outputDir $outputName $lineno $CMS3tag $MAX_NEVENTS
+    echo "submitting!  $currentTime $outputPath/$outputDir $outputName $lineno $CMS3tag $MAX_NEVENTS"
 
     #c. Update submitted list
     echo "step 5c"
