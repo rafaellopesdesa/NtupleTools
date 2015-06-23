@@ -36,6 +36,14 @@ do
   fi
 done
 
+if [ ! -e $BASEPATH/mergedLists/$taskName/status.txt ]
+then
+  echo "currently filling: 0" >> $BASEPATH/mergedLists/$taskName/status.txt
+  echo "current size (bytes): 0" >> $BASEPATH/mergedLists/$taskName/status.txt
+  echo "current nEvents: 0" >> $BASEPATH/mergedLists/$taskName/status.txt
+fi
+
+
 rm validFileOutput.txt
 
 currentNumber=0
