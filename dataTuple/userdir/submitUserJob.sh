@@ -14,7 +14,7 @@ do echo "No Proxy found issuing \"voms-proxy-init -voms cms\""
 done
 
 PSET="pset.py"
-libCMSSW="libCMSSW.tar.gz"
+libCMSSW="lib_CMSSW.tar.gz"
 INPUT="$PSET, $libCMSSW"
 SITE="T2_US_UCSD,T2_US_Nebraska,T2_US_Wisconsin,T2_US_MIT,T2_US_FLORIDA"
 PROXY=$(voms-proxy-info -path)
@@ -40,6 +40,8 @@ fi
 while read line
 do
 
+  INPUT_FILE_NAME=$line
+
   echo "
   universe=grid
   Grid_Resource=condor cmssubmit-r1.t2.ucsd.edu glidein-collector.t2.ucsd.edu
@@ -60,6 +62,6 @@ do
   queue
   " > ${JOBCFGDIR}/condor_$OUTPUT_FILE_NAME.cmd
   
-  #condor_submit ${JOBCFGDIR}/condor_$OUTPUT_FILE_NAME.cmd
+  condor_submit ${JOBCFGDIR}/condor_$OUTPUT_FILE_NAME.cmd
 
 done < $files
