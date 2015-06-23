@@ -194,9 +194,9 @@ if commands.getstatusoutput(cmd)[0] == 256 and commands.getstatusoutput("ls %s/m
         
 
 ##now make the sweeproot macro
-cmd = 'cp libC/Makefile .'
+cmd = 'cp sweepRoot/Makefile .'
 commands.getstatusoutput(cmd)
-cmd = 'cp libC/sweepRoot.C .'
+cmd = 'cp sweepRoot/sweepRoot.C .'
 commands.getstatusoutput(cmd)
 cmd = 'make '
 commands.getstatusoutput(cmd)

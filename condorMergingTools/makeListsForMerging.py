@@ -244,9 +244,9 @@ if datapath.find("pnfs") != -1 or datapath.find("hadoop") != -1:
         
 
 ##now make the sweeproot macro
-cmd = 'cp libC/Makefile .'
+cmd = 'cp sweepRoot/Makefile .'
 commands.getstatusoutput(cmd)
-cmd = 'cp libC/sweepRoot.C .'
+cmd = 'cp sweepRoot/sweepRoot.C .'
 commands.getstatusoutput(cmd)
 cmd = 'make '
 commands.getstatusoutput(cmd)

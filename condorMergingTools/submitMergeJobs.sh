@@ -39,6 +39,14 @@ if [ ! -d /data/tmp/$USER/$dataSet/submit/std_logs/ ]; then
 	mkdir -p /data/tmp/$USER/$dataSet/submit/std_logs/
 fi
 
+#make sweepRoot if it doesn't exist
+if [ ! -e sweepRoot ] 
+then
+  pushd ../sweepRoot
+  make
+  popd
+fi
+
 numjobssubmitted=0
 
 #This loops over the merged file lists and submits a job for each list
