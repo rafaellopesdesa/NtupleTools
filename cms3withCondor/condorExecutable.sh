@@ -18,31 +18,37 @@ MAX_NEVENTS=$7
 #Tell us where we're running
 echo "host: `hostname`" 
 
+source /cvmfs/cms.cern.ch/cmsset_default.sh
+
+#The lib and python directories come from the libCMS3 tarball
+export LD_LIBRARY_PATH=$PWD/lib/slc6_amd64_gcc491:$LD_LIBRARY_PATH
+export PATH=$PWD:$PATH
+export PYTHONPATH=$PWD/python:$PYTHONPATH:python/
+
+#Set environment
+pushd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_1_patch1/src/
+eval `scramv1 runtime -sh`
+echo "should be in cvmfs: $PWD"
+popd
+
 #untar tarball containing CMS3 libraries and python files
 echo "libCMS3 = $libCMS3"
+
 if [ -e $libCMS3 ]
 then
+  cmsrel CMSSW_7_4_1_patch1
+  mv $libCMS3 CMSSW_7_4_1_patch1/
+  cd CMSSW_7_4_1_patch1
   tar -xzvf $libCMS3
+  scram b -j 8
+  eval `scramv1 runtime -sh`
+  cd ..
 else
   echo "libCMS3 missing!"
   exit 1
 fi
 
-#Set environment
-export CMS_PATH=/cvmfs/cms.cern.ch
-export SCRAM_ARCH=slc6_amd64_gcc491
-source /cvmfs/cms.cern.ch/cmsset_default.sh
-#source /cvmfs/cms.cern.ch/slc6_amd64_gcc491/lcg/root/5.34.18/bin/thisroot.sh
-
-pushd .
-cd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_1_patch1/src/
-eval `scramv1 runtime -sh`
-popd
-
-#The lib and python directories come from the libCMS3 tarball
-export LD_LIBRARY_PATH=$PWD/lib/slc6_amd64_gcc491:$LD_LIBRARY_PATH
-export PATH=$PWD:$PATH
-export PYTHONPATH=$PWD/python:$PYTHONPATH
+which root
 
 #INPUT_FILE_NAME_ESCAPED=`echo $INPUT_FILE_NAME | sed 's,/,\\\/,g'
 
