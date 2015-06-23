@@ -36,7 +36,7 @@ echo "libCMS3 = $libCMS3"
 
 if [ -e $libCMS3 ]
 then
-  cmsrel CMSSW_7_4_1_patch1
+  scramv1 project CMSSW CMSSW_7_4_1_patch1
   mv $libCMS3 CMSSW_7_4_1_patch1/
   cd CMSSW_7_4_1_patch1
   tar -xzvf $libCMS3
