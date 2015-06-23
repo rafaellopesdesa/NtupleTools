@@ -40,11 +40,9 @@ if [ ! -d /data/tmp/$USER/$dataSet/submit/std_logs/ ]; then
 fi
 
 #make sweepRoot if it doesn't exist
-if [ ! -e sweepRoot ] 
+if [ ! -e sweepRoot.tar.gz ] 
 then
-  pushd ../sweepRoot
-  make
-  popd
+  tar -czf sweeproot.tar.gz ../sweepRoot/sweepRoot.C ../sweepRoot/MakeFile
 fi
 
 numjobssubmitted=0
@@ -55,7 +53,7 @@ for list in $filesList; do
 	inputList=${inputListDirectory}$list
     if [ "$isDataTuple" == "1" ]; then inputList=$list; fi
 	inputArguments="$inputList $mData $outputDir"
-	inputFiles=${inputList},${mData},$executableScript,$workingDirectory/libC/mergeScript.C,$workingDirectory/../sweepRoot/sweepRoot,$workingDirectory/libC/addBranches.C
+	inputFiles=${inputList},${mData},$executableScript,$workingDirectory/libC/mergeScript.C,sweepRoot.tar.gz,$workingDirectory/libC/addBranches.C
 
 # this takes care of "resubmission. When all your condor jobs are done, this will check that the files are there, and if they are not, it will resubmit a job. If you find a job that has output a corrupted file (which it shouldn't unless stageout fails) just delete the file and run this script again."
 	outFileName=`echo $list | sed 's/list/ntuple/g' | sed 's/txt/root/g'`

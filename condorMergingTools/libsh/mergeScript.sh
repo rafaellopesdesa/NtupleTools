@@ -50,10 +50,19 @@ cat /etc/redhat-release
 localdir=`pwd`
 
 # check that sweepRoot exists
-if [ ! -e "sweepRoot" ]; then
+if [ ! -e "sweepRoot.tar.gz" ]; then
 	echo "Error: sweepRoot doesn't exist, exiting.."
 	exit 4
 fi
+
+#make sweepRoot
+mkdir sweepRoot
+mv sweepRoot.tar.gz sweepRoot/
+cd sweepRoot
+tar -xzvf sweepRoot.tar.gz
+make
+cd ..
+cp sweepRoot/sweepRoot . 
 
 #runs merging script, and if it fails tries one more time.
 root -b -q -l "mergeScript.C (\"$inputList\",\"merged_ntuple.root\")"
