@@ -17,7 +17,7 @@ void printColor(const char* message, const int color, bool human) {
 }
 
 
-int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilter = false, bool humanUser = true, string file = "") {
+int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilter = false, bool humanUser = true, string sampleName = "") {
 
   if( samplePath == "" ) {
 	cout << "Please provide a path to a CMS3 sample!" << endl;
@@ -203,7 +203,8 @@ int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilt
   }
 
   // Breakdown by filename
-  if( nFilesHere > 1 && !countsMatch ) {
+  if( nFilesHere > 1 && !countsMatch
+	  && ((nEvts_chain!=nEvts_das && !das_failed) || nEvts_chain!=nEvts_branch) ) {
 
 	float nEvtsPerFile = nEvts_chain / float(nFilesHere);
 	bool isHigh = false;
@@ -214,6 +215,8 @@ int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilt
 	TIter fileIter(fileList);
 	TFile *currentFile = 0;
 	TRegexp shortname("[mergd_]*ntuple_[0-9]+.root");
+
+	printf( "%28s:  %10.1f\n", "Average", nEvtsPerFile );
 
 	while(( currentFile = (TFile*)fileIter.Next() )) {
 	  TFile *file = new TFile( currentFile->GetTitle() );
@@ -348,7 +351,7 @@ int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilt
   if (!humanUser){
     ofstream myfile;
     myfile.open("crab_status_logs/temp.txt");
-    if (nProblems == 0) myfile << file << " " << chain->GetEntries() << endl;
+    if (nProblems == 0) myfile << sampleName << " " << chain->GetEntries() << endl;
     myfile.close();
   }
 
