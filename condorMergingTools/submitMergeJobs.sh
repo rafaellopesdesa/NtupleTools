@@ -42,6 +42,13 @@ fi
 #make sweepRoot if it doesn't exist
 if [ ! -e sweepRoot.tar.gz ] 
 then
+  wrongRootError=`which root | grep "slc6" > /dev/null ; echo $?`
+  if [ "$wrongRootError" == "1" ]
+  then
+    pushd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_1_patch1/
+    eval `scramv1 runtime -sh`
+    popd
+  fi
   pushd ../sweepRoot
   tar -czf sweepRoot.tar.gz sweepRoot.C Makefile
   popd

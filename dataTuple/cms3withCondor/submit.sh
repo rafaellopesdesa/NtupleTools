@@ -88,7 +88,7 @@ do
   transfer_output_files = /dev/null
   +DESIRED_Sites=\"${SITE}\"
   +Owner = undefined
-  +isDataTupleCMS3flagged="true"
+  +isDataTupleCMS3flagged="false"
   log=${LOG}
   output=${OUT}
   error =${ERR}
