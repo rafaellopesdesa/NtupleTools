@@ -463,6 +463,9 @@ do
     if [ "$denominator" -gt "$(( 4*$nFailed ))" ] && [ "$nFailed" -gt "0" ] 
     then
       crab resubmit crab_$crab_filename
+      #Reset queuetime file
+      queued_filename="${status_filename%%.txt}.queued"
+      if [ -e $queued_filename ]; then rm $queued_filename; fi
     fi
 
     #Increase counter
