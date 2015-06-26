@@ -46,10 +46,10 @@ then
     eval `scramv1 runtime -sh`
     popd
   fi
-  pushd ../sweepRoot
+  pushd ../../../sweepRoot/
   tar -czf sweepRoot.tar.gz sweepRoot.C Makefile
   popd
-  mv ../sweepRoot/sweepRoot.tar.gz . 
+  mv ../../../sweepRoot/sweepRoot.tar.gz . 
 fi
 
 numjobssubmitted=0
