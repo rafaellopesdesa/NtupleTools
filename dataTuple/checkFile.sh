@@ -55,6 +55,7 @@ newFileNevents=0
 if [ "$isGood" == "1" ] 
 then
   taskName=`echo $3 | tr '/' ' ' |  awk '{print $3"_"$4"_"$5"_"$6}'`
+  shortName=`echo $3 | tr '/' ' ' |  awk '{print $4}'`
   if [ ! -d $BASEPATH/mergedLists/$taskName ]; then mkdir -p $BASEPATH/mergedLists/$taskName; fi
   if [ ! -e $BASEPATH/mergedLists/$taskName/status.txt ]
   then
@@ -87,7 +88,7 @@ then
     echo "x: 1" >> $BASEPATH/mergedLists/$taskName/metaData_$mergedFileNumber.txt
     echo "file: merged_list_$mergedFileNumber.txt" >> $BASEPATH/mergedLists/$taskName/metaData_$mergedFileNumber.txt
     #(c) Submit it
-    . submitPPJob.sh $taskName $mergedFileNumber $JOBTYPE
+    . submitPPJob.sh $shortName $mergedFileNumber $JOBTYPE
   fi
 
 fi
