@@ -77,6 +77,11 @@ def getGoodRootFiles(datapath,outpath):
                 
         #checks the files with sweeproot before copying. If it finds a bad file, It skips the file and does not add the events to the total # of events
         print 'Checking File %s for integrity' % fullPath
+        if os.path.isfile('sweepRoot') == False:
+            print "sweepRoot executable does not exist! Exiting."
+            print "sweepRoot source exists in sweepRoot directory."
+            sys.exit()
+
         cmd = "./sweepRoot -o Events %s" % fullPath
         output = commands.getoutput(cmd).split('\n')
 
@@ -193,13 +198,20 @@ if commands.getstatusoutput(cmd)[0] == 256 and commands.getstatusoutput("ls %s/m
 
         
 
-##now make the sweeproot macro
-cmd = 'cp ../sweepRoot/Makefile .'
-commands.getstatusoutput(cmd)
-cmd = 'cp ../sweepRoot/sweepRoot.C .'
-commands.getstatusoutput(cmd)
-cmd = 'make '
-commands.getstatusoutput(cmd)
+##now make the sweeproot macro if it doesn't exist
+##sweepRoot should already exist when being called from AutoTuple
+if os.path.isfile('sweepRoot') == False:
+    cmd = 'cp ../sweepRoot/Makefile .'
+    commands.getstatusoutput(cmd)
+    cmd = 'cp ../sweepRoot/sweepRoot.C .'
+    commands.getstatusoutput(cmd)
+    cmd = 'make '
+    commands.getstatusoutput(cmd)
+
+if os.path.isfile('sweepRoot') == False:
+    print "sweepRoot executable does not exist! Exiting."
+    print "sweepRoot source exists in sweepRoot directory."
+    sys.exit()
 
 
 goodRootFiles = []

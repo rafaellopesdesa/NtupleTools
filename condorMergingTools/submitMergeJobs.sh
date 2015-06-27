@@ -39,17 +39,9 @@ if [ ! -d /data/tmp/$USER/$dataSet/submit/std_logs/ ]; then
 	mkdir -p /data/tmp/$USER/$dataSet/submit/std_logs/
 fi
 
-#make sweepRoot if it doesn't exist
+#make sweepRoot tarball if it doesn't exist
 if [ ! -e sweepRoot.tar.gz ] 
 then
-  wrongRootError=`which root | grep "slc6" > /dev/null ; echo $?`
-  if [ "$wrongRootError" == "1" ]
-  then
-    source /code/osgcode/cmssoft/cmsset_default.sh  > /dev/null 2>&1
-    pushd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_1_patch1/
-    eval `scramv1 runtime -sh`
-    popd
-  fi
   pushd ../sweepRoot
   tar -czf sweepRoot.tar.gz sweepRoot.C Makefile
   popd
