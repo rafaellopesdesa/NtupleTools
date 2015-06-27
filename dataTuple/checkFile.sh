@@ -3,7 +3,7 @@
 sampleName=$3
 JOBTYPE=$4
 
-shortName=`echo $3 | tr '/' ' ' |  awk '{print $2}'`
+shortName=`echo $3 | tr '/' ' ' |  awk '{print $4}'`
 
 if [ ! -d $BASEPATH ]
 then
