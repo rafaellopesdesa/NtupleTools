@@ -140,7 +140,12 @@ rm cycleNumber.txt > /dev/null
 echo $(( $cycleNumber+1 )) > cycleNumber.txt
 
 #Set Output Path
-outputPath="/hadoop/cms/store/user/$USER/userjob_test"
+if [ $JOBTYPE == "cms3" ]
+then
+  outputPath="/hadoop/cms/store/user/$USER/userjob_test"
+else
+  outputPath="/hadoop/cms/store/user/$USER/dataTuple"
+fi
 
 #0. Check Proxy
 . checkProxy.sh
@@ -273,7 +278,7 @@ do
         popd
         cp ../sweepRoot/sweepRoot .
       fi
-      . checkFile.sh $BASEPATH $outputPath/$outputDir/$fileName $currentFile
+      . checkFile.sh $BASEPATH $outputPath/$outputDir/$fileName $currentFile $JOBTYPE
       continue
     fi
   fi

@@ -1,5 +1,7 @@
 #/bin/bash
 
+JOBTYPE=$4
+
 if [ ! -d $BASEPATH ]
 then
   echo "BASEPATH in checkFile.sh does not exist!"
@@ -85,7 +87,7 @@ then
     echo "x: 1" >> $BASEPATH/mergedLists/$taskName/metaData_$mergedFileNumber.txt
     echo "file: merged_list_$mergedFileNumber.txt" >> $BASEPATH/mergedLists/$taskName/metaData_$mergedFileNumber.txt
     #(c) Submit it
-    . submitPPJob.sh $taskName $mergedFileNumber
+    . submitPPJob.sh $taskName $mergedFileNumber $JOBTYPE
   fi
 
 fi
