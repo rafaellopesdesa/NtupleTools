@@ -8,6 +8,7 @@
 sample=$1
 number=$2
 JOBTYPE=$3
+shortname=$4
 
 #if [ "$#" -gt "2" ]
 #then
@@ -21,9 +22,9 @@ export inputListDirectory=$BASEPATH/mergedLists/$sample/merged_list_$number.txt
 export mData=$BASEPATH/mergedLists/$sample/metaData_$number.txt
 if [ "$JOBTYPE" == "cms3" ] 
 then
-  export outputDir=/hadoop/cms/store/user/$USER/dataTuple/$sample/merged
+  export outputDir=/hadoop/cms/store/user/$USER/dataTuple/$shortName/merged
 else
-  export outputDir=/hadoop/cms/store/user/$USER/userjob_test/$sample/merged
+  export outputDir=/hadoop/cms/store/user/$USER/userjob_test/$shortName/merged
 fi
 export dataSet=$sample
 export workingDirectory=$PWD
