@@ -30,6 +30,8 @@ export workingDirectory=$PWD
 export executableScript=`readlink -f $PWD/../condorMergingTools/libsh/mergeScriptRoot6.sh`
 export isDataTuple=1
 
+mkdir -p $outputDir
+
 pushd $PWD/../condorMergingTools/
 ./submitMergeJobs.sh
 popd

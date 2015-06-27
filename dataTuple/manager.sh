@@ -140,11 +140,11 @@ rm cycleNumber.txt > /dev/null
 echo $(( $cycleNumber+1 )) > cycleNumber.txt
 
 #Set Output Path
-if [ $JOBTYPE == "cms3" ]
+if [ "$JOBTYPE" == "cms3" ]
 then
-  outputPath="/hadoop/cms/store/user/$USER/userjob_test"
-else
   outputPath="/hadoop/cms/store/user/$USER/dataTuple"
+else
+  outputPath="/hadoop/cms/store/user/$USER/userjob_test"
 fi
 
 #0. Check Proxy
