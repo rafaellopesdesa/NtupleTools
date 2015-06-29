@@ -5,8 +5,7 @@ TIME=$2
 OUTPUT_DIR=$3
 OUTPUT_FILE_NAME=$4
 MAX_NEVENTS=$5
-
-GLOBAL_TAG="GR_R_74_V12"
+GLOBAL_TAG=$6
 
 while  ! voms-proxy-info -exist
 do echo "No Proxy found issuing \"voms-proxy-init -voms cms\""

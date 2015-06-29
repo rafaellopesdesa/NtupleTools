@@ -23,12 +23,12 @@ first6=`echo $line2 | awk '{print $1}' | cut -c 1-6`
 first7=`echo $line2 | awk '{print $1}' | cut -c 1-7`
 first8=`echo $line2 | awk '{print $1}' | cut -c 1-8`
 first9=`echo $line2 | awk '{print $1}' | cut -c 1-9`
-if [ "$first4" == "SUSY" ] || [ "$first2" == "LQ" ] || [ "$first6" == "Zprime" ] || [ "$first6" == "Wprime" ] || [ "$first2" == "RS" ] || [ "$first3" == "ADD" ] || [ "$first9" == "Displaced" ] || [ "$first5" == "Qstar" ] || [ "$first6" == "Unpart" ] || [ "$first6" == "Tprime" ] || [ "$first3" == "HSC" ] || [ "$first5" == "Bstar" ] || [ "$first2" == "WR" ] || [ "$first5" == "Regge" ] || [ "$first5" == "Tstar" ]  || [ "$first6" == "GluGlu" ] || [ "$first6" == "Bprime" ] || [ "$first8" == "BulkGrav" ]  || [ "$first6" == "WToENu" ] || [ "$first7" == "WToMuNu" ] || [ "$first8" == "WToTauNu" ] 
+if [ "$first4" == "SUSY" ] || [ "$first2" == "LQ" ] || [ "$first6" == "Zprime" ] || [ "$first6" == "Wprime" ] || [ "$first2" == "RS" ] || [ "$first3" == "ADD" ] || [ "$first9" == "Displaced" ] || [ "$first5" == "Qstar" ] || [ "$first6" == "Unpart" ] || [ "$first6" == "Tprime" ] || [ "$first3" == "HSC" ] || [ "$first5" == "Bstar" ] || [ "$first2" == "WR" ] || [ "$first5" == "Regge" ] || [ "$first5" == "Tstar" ]  || [ "$first6" == "GluGlu" ] || [ "$first6" == "Bprime" ] || [ "$first8" == "BulkGrav" ]  || [ "$first6" == "WToENu" ] || [ "$first7" == "WToMuNu" ] || [ "$first8" == "WToTauNu" ] || [ "$first3" == "VBF" ] || [ "$first6" == "tGamma" ] 
 then
   continue
 fi
 
-if [[ "$stuff" == *"DoubleEMEnriched"* ]] || [[ "$stuff" == *"_mtop"* ]] || [[ "$line2" == *"scale"* ]] || [[ "$stuff" == *"BulkGrav"* ]] 
+if [[ "$stuff" == *"DoubleEMEnriched"* ]] || [[ "$stuff" == *"_mtop"* ]] || [[ "$line2" == *"scale"* ]] || [[ "$stuff" == *"BulkGrav"* ]] || [[ "$stuff" == *"DMJets"* ]] 
 then
   continue
 fi

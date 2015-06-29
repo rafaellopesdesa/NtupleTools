@@ -45,6 +45,9 @@ fi
 #Set CMS3 tag to use
 CMS3tag=CMS3_V07-04-03
 
+#Set the global tag to use
+GTAG=RUN2_74_V9
+
 #State the maxmimum number of events
 MAX_NEVENTS=2500 #all events
 
@@ -318,8 +321,8 @@ then
     echo "step 5b"
     outputName=$(python getFileName.py $currentLine 2>&1)
     outputDir=$(python getDirName.py $currentLine 2>&1)
-    . submitJob.sh filesToSubmit.txt $currentTime $outputPath/$outputDir $outputName $lineno $CMS3tag $MAX_NEVENTS
-    echo "submitting!  $currentTime $outputPath/$outputDir $outputName $lineno $CMS3tag $MAX_NEVENTS"
+    . submitJob.sh filesToSubmit.txt $currentTime $outputPath/$outputDir $outputName $lineno $CMS3tag $MAX_NEVENTS $GTAG
+    echo "submitting!  $currentTime $outputPath/$outputDir $outputName $lineno $CMS3tag $MAX_NEVENTS $GTAG"
 
     #c. Update submitted list
     echo "step 5c"

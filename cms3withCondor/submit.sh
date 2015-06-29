@@ -6,8 +6,7 @@ OUTPUT_DIR=$3
 CMS3_TAG=$4
 MAX_NEVENTS=$5
 DO_NTUPLE_NUMBER=$6
-
-GLOBAL_TAG="MCRUN2_74_V9"
+GLOBAL_TAG=$8
 
 while  ! voms-proxy-info -exist
 do echo "No Proxy found issuing \"voms-proxy-init -voms cms\""
