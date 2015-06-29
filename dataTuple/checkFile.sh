@@ -3,8 +3,6 @@
 sampleName=$3
 JOBTYPE=$4
 
-shortName=`echo $3 | tr '/' ' ' |  awk '{print $4}'`
-
 if [ ! -d $BASEPATH ]
 then
   echo "BASEPATH in checkFile.sh does not exist!"
@@ -90,8 +88,8 @@ then
     echo "x: 1" >> $BASEPATH/mergedLists/$taskName/metaData_$mergedFileNumber.txt
     echo "file: merged_list_$mergedFileNumber.txt" >> $BASEPATH/mergedLists/$taskName/metaData_$mergedFileNumber.txt
     #(c) Submit it
-    echo "submit: submitPPJob.sh $sampleName $mergedFileNumber $JOBTYPE $shortName" 
-    . submitPPJob.sh $taskName $mergedFileNumber $JOBTYPE $shortName
+    echo "submit: submitPPJob.sh $taskName $mergedFileNumber $JOBTYPE" 
+    . submitPPJob.sh $taskName $mergedFileNumber $JOBTYPE
   fi
 
 fi
