@@ -10,7 +10,7 @@ MAX_EVENTS=$7
 GTAG=$8
 
 sed -n "$5p" $1 > tempSubmit.txt
-if [ "$JOBTYPE" == "cms3_data" ]
+if [ "$JOBTYPE" == "cms3" ]
 then
   echo "cms3 job"
   cd cms3withCondor
