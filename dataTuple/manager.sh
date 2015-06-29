@@ -46,7 +46,7 @@ fi
 CMS3tag=CMS3_V07-04-03
 
 #Set the global tag to use
-GTAG=GR_H_V58C
+GTAG=GR_P_V56
 
 #State the maxmimum number of events
 MAX_NEVENTS=2500 #all events
