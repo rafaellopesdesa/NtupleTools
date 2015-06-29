@@ -7,6 +7,7 @@ CMS3_TAG=$4
 MAX_NEVENTS=$5
 DO_NTUPLE_NUMBER=$6
 GLOBAL_TAG=$8
+PSET=$9
 
 while  ! voms-proxy-info -exist
 do echo "No Proxy found issuing \"voms-proxy-init -voms cms\""
@@ -31,7 +32,6 @@ else
   fi
 fi
 
-PSET="pset.py"
 INPUT="$PSET, $libCMS3"
 SITE="T2_US_UCSD,T2_US_Nebraska,T2_US_Wisconsin,T2_US_MIT,T2_US_FLORIDA"
 PROXY=$(voms-proxy-info -path)
