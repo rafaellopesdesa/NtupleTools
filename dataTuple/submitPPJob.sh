@@ -5,10 +5,9 @@
 
 #You must run this script from inside the dataTuple directory!  
 
-sample=$1
+taskName=$1
 number=$2
 JOBTYPE=$3
-shortname=$4
 
 #if [ "$#" -gt "2" ]
 #then
@@ -18,15 +17,15 @@ shortname=$4
 #fi
 
 #Set the environment variables
-export inputListDirectory=$BASEPATH/mergedLists/$sample/merged_list_$number.txt
-export mData=$BASEPATH/mergedLists/$sample/metaData_$number.txt
+export inputListDirectory=$BASEPATH/mergedLists/$taskName/merged_list_$number.txt
+export mData=$BASEPATH/mergedLists/$taskName/metaData_$number.txt
 if [ "$JOBTYPE" == "cms3" ] 
 then
-  export outputDir=/hadoop/cms/store/user/$USER/dataTuple/$shortName/merged
+  export outputDir=/hadoop/cms/store/user/$USER/dataTuple/$taskName/merged
 else
-  export outputDir=/hadoop/cms/store/user/$USER/userjob_test/$shortName/merged
+  export outputDir=/hadoop/cms/store/user/$USER/userjob_test/$taskName/merged
 fi
-export dataSet=$sample
+export dataSet=$taskName
 export workingDirectory=$PWD
 export executableScript=`readlink -f $PWD/../condorMergingTools/libsh/mergeScriptRoot6.sh`
 export isDataTuple=1

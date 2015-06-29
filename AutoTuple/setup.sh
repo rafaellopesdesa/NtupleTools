@@ -11,6 +11,15 @@ export PATH=$PATH:`pwd`
 source /cvmfs/cms.cern.ch/crab3/crab.sh
 export SCRAM_ARCH=slc6_amd64_gcc491
 scramv1 p -n CMSSW_7_4_1_patch1 CMSSW CMSSW_7_4_1_patch1
+pushd .
+cd ../sweepRoot
+make
+if [ ! -e sweepRoot.o ]
+then
+  echo "Could not make sweepRoot!"
+  return 1 
+fi
+popd
 if [ ! -e /nfs-7/userdata/libCMS3/lib_$tag.tar.gz ]
 then
   echo "Trying to make this on the fly.  Might not work......"
@@ -26,6 +35,7 @@ else
 fi
 mkdir crab
 cd crab
+cp ../../../sweepRoot/sweepRoot ${CMSSW_BASE}/crab/
 cp -r ../../../condorMergingTools/* ${CMSSW_BASE}/crab/
 cp ${CMSSW_BASE}/src/CMS3/NtupleMaker/test/MCProduction2015_NoFilter_cfg.py skeleton_cfg.py
 sed -i s/process.GlobalTag.globaltag\ =\ .*/process.GlobalTag.globaltag\ =\ \"$gtag\"/ skeleton_cfg.py

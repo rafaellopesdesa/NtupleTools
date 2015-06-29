@@ -237,7 +237,7 @@ do
   fi
 
   #set Output path, make sure it exists
-  outputDir=$(python getDirName.py $currentFile 2>&1)
+  outputDir=`echo $currentFile | tr '/' ' ' |  awk '{print $3"_"$4"_"$5"_"$6}'`
   echo "outputDir: $outputDir"
   if [ ! -d $outputPath/$outputDir ]
   then
@@ -320,7 +320,7 @@ then
     #5b. Submit them
     echo "step 5b"
     outputName=$(python getFileName.py $currentLine 2>&1)
-    outputDir=$(python getDirName.py $currentLine 2>&1)
+    outputDir=`echo $currentLine | tr '/' ' ' |  awk '{print $3"_"$4"_"$5"_"$6}'`
     . submitJob.sh filesToSubmit.txt $currentTime $outputPath/$outputDir $outputName $lineno $CMS3tag $MAX_NEVENTS $GTAG
     echo "submitting!  $currentTime $outputPath/$outputDir $outputName $lineno $CMS3tag $MAX_NEVENTS $GTAG"
 
