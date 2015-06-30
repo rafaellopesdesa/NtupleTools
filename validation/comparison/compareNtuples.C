@@ -356,7 +356,9 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
     hvec.push_back(h1);
     vector<string> titles;
     titles.push_back("Old");
-    dataMCplotMaker(h2, hvec, titles, "", alias.Data(), Form("--isLinear --dataName New --topYaxisTitle New/Old --outputName hists/diff%d", pageNum));
+    string opts = Form("--isLinear --dataName New --topYaxisTitle New/Old --outputName hists/diff%d", pageNum);
+    if(!drawWithErrors) opts += " --noErrBars";
+    dataMCplotMaker(h2, hvec, titles, "", alias.Data(), opts);
 
     myfile << "\\subsection*{" << alias << "}\\addcontentsline{toc}{subsection}{" << alias << "}" << endl
            << "\\begin{figure}[H]" << endl
