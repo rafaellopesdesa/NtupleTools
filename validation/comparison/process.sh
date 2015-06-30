@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sed -i '22,$s/_/\\_/g' overview.tex 
+sed -i '23,$s/_/\\_/g' overview.tex 
 #ps2pdf diff.ps
 pdflatex overview.tex
 pdflatex overview.tex
