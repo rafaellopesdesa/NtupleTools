@@ -15,6 +15,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include "../../../Software/dataMCplotMaker/dataMCplotMaker.h"
 
 using namespace std;
 
@@ -36,13 +37,14 @@ vector<TString> getAliasNames(TTree *t){
        branchname.Contains("LorentzVectorss") ||
        branchname.Contains("timestamp") ) {
       
-      cout << "Sorry, I dont know about vector of vectors of objects. " << "Will be skipping " << aliasname << endl;
+      cout << "Sorry, I dont know about vector of vectors of objects. Will be skipping " << aliasname << endl;
       
       continue;
     }
 
     if(branchname.Contains("TString") ) {
-      cout << "Sorry, I don't know how to graphically represent TStrings in only 3 dimensions" << " Put in a feature request. Will be skipping " << aliasname << endl;
+      cout << "Sorry, I don't know how to graphically represent TStrings in only 3 dimensions."
+           << " Put in a feature request. Will be skipping " << aliasname << endl;
       continue;
     }
     v_aliasnames.push_back(aliasname);
@@ -108,15 +110,6 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
   gStyle->SetOptStat(0); 
   
   cout << "Starting" << endl;
-  TLegend *leg = new TLegend(0.7, 0.79, 0.92, 0.87); 
-  TLegend *lega = new TLegend(0.7, 0.79, 0.92, 0.87); 
-  TLegend *legb = new TLegend(0.7, 0.79, 0.92, 0.87); 
-  leg->SetFillStyle(0);
-  leg->SetBorderSize(0);
-  lega->SetFillStyle(0);
-  lega->SetBorderSize(0);
-  legb->SetFillStyle(0);
-  legb->SetBorderSize(0);
   
   TFile *f1 = TFile::Open(file1.Data(), "READ");
   if(f1 == NULL) {
@@ -179,24 +172,44 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
 
   TCanvas *c1 = new TCanvas();
 
-  int nEntries = min(tree1->GetEntries(), tree2->GetEntries()); 
-
+  TH1F* empty = new TH1F("","", 60,0,60);
+  int pageNum = 0;
+  
   ofstream myfile; 
   myfile.open("overview.tex"); 
   myfile << "\\documentclass{article}" << endl
          << "\\usepackage{fullpage}" << endl
-         << "\\begin{document}" << endl
-         << "The following were found in OLD but not in NEW:" << endl 
-         << "\\begin{itemize}" << endl;
-  for(unsigned int i = 0; i < v1_notCommonBranches.size(); i++) {
+         << "\\usepackage{graphicx}" << endl
+         << "\\usepackage{float}" << endl
+         << "\\usepackage{listings}" << endl
+         << "\\usepackage{hyperref}" << endl << endl
+
+         << "\\begin{document}" << endl << endl
+
+         << "\\begin{center}" << endl
+         << "\\LARGE \\bf Compare Ntuples for CMS3" << endl
+         << "\\end{center}" << endl
+         << "\\vspace{0.5cm}" << endl << endl
+
+         << "{\\noindent\\Large\\bf Files that are compared here:}" << endl
+         << "\\begin{lstlisting}[breaklines] "  << endl
+         << "OLD: " << file1 << endl
+         << "NEW: " << file2 << endl
+         << "\\end{lstlisting}" << endl
+         << "\\vspace{0.5cm}" << endl << endl 
+    
+         << "\\tableofcontents" << endl 
+         << "\\section*{Branches in OLD but not in NEW}\\addcontentsline{toc}{section}{Branches in Old but not in New}" << endl;
+
+  for(unsigned int i = 0; i < v1_notCommonBranches.size(); i++) { 
 
     TString alias = v1_notCommonBranches.at(i);
-    if (nEntries != 0) myfile << "\\item " << alias << endl;
+    myfile << "\\subsection*{" << alias << "}\\addcontentsline{toc}{subsection}{" << alias << "}" << endl;
     TString histname = "h1_"+(alias);
     TString command  = (alias) + ">>" + histname;
     TBranch *branch = tree1->GetBranch(tree1->GetAlias(alias));
     TString branchname(branch->GetName());
-    
+
     if( branchname.Contains("LorentzVector") ) {
       histname = "h1_"+ alias + "_pt";
       command  = alias + ".Pt()>>" + histname;      
@@ -205,48 +218,33 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
     TH1F *h1 = (TH1F*)gDirectory->Get(histname.Data());
     if(h1==NULL) {
       cout << "********** Branch " << v1_notCommonBranches.at(i) 
-       << " in file " << file1 << "exists, but is undrawable for some reason. " 
-       << "Skipping this branch" << endl;
+           << " in file " << file1 << "exists, but is undrawable for some reason. " 
+           << "Skipping this branch" << endl;
       c1->Clear();
       continue; 
     }
     c1->Clear();
 
-    if(drawWithErrors) h1->TH1F::Sumw2();
-    
     h1->Scale(1./h1->GetEntries());
-    if(!drawWithErrors) {
-      h1->SetLineColor(kBlue);
-      h1->SetMarkerSize(1.1);
-      h1->SetMarkerStyle(3);
-    } 
-    else {
-      h1->SetMarkerSize(1.3);
-      h1->SetMarkerStyle(3);
-    }
-    if (lega->GetNRows() < 1) lega->AddEntry(h1, "old", "l");
-    
-    h1->SetTitle(v1_notCommonBranches.at(i));
-    h1->Draw();
-    lega->Draw();
-    c1->Print("hist.pdf"); 
 
-    for(int ii = 0; ii < c1->GetListOfPrimitives()->GetSize(); ii++) {
-      if(string(c1->GetListOfPrimitives()->At(ii)->ClassName()) != "TVirtualPad") continue;
-      TVirtualPad *vPad = (TVirtualPad*)(c1->GetListOfPrimitives()->At(ii));
-      if(vPad != NULL) vPad->SetLogy();
-    }
-    c1->SaveAs("diff.ps(");
-    c1->SetLogy(0);
+    vector<TH1F*> hvec;
+    hvec.push_back(h1);
+    vector<string> titles;
+    titles.push_back("Old");
+    dataMCplotMaker(empty, hvec, titles, "", alias.Data(), Form("--isLinear --outputName hists/diff%d", pageNum));
+    myfile << "\\begin{figure}[H]" << endl
+           << Form("\\includegraphics[width=0.6\\textwidth]{./hists/diff%d.pdf}", pageNum) << endl
+           << "\\end{figure}" << endl;
+    pageNum++;
   }
-  myfile << "\\end{itemize}" << endl
-         << "The following were found in NEW but not in OLD:" << endl 
-         << "\\begin{itemize}" << endl;
+  if(v1_notCommonBranches.size() == 0) myfile << "There is no branch that found in OLD but not in NEW" << endl;
+  
+  myfile << "\\section*{Branches in NEW but not in OLD}\\addcontentsline{toc}{section}{Branches in New but not in Old}" << endl;
 
   for(unsigned int i = 0; i < v2_notCommonBranches.size(); i++) {
     
     TString alias = v2_notCommonBranches.at(i);
-    if (nEntries != 0) myfile << "\\item " << alias << endl;
+    myfile << "\\subsection*{" << alias << "}\\addcontentsline{toc}{subsection}{" << alias << "}" << endl;
     TString histname = "h2_"+(alias);
     TString command  = (alias) + ">>" + histname;
     TBranch *branch = tree2->GetBranch(tree2->GetAlias(alias));
@@ -260,42 +258,28 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
     TH1F *h2 = (TH1F*)gDirectory->Get(histname.Data());
     if(h2==NULL) {
       cout << "********** Branch " << v2_notCommonBranches.at(i) 
-       << " in file " << file2 << "exists, but is undrawable for some reason. " 
-       << "Skipping this branch" << endl;
+           << " in file " << file2 << "exists, but is undrawable for some reason. " 
+           << "Skipping this branch" << endl;
       c1->Clear();
       continue; 
     }
     c1->Clear();
 
-    if(drawWithErrors)
-      h2->TH1F::Sumw2();
-
-
     h2->Scale(1./h2->GetEntries());
-    
-    if(!drawWithErrors) {
-      h2->SetLineColor(kRed);
-    } else {
-      h2->SetMarkerSize(1.1);
-      h2->SetMarkerStyle(8);
-      h2->SetMarkerColor(kRed);
-    }
-    if (legb->GetNRows() < 1) legb->AddEntry(h2, "new", "l");
-    h2->SetTitle(v2_notCommonBranches.at(i));
-    h2->Draw();
-    legb->Draw();
-    for(int ii = 0; ii < c1->GetListOfPrimitives()->GetSize(); ii++) {
-      if(string(c1->GetListOfPrimitives()->At(ii)->ClassName()) != "TVirtualPad")
-    continue;
-      TVirtualPad *vPad = (TVirtualPad*)c1->GetListOfPrimitives()->At(ii);
-      if(vPad != NULL)
-    vPad->SetLogy();
-    }
-    c1->SaveAs("diff.ps(");
-    c1->SetLogy(0);
+
+    vector<TH1F*> hvec;
+    hvec.push_back(h2);
+    vector<string> titles;
+    titles.push_back("New");
+    dataMCplotMaker(empty, hvec, titles, "", alias.Data(), Form("--isLinear --outputName hists/diff%d", pageNum));
+    myfile << "\\begin{figure}[H]" << endl
+           << Form("\\includegraphics[width=0.6\\textwidth]{./hists/diff%d.pdf}", pageNum) << endl
+           << "\\end{figure}" << endl;
+    pageNum++;
   }
-  myfile << "\\end{itemize}" << endl
-         << "\\end{document}" << endl;
+  if(v2_notCommonBranches.size() == 0) myfile << "There is no branch that found in NEW but not in OLD" << endl;
+
+  myfile << "\\section*{Branches in Common}\\addcontentsline{toc}{section}{Branches in Common}" << endl;
 
   for(unsigned int i =  0; i < v_commonBranches.size(); i++) {
   
@@ -364,99 +348,25 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
       h2 = (TH1F*)gDirectory->Get(hist2name.Data());
       h1->Scale(1./h1->GetEntries());
       h2->Scale(1./h2->GetEntries());
-      if (leg->GetNRows() < 2) leg->AddEntry(h1, "old", "p");
-      if (leg->GetNRows() < 2) leg->AddEntry(h2, "new", "l");
       h2->SetTitle(v_commonBranches.at(i));
       h1->SetTitle(v_commonBranches.at(i));
    }
 
-    if(drawWithErrors) {
-      h1->TH1F::Sumw2();
-      h2->TH1F::Sumw2();
-    }
+    vector<TH1F*> hvec;
+    hvec.push_back(h1);
+    vector<string> titles;
+    titles.push_back("Old");
+    string opts = Form("--isLinear --dataName New --topYaxisTitle New/Old --outputName hists/diff%d", pageNum);
+    if(!drawWithErrors) opts += " --noErrBars";
+    dataMCplotMaker(h2, hvec, titles, "", alias.Data(), opts);
 
-    double bDiff = 0;
-    unsigned int nX1 = h1->GetNbinsX();
-    for(unsigned int iB=0; iB<=nX1+1; ++iB){
-      if(h1->GetBinError(iB)==0 && h1->GetBinContent(iB)!=0) h1->SetBinError(iB,1e-3*fabs(h1->GetBinContent(iB)));
-      if(h2->GetBinError(iB)==0 && h2->GetBinContent(iB)!=0) h2->SetBinError(iB,1e-3*fabs(h2->GetBinContent(iB)));
-      bDiff +=fabs(h1->GetBinContent(iB) - h2->GetBinContent(iB));
-    }
+    myfile << "\\subsection*{" << alias << "}\\addcontentsline{toc}{subsection}{" << alias << "}" << endl
+           << "\\begin{figure}[H]" << endl
+           << Form("\\includegraphics[width=0.9\\textwidth]{./hists/diff%d.pdf}", pageNum) << endl
+           << "\\end{figure}" << endl;
+    pageNum++;
 
-    if(h1->GetMaximum() >= h2->GetMaximum()) {
-      
-      double max = 1.1*h1->GetMaximum();
-      h1->SetMaximum(max);
-      h2->SetMaximum(max);
-        
-      if(!drawWithErrors){
-        h1->SetLineColor(kBlue);
-        h1->SetMarkerSize(1.1);
-        h1->SetMarkerStyle(3);
-        h2->SetLineColor(kRed);
-        h2->Draw();
-        h1->Draw("SAMEh*");
-        leg->Draw();
-      } 
-      else {
-        h1->SetMarkerSize(1.3);
-        h1->SetMarkerStyle(3);
-        h2->SetMarkerSize(1.1);
-        h2->SetMarkerStyle(8);
-        h2->SetMarkerColor(kRed);
-        h2->Draw("e");
-        h1->Draw("samee");
-        leg->Draw();
-      }
-    } 
-    else {
-      double max = 1.1*h2->GetMaximum();
-      h1->SetMaximum(max);
-      h2->SetMaximum(max);
-      
-      if(!drawWithErrors) {
-        h1->SetLineColor(kBlue);
-        h1->SetMarkerSize(1.1);
-        h1->SetMarkerStyle(3);
-        h2->SetLineColor(kRed);
-        h1->Draw("h*");
-        h2->Draw("SAME");
-        leg->Draw();
-      } 
-      else {
-        h1->SetMarkerSize(1.3);
-        h1->SetMarkerStyle(3);
-        h2->SetMarkerSize(1.1);
-        h2->SetMarkerStyle(8);
-        h2->SetMarkerColor(kRed);
-        TString histtitle = v_commonBranches.at(i);
-        h1->Draw("e");
-        h2->Draw("samese");
-        leg->Draw();
-      }
-
-    }
-    c1->SaveAs("diff.ps("); 
-      
-    if(i < v_commonBranches.size() - 1) {
-	  c1->SetLogy();
-	  for(int ii = 0; ii < c1->GetListOfPrimitives()->GetSize(); ii++) {
-	    if(string(c1->GetListOfPrimitives()->At(ii)->ClassName()) != "TVirtualPad") continue;
-	    TVirtualPad *vPad = (TVirtualPad*)c1->GetListOfPrimitives()->At(ii);
-	    if(vPad != NULL) vPad->SetLogy();
-	  }
-	  c1->SetLogy(0);
-    } 
-    else {
-	  cout << "done" << endl;
-	  c1->SetLogy();
-	  for(int ii = 0; ii < c1->GetListOfPrimitives()->GetSize(); ii++) {
-	    if(string(c1->GetListOfPrimitives()->At(ii)->ClassName()) != "TVirtualPad") continue;
-	    TVirtualPad *vPad = (TVirtualPad*)c1->GetListOfPrimitives()->At(ii);
-	    if(vPad != NULL) vPad->SetLogy();
-	  }
-	  c1->SetLogy(0);
-    }
-      
   }//for loop
+  myfile << "\\end{document}" << endl;
+
 }

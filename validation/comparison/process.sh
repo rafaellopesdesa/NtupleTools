@@ -1,6 +1,7 @@
 #!/bin/bash
 
-sed -i 's/_/\\_/g' overview.tex 
+sed -i '23,$s/_/\\_/g' overview.tex 
+#ps2pdf diff.ps
 pdflatex overview.tex
-ps2pdf diff.ps
-gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -sOutputFile=results.pdf overview.pdf diff.pdf
+pdflatex overview.tex
+#gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -sOutputFile=results.pdf overview.pdf diff.pdf
