@@ -90,6 +90,8 @@ then
     #(c) Submit it
     echo "submit: submitPPJob.sh $taskName $mergedFileNumber $JOBTYPE" 
     . submitPPJob.sh $taskName $mergedFileNumber $JOBTYPE
+    if [ ! -e submitPPList.txt ]; then touch submitPPList.txt; fi
+    #echo "/hadoop/cms/store/user/$USER/dataTuple/$taskName/merged/merged_ntuple_$mergeFileNumber.root" >> submitPPList.txt
   fi
 
 fi
