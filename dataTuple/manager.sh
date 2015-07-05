@@ -46,7 +46,7 @@ fi
 CMS3tag=CMS3_V07-04-03
 
 #Set the global tag to use
-GTAG=GR_P_V56
+GTAG=MCRUN2_74_V9
 
 #State the maxmimum number of events
 MAX_NEVENTS=2500 #all events
@@ -343,6 +343,18 @@ then
     fi
   done < filesToSubmit.txt
 
+fi
+
+#6. Check the post-processing status of jobs. Resubmit post-processing jobs without output.
+echo "step 6"
+if [ -d $BASEPATH/mergedLists ]; then
+    for dir in $( ls -d $BASEPATH/mergedLists/*/ )
+    do
+	task=`basename $dir`
+	echo "checking PP for $task"
+	. checkPP.sh $task $JOBTYPE
+	echo "done checking PP for $task"
+   done
 fi
 
 . monitor.sh

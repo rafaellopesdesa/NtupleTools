@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include "TChain.h"
+#include "TFile.h"
+#include "TTree.h"
 #include <string>
 
 using namespace std;
@@ -46,6 +48,18 @@ int mergeScript(const string& fileList, const string& outFile ){
 
   ch1.Merge(outFile.c_str(), "fast");
 
+  ///////////////////////////////////////
+  //checks for correct number of events//
+  ///////////////////////////////////////
+  TFile* mergedFile = new TFile(outFile.c_str());
+  TTree *mergedTree = (TTree*)mergedFile->Get("Events");
+  const int mergedCount = mergedTree->GetEntries();
+  const int unmergedCount = ch1.GetEntries();
+  if (mergedCount != unmergedCount){
+    cout << "Merged count not equal to unmerged count. Exiting..." << endl;
+    return 4;
+  }
+  
   return 0;
   
 }
