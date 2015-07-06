@@ -72,7 +72,7 @@ do
     counter=$[$counter+1]
     continue
   fi
-  isRunning=`condor_q $USER -l | grep $mergeFile; echo $?`
+  isRunning=`condor_q $USER -l | grep $taskname/metaData_$counter.txt &>/dev/null; echo $?`
   if [ $isRunning == 0 ]
   then
     counter=$[$counter+1]
