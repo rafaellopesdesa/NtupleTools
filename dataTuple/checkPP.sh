@@ -1,64 +1,134 @@
 #checks the status of post-processing for a given task and copies finished files, adds them to the donePP.txt list.
 
 #Takes arguments:
-  #1) the target directory to mv file to
-  #2) taskname
-  #3) JOBTYPE
+#1) taskname
+#2) JOBTYPE
 
-target=$1
-taskname=$2
-JOBTYPE=$3
+taskname=$1
+JOBTYPE=$2
 
-mergedDir="/hadoop/cms/store/user/$USER/dataTuple/$taskName/merged"
+mergedDir="/hadoop/cms/store/user/$USER/dataTuple/$taskname/merged"
+target="/hadoop/cms/store/group/snt/run2_data_test/$taskname/merged"
 
 if [ ! -d $BASEPATH ]
 then
   echo "BASEPATH in checkPP.sh does not exist!"
 fi
 
-if [ ! -d $target]; then mkdir -p $target; fi
+if [ ! -d $target ]
+then
+  mkdir -p $target
+  chmod a+w $target
+fi
 
 #make donelist
-if [! -e donePP.txt ]
+if [ ! -e donePP.txt ]
 then
-    touch donePP.txt
+  touch donePP.txt
+fi
+
+#Run condor_q to get list of running jobs
+condor_q $USER > temp_status.txt
+sed -i '1,4d' temp_status.txt
+sed -i '$d' temp_status.txt
+sed -i '$d' temp_status.txt
+
+#Delete old test files
+rm heldPPList.txt 2>/dev/null
+
+#Read condor_q output to fill lists.  
+while read line
+do
+  if [ `echo $line | awk '{ print $6 }'` == "H" ]
+  then
+    echo `echo $line | awk '{ print $1 }'` >> heldPPList.txt
+  fi	
+done < temp_status.txt    
+rm temp_status.txt
+
+#Delete held jobs
+if [ -e heldPPList.txt ]
+then
+  while read line
+  do
+    condor_rm $line
+  done < heldPPList.txt
+  rm heldPPList.txt
 fi
 
 counter="0"
-while [ -e $BASEPATH/mergedLists/$taskname/metaData_$counter.txt]
+
+while [ -e $BASEPATH/mergedLists/$taskname/metaData_$counter.txt ]
 do
-
-    mergeFile="$mergedDir/merged_ntuple_$counter.root"
-
-    grep $mergeFile submitPPList.txt > /dev/null
-    wasSubmitted=$?
-    
-    #FIXME: remove all held condor jobs
-
-    condor_q $USER -l | grep $mergeFileName > /dev/null
-    isRunning=$?
-    
-    #FIXME: shoud eventually check if output file has correct number of events, right now just checks existence
-
-    #grep donePP.txt to see if PP lready finished and mv'ed to hadoop
-    grep "$taskname/metaData_$counter.txt" donePP.txt > /dev/null
-    isDone=$?
-
-    if [ $isDone == 0 ]; then continue
-    elif [ $isRunning == 0 ]; then continue
-    elif [ -e $mergeFile ]; then
-	mv $mergeFile $target
-	$taskname/metaData_$counter.txt >> donePP.txt
-    elif [ $wasSubmitted == 0 ]; then
-	#FIXME: should add a 20min delay between job-not-running and outfile-doesn't exist, to allow for xfer time    
-	echo "$mergeFile does not exist! Will resubmit."
-	. submitPPJob.sh $taskName $mergedFileNumber $JOBTYPE
-    elif [ ! $wasSubmitted == 0 ]; then
-        echo "merged_ntuple_$mergedFileNumber.root never submitted"
-    else echo "Something weird! Doesn't satisfy any conditions...."
-    fi
-
+  echo "checking $BASEPATH/mergedLists/$taskname/metaData_$counter.txt"
+  mergeFile="$mergedDir/merged_ntuple_$counter.root"
+  echo "mergeFile is $mergeFile"
+  
+  #grep donePP.txt to see if PP already finished and mv'ed to hadoop
+  grep "$mergeFile" donePP.txt > /dev/null
+  isDone=$?
+  if [ $isDone == 0 ]
+  then
     counter=$[$counter+1]
-done
+    continue
+  fi
+  isRunning=`condor_q $USER -l | grep $taskname/metaData_$counter.txt &>/dev/null; echo $?`
+  if [ $isRunning == 0 ]
+  then
+    counter=$[$counter+1]
+    continue
+  fi
+  
+  #FIXME: May want to check timestamp when submitted and kill if "stuck"
+  #grep $mergeFile submitPPList.txt > /dev/null
+  #wasSubmitted=$?
+  
+  if [ -e delayList.txt ]
+  then
+    grep $mergeFile delayList.txt > /dev/null
+    wasDelayed=$?
+  else
+    wasDelayed=1
+  fi
 
-exit 0
+  mergeFileEsc=`echo $mergeFile | sed 's,/,\\\/,g'`
+  
+  if [ -e $mergeFile ]
+  then 
+    if [ $wasDelayed == 0 ]
+    then 
+      sed -i "/$mergeFileEsc/d" delayList.txt
+      sed -i "/$mergeFileEsc/d" submitPPList.txt
+      root -b -q -l "checkNumMergedEvents.C (\"$BASEPATH/mergedLists/$taskname/merged_list_$counter.txt\",\"$mergeFile\")"
+      NumMergedEventsConsistent=$?
+      if [ $NumMergedEventsConsistent == 0 ]
+      then
+        echo "moving $mergeFile to $target"
+        mv $mergeFile $target
+        echo "$mergeFile" >> donePP.txt
+      else
+        echo "$mergeFile has the wrong number of events. Will delete and resubmit."
+        #rm $mergeFile
+        #. submitPPJob.sh $taskName $counter $JOBTYPE
+        #submitTime=`date +%s`
+        #echo "/hadoop/cms/store/user/$USER/dataTuple/$taskName/merged/merged_ntuple_$counter.root $submitTime" >> submitPPList.txt
+      fi
+    else
+      echo "$mergeFile exists, but might be copying. Adding to delaylist.txt"
+      echo "$mergeFile" >> delayList.txt
+    fi
+  else
+    if [ $wasDelayed == 0 ]
+    then 
+      sed -i "/$mergeFileEsc/d" delayList.txt
+      echo "$mergeFile does not exist! Will resubmit."
+      . submitPPJob.sh $taskname $counter $JOBTYPE
+      submitTime=`date +%s`
+      echo "/hadoop/cms/store/user/$USER/dataTuple/$taskName/merged/merged_ntuple_$counter.root $submitTime" >> submitPPList.txt
+    else
+      echo "Adding mergeFile to delaylist.txt"
+      echo "$mergeFile" >> delayList.txt
+    fi
+  fi
+  counter=$[$counter+1]
+done

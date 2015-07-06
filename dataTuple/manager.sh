@@ -46,7 +46,7 @@ fi
 CMS3tag=CMS3_V07-04-03
 
 #Set the global tag to use
-GTAG=GR_P_V56
+GTAG=MCRUN2_74_V9
 
 #State the maxmimum number of events
 MAX_NEVENTS=2500 #all events
@@ -69,12 +69,10 @@ else
 fi
 
 #Set environment
-export CMS_PATH=/cvmfs/cms.cern.ch
-export SCRAM_ARCH=slc6_amd64_gcc481
-source /cvmfs/cms.cern.ch/cmsset_default.sh
-source /cvmfs/cms.cern.ch/slc6_amd64_gcc481/lcg/root/5.34.18/bin/thisroot.sh
+export SCRAM_ARCH=slc6_amd64_gcc491
+source /nfs-7/cmssoft/cms.cern.ch/cmssw/cmsset_default.sh
 pushd .
-cd /cvmfs/cms.cern.ch/slc6_amd64_gcc481/cms/cmssw/CMSSW_7_2_0/src/
+cd /nfs-7/cmssoft/cms.cern.ch/cmssw/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_1_patch1
 eval `scramv1 runtime -sh`
 popd
 
@@ -343,6 +341,18 @@ then
     fi
   done < filesToSubmit.txt
 
+fi
+
+#6. Check the post-processing status of jobs. Resubmit post-processing jobs without output.
+echo "step 6"
+if [ -d $BASEPATH/mergedLists ]; then
+    for dir in $( ls -d $BASEPATH/mergedLists/*/ )
+    do
+	task=`basename $dir`
+	echo "checking PP for $task"
+	. checkPP.sh $task $JOBTYPE
+	echo "done checking PP for $task"
+   done
 fi
 
 . monitor.sh

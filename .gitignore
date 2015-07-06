@@ -27,3 +27,4 @@ cms3withCondor/T5Full_Gl1500_Chi800_LSP100/
 cms3withCondor/job_logs/
 cms3withCondor/makeListsForMergingCrab3.py
 cms3withCondor/whichMissing.txt
+validation/comparison/hists/diff*.pdf
