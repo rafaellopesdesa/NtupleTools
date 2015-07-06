@@ -90,10 +90,11 @@ do
   else
     wasDelayed=1
   fi
+
+  mergeFileEsc=`echo $mergeFile | sed 's,/,\\\/,g'`
   
   if [ -e $mergeFile ]
   then 
-    mergeFileEsc=`echo $mergeFile | sed 's,/,\\\/,g'`
     if [ $wasDelayed == 0 ]
     then 
       sed -i "/$mergeFileEsc/d" delayList.txt
