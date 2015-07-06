@@ -19,6 +19,10 @@
 
 using namespace std;
 
+bool comparePair(const std::pair<float, int> & a, const std::pair<float, int> & b) {
+  return a.first < b.first;
+}
+
 vector<TString> getAliasNames(TTree *t){
 
   vector<TString> v_aliasnames;
@@ -56,15 +60,15 @@ vector<TString> getAliasNames(TTree *t){
 }
 
 //----------------------------------------------------------------------
-bool areHistosTheSame(TH1F* h1, TH1F* h2){
+float Chi2ofHistos(TH1F* h1, TH1F* h2){
   
-  if(h1->GetNbinsX() != h2->GetNbinsX()) return false;
+  if(h1->GetNbinsX() != h2->GetNbinsX()) return 0;
   
   //make sure that the bin range is the same
   float range1 = h1->GetBinCenter(1) - h1->GetBinCenter(h1->GetNbinsX());
   float range2 = h2->GetBinCenter(1) - h2->GetBinCenter(h2->GetNbinsX());
 
-  if(TMath::Abs(range1 - range2) > 0.000001) return false;
+  if(TMath::Abs(range1 - range2) > 0.000001) return 0;
  
   float prob = h1->Chi2Test(h2, "WWNORM"); // = 1 if consistent, = 0 if inconsistent 
 
@@ -81,10 +85,10 @@ bool areHistosTheSame(TH1F* h1, TH1F* h2){
       }
       if(nNonZeroBins == 1) {
           // check if the single bin that has entries is within 1% between h1 and h2
-          if( 1.0*(h1->GetBinContent(iNonZeroBin)-h2->GetBinContent(iNonZeroBin))/h1->GetBinContent(iNonZeroBin) < 0.01 ) prob = 1.0;
+          prob = 1.0*(h1->GetBinContent(iNonZeroBin)-h2->GetBinContent(iNonZeroBin))/h1->GetBinContent(iNonZeroBin) ;
       }
   }
-  return prob > 0.95;
+  return prob;
 }
 
 //-----------------------------------------------------------------------
@@ -105,10 +109,9 @@ vector<TString> getUncommonBranches(vector<TString> aliasnames, vector<TString> 
 }
 
 //-----------------------------------------------------------------------
-void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true", bool drawWithErrors="true"){
-
+void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true", bool drawWithErrors="true")
+{
   gStyle->SetOptStat(0); 
-  
   cout << "Starting" << endl;
   
   TFile *f1 = TFile::Open(file1.Data(), "READ");
@@ -173,7 +176,7 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
   TCanvas *c1 = new TCanvas();
 
   TH1F* empty = new TH1F("","", 60,0,60);
-  int pageNum = 0;
+  int plotNum = 0;
   
   ofstream myfile; 
   myfile.open("overview.tex"); 
@@ -231,11 +234,11 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
     hvec.push_back(h1);
     vector<string> titles;
     titles.push_back("Old");
-    dataMCplotMaker(empty, hvec, titles, "", alias.Data(), Form("--isLinear --xAxisOverride ' ' --outputName hists/diff%d", pageNum));
+    dataMCplotMaker(empty, hvec, titles, "", alias.Data(), Form("--isLinear --xAxisOverride --outputName hists/uncommon%d", plotNum));
     myfile << "\\begin{figure}[H]" << endl
-           << Form("\\includegraphics[width=0.6\\textwidth]{./hists/diff%d.pdf}", pageNum) << endl
+           << Form("\\includegraphics[width=0.6\\textwidth]{./hists/uncommon%d.pdf}", plotNum) << endl
            << "\\end{figure}" << endl;
-    pageNum++;
+    plotNum++;
   }
   if(v1_notCommonBranches.size() == 0) myfile << "There is no branch that found in OLD but not in NEW" << endl;
   
@@ -271,15 +274,17 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
     hvec.push_back(h2);
     vector<string> titles;
     titles.push_back("New");
-    dataMCplotMaker(empty, hvec, titles, "", alias.Data(), Form("--isLinear --xAxisOverride ' ' --outputName hists/diff%d", pageNum));
+    dataMCplotMaker(empty, hvec, titles, "", alias.Data(), Form("--isLinear --xAxisOverride --outputName hists/uncommon%d", plotNum));
     myfile << "\\begin{figure}[H]" << endl
-           << Form("\\includegraphics[width=0.6\\textwidth]{./hists/diff%d.pdf}", pageNum) << endl
+           << Form("\\includegraphics[width=0.6\\textwidth]{./hists/uncommon%d.pdf}", plotNum) << endl
            << "\\end{figure}" << endl;
-    pageNum++;
+    plotNum++;
   }
   if(v2_notCommonBranches.size() == 0) myfile << "There is no branch that found in NEW but not in OLD" << endl;
 
   myfile << "\\section*{Branches in Common}\\addcontentsline{toc}{section}{Branches in Common}" << endl;
+
+  vector< pair<float,int> > chi2pair;
 
   for(unsigned int i =  0; i < v_commonBranches.size(); i++) {
   
@@ -323,13 +328,12 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
     h1->Scale(1./h1->GetEntries());
     h2->Scale(1./h2->GetEntries());
     
-    bool histos_theSame = areHistosTheSame(h1, h2);
-    if(histos_theSame && doNotSaveSameHistos){
-      cout << "  SKIPPING!  Identical." << endl;
+    float chi2 = Chi2ofHistos(h1, h2);
+    if(chi2 > 0.95 && doNotSaveSameHistos){
+      cout << "  SKIPPING!  Identical upon chi2 > 0.95." << endl;
       continue;
     }
-    
-    if (!histos_theSame){
+    else{
       double min1 = h1->GetXaxis()->GetXmin();
       double min2 = h2->GetXaxis()->GetXmin(); 
       double max1 = h1->GetXaxis()->GetXmax();
@@ -356,17 +360,23 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
     hvec.push_back(h1);
     vector<string> titles;
     titles.push_back("Old");
-    string opts = Form("--isLinear --dataName New --topYaxisTitle New/Old --xAxisOverride ' ' --outputName hists/diff%d", pageNum);
+    string opts = Form("--isLinear --dataName New --topYaxisTitle New/Old --xAxisOverride  --outputName hists/diff%d", i);
     if(!drawWithErrors) opts += " --noErrBars";
     dataMCplotMaker(h2, hvec, titles, "", alias.Data(), opts);
-
-    myfile << "\\subsection*{" << alias << "}\\addcontentsline{toc}{subsection}{" << alias << "}" << endl
-           << "\\begin{figure}[H]" << endl
-           << Form("\\includegraphics[width=0.9\\textwidth]{./hists/diff%d.pdf}", pageNum) << endl
-           << "\\end{figure}" << endl;
-    pageNum++;
+    chi2pair.push_back(make_pair(chi2, i));
 
   }//for loop
+
+  std::sort(chi2pair.begin(), chi2pair.end(), comparePair);
+  
+  for(unsigned int i=0; i < chi2pair.size(); i++){
+    myfile << "\\subsection*{" << v_commonBranches.at(chi2pair[i].second) << "}\\addcontentsline{toc}{subsection}{" << v_commonBranches.at(chi2pair[i].second) << "}" << endl
+           << "\\begin{figure}[H]" << endl
+           << Form("\\includegraphics[width=0.9\\textwidth]{./hists/diff%d.pdf}", chi2pair[i].second) << endl
+           << "\\end{figure}" << endl
+           << "The $\\chi^2$ test value between the Old and New is: " << chi2pair[i].first << endl;
+  }
+
   myfile << "\\end{document}" << endl;
 
 }
