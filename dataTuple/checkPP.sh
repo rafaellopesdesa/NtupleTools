@@ -122,7 +122,7 @@ do
     then 
       sed -i "/$mergeFileEsc/d" delayList.txt
       echo "$mergeFile does not exist! Will resubmit."
-      . submitPPJob.sh $taskName $counter $JOBTYPE
+      . submitPPJob.sh $taskname $counter $JOBTYPE
       submitTime=`date +%s`
       echo "/hadoop/cms/store/user/$USER/dataTuple/$taskName/merged/merged_ntuple_$counter.root $submitTime" >> submitPPList.txt
     else
