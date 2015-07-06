@@ -22,15 +22,22 @@ export mData=$BASEPATH/mergedLists/$taskName/metaData_$number.txt
 if [ "$JOBTYPE" == "cms3" ] 
 then
   export outputDir=/hadoop/cms/store/user/$USER/dataTuple/$taskName/merged
-else
+elif [ "$JOBTYPE" == "user" ] 
+then
   export outputDir=/hadoop/cms/store/user/$USER/userjob_test/$taskName/merged
+else
+  echo "JOBTYPE in submitPPJob.sh not recognized!"
+  exit 1
 fi
 export dataSet=$taskName
 export workingDirectory=$PWD
 export executableScript=`readlink -f $PWD/../condorMergingTools/libsh/mergeScriptRoot6.sh`
 export isDataTuple=1
 
-mkdir -p $outputDir
+if [ ! -d $outputDir ]
+then
+  mkdir -p $outputDir
+fi
 
 pushd $PWD/../condorMergingTools/
 ./submitMergeJobs.sh

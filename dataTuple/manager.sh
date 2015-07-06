@@ -69,12 +69,10 @@ else
 fi
 
 #Set environment
-export CMS_PATH=/cvmfs/cms.cern.ch
-export SCRAM_ARCH=slc6_amd64_gcc481
-source /cvmfs/cms.cern.ch/cmsset_default.sh
-source /cvmfs/cms.cern.ch/slc6_amd64_gcc481/lcg/root/5.34.18/bin/thisroot.sh
+export SCRAM_ARCH=slc6_amd64_gcc491
+source /nfs-7/cmssoft/cms.cern.ch/cmssw/cmsset_default.sh
 pushd .
-cd /cvmfs/cms.cern.ch/slc6_amd64_gcc481/cms/cmssw/CMSSW_7_2_0/src/
+cd /nfs-7/cmssoft/cms.cern.ch/cmssw/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_1_patch1
 eval `scramv1 runtime -sh`
 popd
 

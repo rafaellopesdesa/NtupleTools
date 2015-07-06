@@ -1,15 +1,14 @@
 #checks the status of post-processing for a given task and copies finished files, adds them to the donePP.txt list.
 
 #Takes arguments:
-#1) the target directory to mv file to
-#2) taskname
-#3) JOBTYPE
+#1) taskname
+#2) JOBTYPE
 
 taskname=$1
 JOBTYPE=$2
 
 mergedDir="/hadoop/cms/store/user/$USER/dataTuple/$taskname/merged"
-target="/hadoop/cms/store/group/snt/testData/$taskname/merged"
+target="/hadoop/cms/store/group/snt/run2_data_test/$taskname/merged"
 
 if [ ! -d $BASEPATH ]
 then
@@ -19,6 +18,7 @@ fi
 if [ ! -d $target ]
 then
   mkdir -p $target
+  chmod a+w $target
 fi
 
 #make donelist
@@ -98,9 +98,20 @@ do
     then 
       sed -i "/$mergeFileEsc/d" delayList.txt
       sed -i "/$mergeFileEsc/d" submitPPList.txt
-      echo "moving $mergeFile to $target"
-      mv $mergeFile $target
-      echo "$mergeFile" >> donePP.txt
+      root -b -q -l "checkNumMergedEvents.C (\"$BASEPATH/mergedLists/$taskname/merged_list_$counter.txt\",\"$mergeFile\")"
+      NumMergedEventsConsistent=$?
+      if [ $NumMergedEventsConsistent == 0 ]
+      then
+        echo "moving $mergeFile to $target"
+        mv $mergeFile $target
+        echo "$mergeFile" >> donePP.txt
+      else
+        echo "$mergeFile has the wrong number of events. Will delete and resubmit."
+        #rm $mergeFile
+        #. submitPPJob.sh $taskName $counter $JOBTYPE
+        #submitTime=`date +%s`
+        #echo "/hadoop/cms/store/user/$USER/dataTuple/$taskName/merged/merged_ntuple_$counter.root $submitTime" >> submitPPList.txt
+      fi
     else
       echo "$mergeFile exists, but might be copying. Adding to delaylist.txt"
       echo "$mergeFile" >> delayList.txt
