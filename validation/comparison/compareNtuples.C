@@ -231,7 +231,7 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
     hvec.push_back(h1);
     vector<string> titles;
     titles.push_back("Old");
-    dataMCplotMaker(empty, hvec, titles, "", alias.Data(), Form("--isLinear --outputName hists/diff%d", pageNum));
+    dataMCplotMaker(empty, hvec, titles, "", alias.Data(), Form("--isLinear --xAxisOverride ' ' --outputName hists/diff%d", pageNum));
     myfile << "\\begin{figure}[H]" << endl
            << Form("\\includegraphics[width=0.6\\textwidth]{./hists/diff%d.pdf}", pageNum) << endl
            << "\\end{figure}" << endl;
@@ -271,7 +271,7 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
     hvec.push_back(h2);
     vector<string> titles;
     titles.push_back("New");
-    dataMCplotMaker(empty, hvec, titles, "", alias.Data(), Form("--isLinear --outputName hists/diff%d", pageNum));
+    dataMCplotMaker(empty, hvec, titles, "", alias.Data(), Form("--isLinear --xAxisOverride ' ' --outputName hists/diff%d", pageNum));
     myfile << "\\begin{figure}[H]" << endl
            << Form("\\includegraphics[width=0.6\\textwidth]{./hists/diff%d.pdf}", pageNum) << endl
            << "\\end{figure}" << endl;
@@ -356,7 +356,7 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
     hvec.push_back(h1);
     vector<string> titles;
     titles.push_back("Old");
-    string opts = Form("--isLinear --dataName New --topYaxisTitle New/Old --outputName hists/diff%d", pageNum);
+    string opts = Form("--isLinear --dataName New --topYaxisTitle New/Old --xAxisOverride ' ' --outputName hists/diff%d", pageNum);
     if(!drawWithErrors) opts += " --noErrBars";
     dataMCplotMaker(h2, hvec, titles, "", alias.Data(), opts);
 
