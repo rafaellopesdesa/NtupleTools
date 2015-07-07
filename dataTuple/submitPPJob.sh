@@ -40,7 +40,7 @@ then
   export outputDir=/hadoop/cms/store/user/$USER/userjob_test/$taskName/merged
   export dataSet=$taskName
   export workingDirectory=$PWD
-  export executableScript=`readlink -f userjob/merging/mergeScriptRoot6.sh`
+  export executableScript=`readlink -f userdir/merging/mergeScriptRoot6.sh`
   export isDataTuple=1
 
   if [ ! -d $outputDir ]
@@ -48,7 +48,7 @@ then
     mkdir -p $outputDir
   fi
 
-  pushd userjob/merging
+  pushd userdir/merging
   ./submitMergeJobs.sh
   popd
 else

@@ -76,29 +76,26 @@ outFileName=`echo $inputList | sed 's/list/ntuple/g' | sed 's/txt/root/g'`
 outFileName=`basename $outFileName`
 echo "outfile name = $outFileName"
 
-echo $CMSSW_RELEASE_BASE
+echo $CMSSW_BASE
 #use lcgcp to stageout
 echo "filename = $outFileName"
 echo "Outputting file to $outputDir from worker node."
 localFile=`pwd`/${outFileName}
 
-if [ $didAddBranches == 0 ]; then
+echo -e "copying file now from : \n$(pwd)/merged_ntuple.root \nto:\n$outputDir/$outFileName"
+lcg-cp -b -D srmv2 --vo cms -t 2400 --verbose file:`pwd`/merged_ntuple.root srm://bsrm-3.t2.ucsd.edu:8443/srm/v2/server?SFN=$outputDir/${outFileName}
+stageout_error=$?
 
-	echo -e "copying file now from : \n$localFile \nto:\n$outputDir/$outFileName"
-	lcg-cp -b -D srmv2 --vo cms -t 2400 --verbose file:`pwd`/${outFileName} srm://bsrm-3.t2.ucsd.edu:8443/srm/v2/server?SFN=$outputDir/${outFileName}
-	stageout_error=$?
+if [ $stageout_error != 0 ]; then
 
-	if [ $stageout_error != 0 ]; then
+    echo "Error merging files in $inputList. Job exit code $stageout_error. Stageout with lcg-cp failed."
 
-		echo "Error merging files in $inputList. Job exit code $stageout_error. Stageout with lcg-cp failed."
+fi
 
-	fi
+if [ $stageout_error == 0 ]; then
 
-	if [ $stageout_error == 0 ]; then
+    echo "Merging of files in $inputList successful. Job exit code $stageout_error." # Error occurred while running makeSkime.C."
 
-		echo "Merging of files in $inputList successful. Job exit code $stageout_error." # Error occurred while running makeSkime.C."
-
-	fi
 fi
 
 echo "Cleaning up."
