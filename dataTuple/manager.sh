@@ -358,7 +358,7 @@ fi
 #update backups
 if [ "$JOBTYPE" == "cms3" ] 
 then
-  pushd backup
+  pushd DataTuple-backup
   git pull
   for theUser in alex jason mark
   do
@@ -368,10 +368,10 @@ then
     cp -r /nfs-7/userdata/dataTuple/$theUser/mergedLists fileLists/
     cd ..
   done
-  popd
-  git add backup
+  git add alex jason mark
   git commit -m "dataTuple commit on `date` by $USER"
-  git push
+  git push origin master
+  popd
 fi
 
 #monitor script
