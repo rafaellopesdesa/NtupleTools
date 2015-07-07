@@ -7,7 +7,17 @@
 taskname=$1
 JOBTYPE=$2
 
-mergedDir="/hadoop/cms/store/user/$USER/dataTuple/$taskname/merged"
+if [ "$JOBTYPE" == "cms3" ]
+then
+    jobDir=dataTuple
+elif [ "$JOBTYPE" == "user" ]
+then
+    jobDir=userjob_test
+else
+  echo "JOBTYPE not recognized"
+  exit 1
+fi
+mergedDir="/hadoop/cms/store/user/$USER/$jobDir/$taskname/merged"
 target="/hadoop/cms/store/group/snt/run2_data_test/$taskname/merged"
 
 if [ ! -d $BASEPATH ]
@@ -124,7 +134,7 @@ do
       echo "$mergeFile does not exist! Will resubmit."
       . submitPPJob.sh $taskname $counter $JOBTYPE
       submitTime=`date +%s`
-      echo "/hadoop/cms/store/user/$USER/dataTuple/$taskName/merged/merged_ntuple_$counter.root $submitTime" >> submitPPList.txt
+      echo "/hadoop/cms/store/user/$USER/$jobDir/$taskName/merged/merged_ntuple_$counter.root $submitTime" >> submitPPList.txt
     else
       echo "Adding mergeFile to delaylist.txt"
       echo "$mergeFile" >> delayList.txt
