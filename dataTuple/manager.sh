@@ -368,10 +368,10 @@ then
     cp -r /nfs-7/userdata/dataTuple/$theUser/mergedLists fileLists/
     cd ..
   done
-  for file in `ls -R . | awk '/:$/&&f{s=$0;f=0}/:$/&&!f{sub(/:$/,"");s=$0;f=1;next}NF&&f{ print s"/"$0 }'`; do git add $file; done
+  popd
+  git add backup
   git commit -m "dataTuple commit on `date` by $USER"
   git push
-  popd
 fi
 
 #monitor script
