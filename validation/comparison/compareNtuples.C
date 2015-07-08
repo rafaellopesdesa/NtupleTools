@@ -334,34 +334,6 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
     
     // float chi2new = -1;
     // bool wrongBin = false;
-    // if(chi2 < 0){
-    //   wrongBin = true;
-    //   double min1 = h1->GetXaxis()->GetXmin();
-    //   double min2 = h2->GetXaxis()->GetXmin(); 
-    //   double max1 = h1->GetXaxis()->GetXmax();
-    //   double max2 = h2->GetXaxis()->GetXmax();
-
-    //   double hmin = min1 > min2 ? min2 : min1;
-    //   double hmax = max1 > max2 ? max1 : max2;
-    //   int hnbins = h2->GetNbinsX();
-
-    //   command1 += Form("_fix(%d,%f,%f)", hnbins, hmin, hmax);
-    //   command2 += Form("_fix(%d,%f,%f)", hnbins, hmin, hmax);
-    //   hist1name += "_fix";
-    //   hist2name += "_fix";
-    //   tree1->Draw(command1.Data());
-    //   tree2->Draw(command2.Data());
-    //   TH1F* h3 = (TH1F*)gDirectory->Get(hist1name.Data());
-    //   TH1F* h4 = (TH1F*)gDirectory->Get(hist2name.Data());
-    //   c1->Clear();
-    //   h3->Scale(1./h1->GetEntries());
-    //   h4->Scale(1./h2->GetEntries());
-    //   chi2new = Chi2ofHistos(h3, h4);
-    //   delete h1;
-    //   delete h2;
-    //   h1 = h3;
-    //   h2 = h4;
-    // }
 
     // if(chi2 == -1 ){
     //   myfile << "Branch " << alias << " has problem with binning: " << chi2 << "\\\\\n";
@@ -370,6 +342,30 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
     if(chi2 > idThreshold && doNotSaveSameHistos){
       cout << "  SKIPPING!  Identical." << endl;
       continue;
+    }
+    else if(chi2 < 0){
+      double min1 = h1->GetXaxis()->GetXmin();
+      double min2 = h2->GetXaxis()->GetXmin(); 
+      double max1 = h1->GetXaxis()->GetXmax();
+      double max2 = h2->GetXaxis()->GetXmax();
+
+      double hmin = min1 > min2 ? min2 : min1;
+      double hmax = max1 > max2 ? max1 : max2;
+      int hnbins = h2->GetNbinsX();
+
+      command1 += Form("_fix(%d,%f,%f)", hnbins, hmin, hmax);
+      command2 += Form("_fix(%d,%f,%f)", hnbins, hmin, hmax);
+      hist1name += "_fix";
+      hist2name += "_fix";
+      tree1->Draw(command1.Data());
+      tree2->Draw(command2.Data());
+      delete h1;
+      delete h2;
+      h1 = (TH1F*)gDirectory->Get(hist1name.Data());
+      h2 = (TH1F*)gDirectory->Get(hist2name.Data());
+      c1->Clear();
+      h1->Scale(1./h1->GetEntries());
+      h2->Scale(1./h2->GetEntries());
     }
 
     h1->SetTitle(v_commonBranches.at(i));
