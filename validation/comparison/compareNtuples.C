@@ -15,7 +15,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
-#include "/home/users/cgeorge/software/dataMCplotMaker/dataMCplotMaker.h"
+#include "/home/users/sicheng/tas/Software/dataMCplotMaker/dataMCplotMaker.h"
 
 using namespace std;
 
@@ -61,14 +61,14 @@ vector<TString> getAliasNames(TTree *t){
 
 //----------------------------------------------------------------------
 float Chi2ofHistos(TH1F* h1, TH1F* h2){
-  
-  if(h1->GetNbinsX() != h2->GetNbinsX()) return 0;
+
+  if(h1->GetNbinsX() != h2->GetNbinsX()) return -2;
   
   //make sure that the bin range is the same
   float range1 = h1->GetBinCenter(1) - h1->GetBinCenter(h1->GetNbinsX());
   float range2 = h2->GetBinCenter(1) - h2->GetBinCenter(h2->GetNbinsX());
 
-  if(TMath::Abs(range1 - range2) > 0.000001) return 0;
+  if(TMath::Abs(range1 - range2) > 0.000001) return -1;
  
   float prob = h1->Chi2Test(h2, "WWNORM"); // = 1 if consistent, = 0 if inconsistent 
 
@@ -85,10 +85,11 @@ float Chi2ofHistos(TH1F* h1, TH1F* h2){
       }
       if(nNonZeroBins == 1) {
           // check if the single bin that has entries is within 1% between h1 and h2
-          prob = 1.0*(h1->GetBinContent(iNonZeroBin)-h2->GetBinContent(iNonZeroBin))/h1->GetBinContent(iNonZeroBin) ;
+          if( 1.0*(h1->GetBinContent(iNonZeroBin)-h2->GetBinContent(iNonZeroBin))/h1->GetBinContent(iNonZeroBin) < 0.01 ) prob = 0.99;
       }
   }
   return prob;
+  
 }
 
 //-----------------------------------------------------------------------
@@ -109,7 +110,7 @@ vector<TString> getUncommonBranches(vector<TString> aliasnames, vector<TString> 
 }
 
 //-----------------------------------------------------------------------
-void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true", bool drawWithErrors="true")
+void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true", bool drawWithErrors="true", float idThreshold=0.99)
 {
   gStyle->SetOptStat(0); 
   cout << "Starting" << endl;
@@ -285,7 +286,7 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
   myfile << "\\section*{Branches in Common}\\addcontentsline{toc}{section}{Branches in Common}" << endl;
 
   vector< pair<float,int> > chi2pair;
-
+  int bingo = 0;
   for(unsigned int i =  0; i < v_commonBranches.size(); i++) {
   
     TString alias = v_commonBranches.at(i);
@@ -327,34 +328,52 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
 
     h1->Scale(1./h1->GetEntries());
     h2->Scale(1./h2->GetEntries());
-    
+
     float chi2 = Chi2ofHistos(h1, h2);
-    if(chi2 > 0.95 && doNotSaveSameHistos){
-      cout << "  SKIPPING!  Identical upon chi2 > 0.95." << endl;
+    // if(chi2 > 0.999)  myfile << "Branch has native good chi2: " <<  alias << "   " << chi2 << "\\\\\n";
+    
+    // float chi2new = -1;
+    // bool wrongBin = false;
+    // if(chi2 < 0){
+    //   wrongBin = true;
+    //   double min1 = h1->GetXaxis()->GetXmin();
+    //   double min2 = h2->GetXaxis()->GetXmin(); 
+    //   double max1 = h1->GetXaxis()->GetXmax();
+    //   double max2 = h2->GetXaxis()->GetXmax();
+
+    //   double hmin = min1 > min2 ? min2 : min1;
+    //   double hmax = max1 > max2 ? max1 : max2;
+    //   int hnbins = h2->GetNbinsX();
+
+    //   command1 += Form("_fix(%d,%f,%f)", hnbins, hmin, hmax);
+    //   command2 += Form("_fix(%d,%f,%f)", hnbins, hmin, hmax);
+    //   hist1name += "_fix";
+    //   hist2name += "_fix";
+    //   tree1->Draw(command1.Data());
+    //   tree2->Draw(command2.Data());
+    //   TH1F* h3 = (TH1F*)gDirectory->Get(hist1name.Data());
+    //   TH1F* h4 = (TH1F*)gDirectory->Get(hist2name.Data());
+    //   c1->Clear();
+    //   h3->Scale(1./h1->GetEntries());
+    //   h4->Scale(1./h2->GetEntries());
+    //   chi2new = Chi2ofHistos(h3, h4);
+    //   delete h1;
+    //   delete h2;
+    //   h1 = h3;
+    //   h2 = h4;
+    // }
+
+    // if(chi2 == -1 ){
+    //   myfile << "Branch " << alias << " has problem with binning: " << chi2 << "\\\\\n";
+    //   continue;
+    // }
+    if(chi2 > idThreshold && doNotSaveSameHistos){
+      cout << "  SKIPPING!  Identical." << endl;
       continue;
     }
-    else{
-      double min1 = h1->GetXaxis()->GetXmin();
-      double min2 = h2->GetXaxis()->GetXmin(); 
-      double max1 = h1->GetXaxis()->GetXmax();
-      double max2 = h2->GetXaxis()->GetXmax();
 
-      double hmin = min1 > min2 ? min2 : min1;
-      double hmax = max1 > max2 ? max1 : max2;
-
-      command1 += Form("_fix(100,%f,%f)", hmin, hmax);
-      command2 += Form("_fix(100,%f,%f)", hmin, hmax);
-      hist1name += "_fix";
-      hist2name += "_fix";
-      tree1->Draw(command1.Data());
-      tree2->Draw(command2.Data());
-      h1 = (TH1F*)gDirectory->Get(hist1name.Data());
-      h2 = (TH1F*)gDirectory->Get(hist2name.Data());
-      h1->Scale(1./h1->GetEntries());
-      h2->Scale(1./h2->GetEntries());
-      h2->SetTitle(v_commonBranches.at(i));
-      h1->SetTitle(v_commonBranches.at(i));
-   }
+    h1->SetTitle(v_commonBranches.at(i));
+    h2->SetTitle(v_commonBranches.at(i));
 
     vector<TH1F*> hvec;
     hvec.push_back(h1);
@@ -365,18 +384,34 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
     dataMCplotMaker(h2, hvec, titles, "", alias.Data(), opts);
     chi2pair.push_back(make_pair(chi2, i));
 
+    // if(chi2new > 0.999)  myfile << "Branch has somehow got good chi2: " << alias << "   " << chi2new << "\\\\\n";
+    
   }//for loop
 
-  std::sort(chi2pair.begin(), chi2pair.end(), comparePair);
-  
-  for(unsigned int i=0; i < chi2pair.size(); i++){
-    myfile << "\\subsection*{" << v_commonBranches.at(chi2pair[i].second) << "}\\addcontentsline{toc}{subsection}{" << v_commonBranches.at(chi2pair[i].second) << "}" << endl
-           << "\\begin{figure}[H]" << endl
-           << Form("\\includegraphics[width=0.9\\textwidth]{./hists/diff%d.pdf}", chi2pair[i].second) << endl
-           << "\\end{figure}" << endl
-           << "The $\\chi^2$ test value between the Old and New is: " << chi2pair[i].first << endl;
-  }
+  // int num =0;
+  // for(auto it = chi2pair.begin(); it != chi2pair.end(); ++it)
+  //   if(it->first > 0.999) num++;
+  // myfile << "\nBefore sorting: " << num << endl << endl;
 
+  std::sort(chi2pair.begin(), chi2pair.end(), comparePair);
+
+  // num =0;
+  // for(auto it = chi2pair.begin(); it != chi2pair.end(); ++it)
+  //   if(it->first > 0.999) num++;
+  // myfile << "\nAfter sorting: " << num << endl << endl;
+  
+  if(chi2pair.size() == 0) myfile << "There is no branch that found different by a threshold of " << idThreshold << " in between OLD and NEW" << endl;
+  for(auto it = chi2pair.begin(); it != chi2pair.end(); ++it){
+    myfile << "\\subsection*{" << v_commonBranches.at(it->second) << "}\\addcontentsline{toc}{subsection}{" << v_commonBranches.at(it->second) << "}" << endl
+           << "\\begin{figure}[H]" << endl
+           << Form("\\includegraphics[width=0.9\\textwidth]{./hists/diff%d.pdf}", it->second) << endl
+           << "\\end{figure}" << endl;
+    
+    if(it->first < 0)
+      myfile << "The ranges of the Old and New does not match, cannot get the correct $\\chi^2$ value." << endl;
+    else
+      myfile << "The $\\chi^2$ test value between the Old and New is: " << it->first << endl;
+  }
   myfile << "\\end{document}" << endl;
 
 }
