@@ -9,7 +9,7 @@ CMS3_TAG=$6
 MAX_EVENTS=$7
 GTAG=$8
 
-DATASETNAME=`awk "NR==1" filesToSubmit.txt | tr '/' ' ' | awk '{print "",$3, $4, $5}' | tr ' ' '/' `
+DATASETNAME=`awk "NR==$LINENO" filesToSubmit.txt | tr '/' ' ' | awk '{print "",$3, $4, $5}' | tr ' ' '/' `
 
 sed -n "$5p" $1 > tempSubmit.txt
 if [ "$JOBTYPE" == "cms3" ]
