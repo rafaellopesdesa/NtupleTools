@@ -365,8 +365,8 @@ then
   do
     cd $theUser
     cp /nfs-7/userdata/dataTuple/$theUser/completedList.txt . 
-    cp -r /nfs-7/userdata/dataTuple/$theUser/mergedLists mergedLists/
-    cp -r /nfs-7/userdata/dataTuple/$theUser/fileLists fileLists/
+    cp -r /nfs-7/userdata/dataTuple/$theUser/mergedLists .
+    cp -r /nfs-7/userdata/dataTuple/$theUser/fileLists .
     cd ..
   done
   git add alex jason mark
