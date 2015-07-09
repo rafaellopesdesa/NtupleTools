@@ -46,10 +46,11 @@ fi
 CMS3tag=CMS3_V07-04-03
 
 #Set the global tag to use
-GTAG=MCRUN2_74_V9
+#GTAG=MCRUN2_74_V9
+GTAG=GR_P_V56
 
 #State the maxmimum number of events
-MAX_NEVENTS=2500 #all events
+MAX_NEVENTS=-1 #all events
 
 #Don't allow more than one instance to run
 if [ -e $BASEPATH/running.pid ] 
@@ -355,6 +356,26 @@ if [ -d $BASEPATH/mergedLists ]; then
    done
 fi
 
+#update backups
+if [ "$JOBTYPE" == "cms3" ] 
+then
+  pushd DataTuple-backup
+  git pull
+  for theUser in alex jason mark
+  do
+    cd $theUser
+    cp /nfs-7/userdata/dataTuple/$theUser/completedList.txt . 
+    cp -r /nfs-7/userdata/dataTuple/$theUser/mergedLists mergedLists/
+    cp -r /nfs-7/userdata/dataTuple/$theUser/mergedLists fileLists/
+    cd ..
+  done
+  git add alex jason mark
+  git commit -m "dataTuple commit on `date` by $USER"
+  git push origin master
+  popd
+fi
+
+#monitor script
 . monitor.sh
 
 rm -f $BASEPATH/running.pid > /dev/null 2>&1 

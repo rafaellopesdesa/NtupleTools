@@ -32,6 +32,17 @@ then
   exit 1
 fi
 
+if [ ! -d DataTuple-backup ] && [ "$JOBTYPE" == "cms3" ]
+then
+  git clone ssh://git@github.com/cmstas/DataTuple-backup
+fi
+
+if [ ! -d DataTuple-backup ] && [ "$JOBTYPE" == "cms3" ] 
+then
+  echo "Failed to create the DataTuple-backup dir.  You're fucked!"
+  exit 1 
+fi
+
 chmod +x ./*.sh
 chmod +x ./*.py
 if [ -e submitList.txt ]

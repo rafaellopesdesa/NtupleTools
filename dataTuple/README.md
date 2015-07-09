@@ -5,6 +5,10 @@
   + List of samples we have completed is here: /nfs-7/userdata/dataTuple/completedList.txt
   + Every 30 minutes, manager.sh is called and the below workflow begins again.
 
+####Installation:
+  - Check this out with "git clone ssh://git@github.com/cmstas/NtupleTools"
+  - Go to the dataTuple dir, then "git clone ssh://git@github.com/cmstas/DataTuple-backup" 
+
 ####Workflow
   0. Check proxy; renew it if it's low.
   1. DBS query to generate masterList with files on input.txt
