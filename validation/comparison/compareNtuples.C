@@ -175,6 +175,9 @@ void test(){
   myfile << "\\section*{Branches in NEW but not in OLD}\\addcontentsline{toc}{section}{Branches in New but not in Old}" << endl;
   doSinglePlots(newOnlyBranches, commonBranches, 1, tree_new);
 
+  //Reinitialize number of plots drawn
+  plotNum = 0;
+
   //Loop over common branches, test for sameness
   for (unsigned int i = 0; i < commonBranches.size(); i++){
 
