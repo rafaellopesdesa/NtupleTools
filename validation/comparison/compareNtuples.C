@@ -269,9 +269,6 @@ void test(){
       titles.push_back("Old");
       dataMCplotMaker(hist_new, old_vector, titles, Form("%.2f", chi2test*100), commonBranches[i].c_str(), Form("--noErrBars --isLinear --dataName New --topYaxisTitle New/Old --xAxisOverride --noDivisionLabel --outputName hists/diff%i", plotNum));
       chi2pair.push_back(make_pair(chi2test, plotNum));
-      myfile << "\\begin{figure}[H]" << endl
-             << Form("\\includegraphics[width=0.6\\textwidth]{./hists/diff%d.pdf}", plotNum) << endl
-             << "\\end{figure}" << endl;
       plotNum++;
     }
 
