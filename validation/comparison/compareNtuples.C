@@ -1,105 +1,62 @@
-#include "TH1F.h"
-#include "TH2F.h"
+#include "TH1.h"
 #include "TFile.h"
-#include "TClass.h"
-#include "TKey.h"
 #include "TTree.h"
-#include "TCanvas.h"
-#include "TVirtualPad.h"
-#include "TPaveText.h"
-#include "TString.h"
-#include "TStyle.h"
-#include "TLegend.h"
+#include "TList.h"
+#include "/home/users/cgeorge/software/dataMCplotMaker/dataMCplotMaker.h"
 #include <fstream>
-#include <algorithm>
-#include <iostream>
-#include <map>
-#include <vector>
-#include "/home/users/sicheng/tas/Software/dataMCplotMaker/dataMCplotMaker.h"
 
-using namespace std;
+ofstream myfile; 
+TFile *file_old;
+TFile *file_new;
+int plotNum;
 
 bool comparePair(const std::pair<float, int> & a, const std::pair<float, int> & b) {
   return a.first < b.first;
 }
 
-vector<TString> getAliasNames(TTree *t){
+vector<std::string> getAliasNames(TTree *t){
 
-  vector<TString> v_aliasnames;
-  if (t->GetEntriesFast() == 0) return v_aliasnames;
+  //Vector to return results
+  vector<std::string> v_aliasnames;
   
+  //Skip if no entries
+  if (t->GetEntriesFast() == 0) return v_aliasnames;
+
+  //Get list of aliases
   TList *t_list =  t->GetListOfAliases();
+
+  //Loop over list, skip entries that are vectors of vectors, or strings
   for(int i = 0; i < t_list->GetSize(); i++) {
-    TString aliasname(t_list->At(i)->GetName());
-    TBranch *branch = t->GetBranch(t->GetAlias(aliasname.Data()));
-    TString branchname(branch->GetName());
-    TString branchtitle(branch->GetTitle());
+    std::string aliasname(t_list->At(i)->GetName());
+    TBranch *branch = t->GetBranch(t->GetAlias(aliasname.c_str()));
+    std::string branchname(branch->GetName());
+    std::string branchtitle(branch->GetTitle());
 
-    if(branchname.BeginsWith("intss") ||
-       branchname.BeginsWith("floatss") ||
-       branchname.BeginsWith("doubless") ||
-       branchname.Contains("LorentzVectorss") ||
-       branchname.Contains("timestamp") ) {
-      
+    if(branchname.find("intss") == 0 || branchname.find("floatss") == 0 || branchname.find("doubless") == 0 || branchname.find("LorentzVectorss") < branchname.length() || branchname.find("timestamp") < branchname.length() || branchname.find("selectedPatJets") < branchname.length()){
       cout << "Sorry, I dont know about vector of vectors of objects. Will be skipping " << aliasname << endl;
-      
       continue;
     }
 
-    if(branchname.Contains("TString") ) {
-      cout << "Sorry, I don't know how to graphically represent TStrings in only 3 dimensions."
-           << " Put in a feature request. Will be skipping " << aliasname << endl;
+    if(branchname.find("std::string") < branchname.length() || branchname.find("TStrings") < branchname.length()){
+      cout << "Sorry, I don't know how to graphically represent std::strings in only 3 dimensions." << " Put in a feature request. Will be skipping " << aliasname << endl;
       continue;
     }
+
     v_aliasnames.push_back(aliasname);
   }
 
+  //Sort alias names alphabetically
   sort(v_aliasnames.begin(), v_aliasnames.end());
   
+  //Return aliases names
   return v_aliasnames;
 }
 
-//----------------------------------------------------------------------
-float Chi2ofHistos(TH1F* h1, TH1F* h2){
-
-  if(h1->GetNbinsX() != h2->GetNbinsX()) return -2;
+vector<std::string> getUncommonBranches(vector<std::string> aliasnames, vector<std::string> v_commonBranches){
   
-  //make sure that the bin range is the same
-  float range1 = h1->GetBinCenter(1) - h1->GetBinCenter(h1->GetNbinsX());
-  float range2 = h2->GetBinCenter(1) - h2->GetBinCenter(h2->GetNbinsX());
-
-  if(TMath::Abs(range1 - range2) > 0.000001) return -1;
- 
-  float prob = h1->Chi2Test(h2, "WWNORM"); // = 1 if consistent, = 0 if inconsistent 
-
-  //if there is 1 filled bin, chi2test returns 0, so we manually find and compare this bin
-  if(prob < 0.0001) {
-      int nNonZeroBins = 0;
-      int iNonZeroBin  = 0;
-      for(int i = 1; i < h1->GetNbinsX()+1; i++) {
-          if(nNonZeroBins > 1) break;
-          if(h1->GetBinContent(i) > 0.0 && h2->GetBinContent(i) > 0.0 ) {
-              nNonZeroBins += 1;
-              iNonZeroBin = i;
-          }
-      }
-      if(nNonZeroBins == 1) {
-          // check if the single bin that has entries is within 1% between h1 and h2
-          if( 1.0*(h1->GetBinContent(iNonZeroBin)-h2->GetBinContent(iNonZeroBin))/h1->GetBinContent(iNonZeroBin) < 0.01 ) prob = 0.99;
-      }
-  }
-  return prob;
-  
-}
-
-//-----------------------------------------------------------------------
-vector<TString> getUncommonBranches(vector<TString> aliasnames, vector<TString> v_commonBranches){
-  
-  vector<TString>  v_notCommonBranches;
-  for(vector<TString>::iterator it = aliasnames.begin();
-      it != aliasnames.end(); it++) {
-    if(find(v_commonBranches.begin(), v_commonBranches.end(), *it) != v_commonBranches.end())
-      continue;
+  vector<std::string> v_notCommonBranches;
+  for(vector<std::string>::iterator it = aliasnames.begin(); it != aliasnames.end(); it++){
+    if(find(v_commonBranches.begin(), v_commonBranches.end(), *it) != v_commonBranches.end()) continue;
     v_notCommonBranches.push_back(*it);
   }
 
@@ -109,77 +66,62 @@ vector<TString> getUncommonBranches(vector<TString> aliasnames, vector<TString> 
 
 }
 
-//-----------------------------------------------------------------------
-void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true", bool drawWithErrors="true", float idThreshold=0.99)
-{
-  gStyle->SetOptStat(0); 
-  cout << "Starting" << endl;
-  
-  TFile *f1 = TFile::Open(file1.Data(), "READ");
-  if(f1 == NULL) {
-    cout << "Exiting" << endl;
-    return;
-  }
-  TTree *tree1 = (TTree*)f1->Get("Events");
-  if(tree1 == NULL) {
-    cout << "Can't find the tree \"Events\" in " << file1 << " Exiting " << endl;
-    return;
-  }
+void doSinglePlots(vector <std::string> branches, vector <std::string> commonBranches, bool isNew, TTree* tree){
 
-  TFile *f2 = TFile::Open(file2.Data(), "READ");
-  if(f2 == NULL) {
-    cout << "Exiting" << endl;
-    return;
-  }
-  TTree *tree2 = (TTree*)f2->Get("Events");
-  if(tree2 == NULL) {
-    cout << "Can't find the tree \"Events\" in " << file2 << " Exiting " << endl;
-    return;
-  }
+  TH1F* empty = new TH1F("","", 1, 0, 1);
 
-  TObjArray *objArray= file1.Tokenize("/");
-  TString fname1 = "";
-  TString fname2 = "";
-  for(int i = 0; i < objArray->GetSize(); i++) {
-    if(fname1 != "")
-      continue;
-    cout << TString(objArray->At(i)->GetName()) << endl;
-    if(TString(objArray->At(i)->GetName()).Contains("root")) {
-      fname1 = TString(objArray->At(i)->GetName());
-      continue;
+  for (unsigned int i = 0; i < branches.size(); i++){  
+
+    //isLorentz
+    TBranch *branch = tree->GetBranch(tree->GetAlias(branches[i].c_str()));
+    TString branchname(branch->GetName());
+    bool isLorentz = branchname.Contains("p4") || branchname.Contains("MathLorentzVectors"); 
+
+    //Draw
+    string alias = branches.at(i);
+
+    //Table of contents
+    myfile << "\\subsection*{" << alias << "}\\addcontentsline{toc}{subsection}{" << alias << "}" << endl;
+
+    tree->Draw(Form("%s%s>>hist", branches[i].c_str(), isLorentz ? ".Pt()" : "")); 
+    TH1F *hist = (TH1F*)gDirectory->Get("hist");
+    if(hist==NULL){
+      cout << "********** Branch " << branches.at(i) << " exists, but is undrawable for some reason. Skipping this branch" << endl;
+      continue; 
     }
-  }
-  objArray = file2.Tokenize("/"); 
-  for(int i = 0; i < objArray->GetSize(); i++) {
-    if(fname2 != "")
-      continue;
-    cout << TString(objArray->At(i)->GetName()) << endl;
-    if(TString(objArray->At(i)->GetName()).Contains("root")) {
-      fname2 = TString(objArray->At(i)->GetName());
-      continue;
-    }
-  }
-  
-  vector<TString> t1_aliasnames = getAliasNames(tree1);
-  vector<TString> t2_aliasnames = getAliasNames(tree2);
-  vector<TString> v_commonBranches;
-  vector<TString> v1_notCommonBranches;
-  vector<TString> v2_notCommonBranches;
-  
-  for(vector<TString>::iterator it = t1_aliasnames.begin(); it != t1_aliasnames.end(); it++) {
-    if(find(t2_aliasnames.begin(), t2_aliasnames.end(), *it) != t2_aliasnames.end()) v_commonBranches.push_back(*it);
+
+    //Scale
+    hist->Scale(1./hist->GetEntries());
+
+    //Print
+    vector<TH1F*> hvec;
+    hvec.push_back(hist);
+    vector<string> titles;
+    titles.push_back(isNew ? "New" : "Old");
+    dataMCplotMaker(empty, hvec, titles, "", alias, Form("--isLinear --noDivisionLabel --xAxisOverride --outputName hists/uncommon%d", plotNum));
+    myfile << "\\begin{figure}[H]" << endl
+           << Form("\\includegraphics[width=0.6\\textwidth]{./hists/uncommon%d.pdf}", plotNum) << endl
+           << "\\end{figure}" << endl;
+    plotNum++;
+    delete hist;
   }
 
-  //figure out which branches are not common so you can output their names and draw them last
-  v1_notCommonBranches = getUncommonBranches(t1_aliasnames, v_commonBranches);
-  v2_notCommonBranches = getUncommonBranches(t2_aliasnames, v_commonBranches);
+  delete empty;
+}
 
-  TCanvas *c1 = new TCanvas();
+void test(){
 
-  TH1F* empty = new TH1F("","", 60,0,60);
-  int plotNum = 0;
-  
-  ofstream myfile; 
+  string filename_new = "/home/users/sicheng/play/comparison/merged_ntuple_143.root";
+  string filename_old = "/home/users/sicheng/play/comparison/merged_ntuple_9.root";
+
+  file_old = new TFile(filename_old.c_str());
+  file_new = new TFile(filename_new.c_str());
+
+  TTree *tree_old = (TTree*)file_old->Get("Events");
+  TTree *tree_new = (TTree*)file_new->Get("Events");
+ 
+
+  //LaTeX stuff
   myfile.open("overview.tex"); 
   myfile << "\\documentclass{article}" << endl
          << "\\usepackage{fullpage}" << endl
@@ -187,227 +129,162 @@ void compareNtuples(TString file1, TString file2, bool doNotSaveSameHistos="true
          << "\\usepackage{float}" << endl
          << "\\usepackage{listings}" << endl
          << "\\usepackage{hyperref}" << endl << endl
-
          << "\\begin{document}" << endl << endl
-
          << "\\begin{center}" << endl
          << "\\LARGE \\bf Compare Ntuples for CMS3" << endl
          << "\\end{center}" << endl
          << "\\vspace{0.5cm}" << endl << endl
-
          << "{\\noindent\\Large\\bf Files that are compared here:}" << endl
          << "\\begin{lstlisting}[breaklines] "  << endl
-         << "OLD: " << file1 << endl
-         << "NEW: " << file2 << endl
+         << "OLD: " << filename_old << endl
+         << "NEW: " << filename_new << endl
          << "\\end{lstlisting}" << endl
          << "\\vspace{0.5cm}" << endl << endl 
-    
          << "\\tableofcontents" << endl 
-         << "\\section*{Branches in OLD but not in NEW}\\addcontentsline{toc}{section}{Branches in Old but not in New}" << endl;
+         << "\\section*{Branches in OLD but not in NEW}\\addcontentsline{toc}{section}{Branches in Old but not in New}" 
+         << endl;
 
-  for(unsigned int i = 0; i < v1_notCommonBranches.size(); i++) { 
+  //Get aliases in both trees
+  vector<std::string> oldAliasNames = getAliasNames(tree_old);
+  vector<std::string> newAliasNames = getAliasNames(tree_new);
 
-    TString alias = v1_notCommonBranches.at(i);
-    myfile << "\\subsection*{" << alias << "}\\addcontentsline{toc}{subsection}{" << alias << "}" << endl;
-    TString histname = "h1_"+(alias);
-    TString command  = (alias) + ">>" + histname;
-    TBranch *branch = tree1->GetBranch(tree1->GetAlias(alias));
-    TString branchname(branch->GetName());
-
-    if( branchname.Contains("LorentzVector") ) {
-      histname = "h1_"+ alias + "_pt";
-      command  = alias + ".Pt()>>" + histname;      
-    }
-    tree1->Draw(command.Data());
-    TH1F *h1 = (TH1F*)gDirectory->Get(histname.Data());
-    if(h1==NULL) {
-      cout << "********** Branch " << v1_notCommonBranches.at(i) 
-           << " in file " << file1 << "exists, but is undrawable for some reason. " 
-           << "Skipping this branch" << endl;
-      c1->Clear();
-      continue; 
-    }
-    c1->Clear();
-
-    h1->Scale(1./h1->GetEntries());
-
-    vector<TH1F*> hvec;
-    hvec.push_back(h1);
-    vector<string> titles;
-    titles.push_back("Old");
-    dataMCplotMaker(empty, hvec, titles, "", alias.Data(), Form("--isLinear --noDivisionLabel --xAxisOverride --outputName hists/uncommon%d", plotNum));
-    myfile << "\\begin{figure}[H]" << endl
-           << Form("\\includegraphics[width=0.6\\textwidth]{./hists/uncommon%d.pdf}", plotNum) << endl
-           << "\\end{figure}" << endl;
-    plotNum++;
-  }
-  if(v1_notCommonBranches.size() == 0) myfile << "There is no branch that found in OLD but not in NEW" << endl;
+  //Figure out common and notCommonBranches
+  vector<std::string> commonBranches;
+  vector<std::string> oldOnlyBranches;
+  vector<std::string> newOnlyBranches;
   
-  myfile << "\\section*{Branches in NEW but not in OLD}\\addcontentsline{toc}{section}{Branches in New but not in Old}" << endl;
-
-  for(unsigned int i = 0; i < v2_notCommonBranches.size(); i++) {
-    
-    TString alias = v2_notCommonBranches.at(i);
-    myfile << "\\subsection*{" << alias << "}\\addcontentsline{toc}{subsection}{" << alias << "}" << endl;
-    TString histname = "h2_"+(alias);
-    TString command  = (alias) + ">>" + histname;
-    TBranch *branch = tree2->GetBranch(tree2->GetAlias(alias));
-    TString branchname(branch->GetName());
-    
-    if( branchname.Contains("LorentzVector") ) {
-      histname = "h2_"+ alias + "_pt";
-      command  = alias + ".Pt()>>" + histname;      
-    }
-    tree2->Draw(command.Data());
-    TH1F *h2 = (TH1F*)gDirectory->Get(histname.Data());
-    if(h2==NULL) {
-      cout << "********** Branch " << v2_notCommonBranches.at(i) 
-           << " in file " << file2 << "exists, but is undrawable for some reason. " 
-           << "Skipping this branch" << endl;
-      c1->Clear();
-      continue; 
-    }
-    c1->Clear();
-
-    h2->Scale(1./h2->GetEntries());
-
-    vector<TH1F*> hvec;
-    hvec.push_back(h2);
-    vector<string> titles;
-    titles.push_back("New");
-    dataMCplotMaker(empty, hvec, titles, "", alias.Data(), Form("--isLinear --xAxisOverride --noDivisionLabel --outputName hists/uncommon%d", plotNum));
-    myfile << "\\begin{figure}[H]" << endl
-           << Form("\\includegraphics[width=0.6\\textwidth]{./hists/uncommon%d.pdf}", plotNum) << endl
-           << "\\end{figure}" << endl;
-    plotNum++;
+  for(vector<std::string>::iterator it = oldAliasNames.begin(); it != oldAliasNames.end(); it++) {
+    if(find(newAliasNames.begin(), newAliasNames.end(), *it) != newAliasNames.end()) commonBranches.push_back(*it);
   }
-  if(v2_notCommonBranches.size() == 0) myfile << "There is no branch that found in NEW but not in OLD" << endl;
+
+  //Figure out which branches are not common 
+  oldOnlyBranches = getUncommonBranches(oldAliasNames, commonBranches);
+  newOnlyBranches = getUncommonBranches(newAliasNames, commonBranches);
+
+  //Number of plots drawn
+  plotNum = 0;
+
+  //Record chi2 of each plot
+  vector< pair<float,int> > chi2pair;
+
+  //Loop over non-common branches
+  doSinglePlots(oldOnlyBranches, commonBranches, 0, tree_old);
+  myfile << "\\section*{Branches in NEW but not in OLD}\\addcontentsline{toc}{section}{Branches in New but not in Old}" << endl;
+  doSinglePlots(newOnlyBranches, commonBranches, 1, tree_new);
+
+  //Loop over common branches, test for sameness
+  for (unsigned int i = 0; i < commonBranches.size(); i++){
+
+    cout << "Working on " << commonBranches[i] << endl;
+    int suppress = false;
+
+    //Determine if it's a LorentzVector
+    TBranch *branch = tree_new->GetBranch(tree_new->GetAlias(commonBranches[i].c_str()));
+    TString branchname(branch->GetName());
+    bool isLorentz = branchname.Contains("p4"); 
+
+    //Make plot
+    tree_old->Draw(Form("%s%s>>hist_old", commonBranches[i].c_str(), isLorentz ? ".Pt()" : "")); 
+    tree_new->Draw(Form("%s%s>>hist_new", commonBranches[i].c_str(), isLorentz ? ".Pt()" : "")); 
+
+    TH1F *hist_old = (TH1F*)gDirectory->Get("hist_old");
+    TH1F *hist_new = (TH1F*)gDirectory->Get("hist_new");
+
+    //Give both histos the same binning, if not already done
+    int old_min = hist_old->GetXaxis()->GetBinLowEdge(1);
+    int old_max = hist_old->GetXaxis()->GetBinLowEdge( hist_old->GetNbinsX() ) + hist_old->GetXaxis()->GetBinWidth( hist_old->GetNbinsX() );
+    int old_nbins = hist_old->GetNbinsX();
+    int new_min = hist_new->GetXaxis()->GetBinLowEdge(1);
+    int new_max = hist_new->GetXaxis()->GetBinLowEdge( hist_new->GetNbinsX() ) + hist_new->GetXaxis()->GetBinWidth( hist_new->GetNbinsX() );
+    int new_nbins = hist_new->GetNbinsX();
+    int nbins = std::max(old_nbins, new_nbins); 
+    float min = std::min(old_min, new_min); 
+    float max = std::max(old_max, new_max); 
+    if (old_min != new_min || old_max != new_max || old_nbins != new_nbins){
+      delete hist_old;
+      delete hist_new;
+      hist_old = new TH1F("hist_old", "hist_old", nbins, min, max); 
+      hist_new = new TH1F("hist_new", "hist_new", nbins, min, max); 
+      tree_old->Draw(Form("%s%s>>hist_old", commonBranches[i].c_str(), isLorentz ? ".Pt()" : "")); 
+      tree_new->Draw(Form("%s%s>>hist_new", commonBranches[i].c_str(), isLorentz ? ".Pt()" : "")); 
+    }
+
+    //Determine number of histos that are empty in both
+    int nempty = 0; 
+    int whichNotEmpty = 0;
+    for (int j = 1; j <= nbins; j++){
+      if (hist_old->GetBinContent(j) == 0 && hist_new->GetBinContent(j) == 0) nempty++;
+      else whichNotEmpty = j;
+    }
+
+    //If it's being fucking stupid and putting everything in 1 bin, redraw yet again
+    int niter = 0;
+    bool keepGoing = ((std::min(hist_old->GetBinContent(1), hist_new->GetBinContent(1)) == 0) || (std::min(hist_old->GetBinContent(nbins), hist_new->GetBinContent(nbins)) == 0));
+    while (keepGoing == true && niter < 15){
+      for (int j = 1; j < nbins; j++){
+        if (hist_old->GetBinContent(j) != 0){ min = hist_old->GetXaxis()->GetBinLowEdge(j); break; } 
+        if (hist_new->GetBinContent(j) != 0){ min = hist_new->GetXaxis()->GetBinLowEdge(j); break; } 
+      }
+      for (int j = nbins; j > 0; j--){
+        if (hist_old->GetBinContent(j) != 0){ max = hist_old->GetXaxis()->GetBinLowEdge(j) + 2*hist_old->GetXaxis()->GetBinWidth(j); break; } 
+        if (hist_new->GetBinContent(j) != 0){ max = hist_new->GetXaxis()->GetBinLowEdge(j) + 2*hist_new->GetXaxis()->GetBinWidth(j); break; } 
+      }
+      delete hist_old;
+      delete hist_new;
+      hist_old = new TH1F("hist_old", "hist_old", nbins, min, max); 
+      hist_new = new TH1F("hist_new", "hist_new", nbins, min, max); 
+      tree_old->Draw(Form("%s%s>>hist_old", commonBranches[i].c_str(), isLorentz ? ".Pt()" : "")); 
+      tree_new->Draw(Form("%s%s>>hist_new", commonBranches[i].c_str(), isLorentz ? ".Pt()" : "")); 
+      nempty = 0; 
+      for (int j = 1; j <= nbins; j++){
+        if (hist_old->GetBinContent(j) == 0 && hist_new->GetBinContent(j) == 0) nempty++;
+        else whichNotEmpty = i;
+      }
+      niter++;
+      keepGoing = ((std::max(hist_old->GetBinContent(1), hist_new->GetBinContent(1)) == 0) || (std::max(hist_old->GetBinContent(nbins), hist_new->GetBinContent(nbins)) == 0));
+     if (keepGoing && (std::max(hist_old->GetBinContent(1), hist_new->GetBinContent(1)) != 0) && (std::max(hist_old->GetBinContent(nbins-1), hist_new->GetBinContent(nbins-1)) != 0)) keepGoing = false;
+     if ( (max-min)/max < .001){ keepGoing = false; suppress = true;} 
+    }
+
+    //Normalize both histos
+    hist_old->Scale(1./hist_old->GetEntries());
+    hist_new->Scale(1./hist_new->GetEntries());
+
+    //Print results
+    float chi2test = hist_new->Chi2Test(hist_old, "CHI2/NDFWWOFUF");
+    if (chi2test*100 < 0.1) suppress = true;
+
+    //Print histogram if not suppressed
+    if (suppress) cout << " --> Suppressed!" << endl;
+    if (!suppress){ 
+      vector<TH1F*> old_vector;
+      old_vector.push_back(hist_old);
+      vector<string> titles;
+      titles.push_back("Old");
+      dataMCplotMaker(hist_new, old_vector, titles, Form("%.2f", chi2test*100), commonBranches[i].c_str(), Form("--noErrBars --isLinear --dataName New --topYaxisTitle New/Old --xAxisOverride --noDivisionLabel --outputName hists/diff%i", plotNum));
+      chi2pair.push_back(make_pair(chi2test, plotNum));
+      myfile << "\\begin{figure}[H]" << endl
+             << Form("\\includegraphics[width=0.6\\textwidth]{./hists/diff%d.pdf}", plotNum) << endl
+             << "\\end{figure}" << endl;
+      plotNum++;
+    }
+
+    delete hist_old;
+    delete hist_new;
+
+  }
 
   myfile << "\\section*{Branches in Common}\\addcontentsline{toc}{section}{Branches in Common}" << endl;
 
-  vector< pair<float,int> > chi2pair;
-  int bingo = 0;
-  for(unsigned int i =  0; i < v_commonBranches.size(); i++) {
-  
-    TString alias = v_commonBranches.at(i);
-
-    cout << "Comparing Branch: " << alias << endl;
-    TString hist1name = "h1_"+ alias;
-    TString hist2name = "h2_"+ alias;
-    TString command1 = (alias)+"+9990.*((abs("+alias +"+9999)<1)*1.)>>"+hist1name;
-    TString command2 = (alias)+"+9990.*((abs("+alias +"+9999)<1)*1.)>>"+hist2name;
-    TBranch *branch = tree2->GetBranch(tree2->GetAlias(alias));
-    TString branchname(branch->GetName());
-        
-    if(branchname.Contains("p4") ) {
-      hist1name = "h1_"+ alias + "_Pt";
-      hist2name = "h2_"+ alias + "_Pt";
-      command1 = alias + ".pt()+14130.*((abs("+alias+".pt()-14140.7)<1)*1.)>>"+hist1name;
-      command2 = alias + ".pt()+14130.*((abs("+alias+".pt()-14140.7)<1)*1.)>>"+hist2name;
-    }
-    
-    tree1->Draw(command1.Data());
-    TH1F *h1 = (TH1F*)gDirectory->Get(hist1name.Data());
-    if(h1==NULL) {
-      cout << "********** Branch " << v_commonBranches.at(i) 
-       << " in file " << file1 << " exists, but is undrawable for some reason. " 
-       << "Skipping this branch" << endl;
-      c1->Clear();
-      continue; 
-    }
-    tree2->Draw(command2.Data());
-    TH1F *h2 = (TH1F*)gDirectory->Get(hist2name.Data());
-    if(h2==NULL) {
-      cout << "********** Branch " << v_commonBranches.at(i) 
-       << " in file " << file2 << "exists, but is undrawable for some reason. " 
-       << "Skipping this branch" << endl;
-      c1->Clear();
-      continue;  
-    }
-    c1->Clear();
-
-    h1->Scale(1./h1->GetEntries());
-    h2->Scale(1./h2->GetEntries());
-
-    float chi2 = Chi2ofHistos(h1, h2);
-    // if(chi2 > 0.999)  myfile << "Branch has native good chi2: " <<  alias << "   " << chi2 << "\\\\\n";
-    
-    // float chi2new = -1;
-    // bool wrongBin = false;
-
-    // if(chi2 == -1 ){
-    //   myfile << "Branch " << alias << " has problem with binning: " << chi2 << "\\\\\n";
-    //   continue;
-    // }
-    if(chi2 > idThreshold && doNotSaveSameHistos){
-      cout << "  SKIPPING!  Identical." << endl;
-      continue;
-    }
-    else if(chi2 < 0){
-      double min1 = h1->GetXaxis()->GetXmin();
-      double min2 = h2->GetXaxis()->GetXmin(); 
-      double max1 = h1->GetXaxis()->GetXmax();
-      double max2 = h2->GetXaxis()->GetXmax();
-
-      double hmin = min1 > min2 ? min2 : min1;
-      double hmax = max1 > max2 ? max1 : max2;
-      int hnbins = h2->GetNbinsX();
-
-      command1 += Form("_fix(%d,%f,%f)", hnbins, hmin, hmax);
-      command2 += Form("_fix(%d,%f,%f)", hnbins, hmin, hmax);
-      hist1name += "_fix";
-      hist2name += "_fix";
-      tree1->Draw(command1.Data());
-      tree2->Draw(command2.Data());
-      delete h1;
-      delete h2;
-      h1 = (TH1F*)gDirectory->Get(hist1name.Data());
-      h2 = (TH1F*)gDirectory->Get(hist2name.Data());
-      c1->Clear();
-      h1->Scale(1./h1->GetEntries());
-      h2->Scale(1./h2->GetEntries());
-    }
-
-    h1->SetTitle(v_commonBranches.at(i));
-    h2->SetTitle(v_commonBranches.at(i));
-
-    vector<TH1F*> hvec;
-    hvec.push_back(h1);
-    vector<string> titles;
-    titles.push_back("Old");
-    string opts = Form("--isLinear --dataName New --topYaxisTitle New/Old --xAxisOverride --noDivisionLabel --outputName hists/diff%d", i);
-    if(!drawWithErrors) opts += " --noErrBars";
-    dataMCplotMaker(h2, hvec, titles, "", alias.Data(), opts);
-    chi2pair.push_back(make_pair(chi2, i));
-
-    // if(chi2new > 0.999)  myfile << "Branch has somehow got good chi2: " << alias << "   " << chi2new << "\\\\\n";
-    
-  }//for loop
-
-  // int num =0;
-  // for(auto it = chi2pair.begin(); it != chi2pair.end(); ++it)
-  //   if(it->first > 0.999) num++;
-  // myfile << "\nBefore sorting: " << num << endl << endl;
-
   std::sort(chi2pair.begin(), chi2pair.end(), comparePair);
-
-  // num =0;
-  // for(auto it = chi2pair.begin(); it != chi2pair.end(); ++it)
-  //   if(it->first > 0.999) num++;
-  // myfile << "\nAfter sorting: " << num << endl << endl;
-  
-  if(chi2pair.size() == 0) myfile << "There is no branch that found different by a threshold of " << idThreshold << " in between OLD and NEW" << endl;
-  for(auto it = chi2pair.begin(); it != chi2pair.end(); ++it){
-    myfile << "\\subsection*{" << v_commonBranches.at(it->second) << "}\\addcontentsline{toc}{subsection}{" << v_commonBranches.at(it->second) << "}" << endl
+  for(unsigned int i = 0; i < chi2pair.size(); i++){
+    myfile << "\\subsection*{" << commonBranches.at(chi2pair[i].second) << "}\\addcontentsline{toc}{subsection}{" << commonBranches.at(chi2pair[i].second) << "}" << endl
            << "\\begin{figure}[H]" << endl
-           << Form("\\includegraphics[width=0.9\\textwidth]{./hists/diff%d.pdf}", it->second) << endl
+           << Form("\\includegraphics[width=0.9\\textwidth]{./hists/diff%i.pdf}", chi2pair[i].second) << endl
            << "\\end{figure}" << endl;
-    
-    if(it->first < 0)
-      myfile << "The ranges of the Old and New does not match, cannot get the correct $\\chi^2$ value." << endl;
-    else
-      myfile << "The $\\chi^2$ test value between the Old and New is: " << it->first << endl;
+    myfile << "The $\\chi^2$ test value between the Old and New is: " << chi2pair[i].first << endl;
   }
+
   myfile << "\\end{document}" << endl;
 
 }
