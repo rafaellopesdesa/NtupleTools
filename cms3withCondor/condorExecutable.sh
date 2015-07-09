@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if (( $# != 7 )); then
+if (( $# != 9 )); then
     echo "Illegal number of arguments."
     exit 1
 fi
