@@ -46,10 +46,11 @@ fi
 CMS3tag=CMS3_V07-04-03
 
 #Set the global tag to use
-GTAG=MCRUN2_74_V9
+#GTAG=MCRUN2_74_V9
+GTAG=GR_P_V56
 
 #State the maxmimum number of events
-MAX_NEVENTS=2500 #all events
+MAX_NEVENTS=-1 #all events
 
 #Don't allow more than one instance to run
 if [ -e $BASEPATH/running.pid ] 
