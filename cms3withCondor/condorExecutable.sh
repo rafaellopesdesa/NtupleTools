@@ -59,7 +59,7 @@ sed -i "s,SUPPLY_INPUT_FILE_NAME,${INPUT_FILE_NAME},g" $configFile
 sed -i "s/SUPPLY_OUTPUT_FILE_NAME/${OUTPUT_FILE_NAME}/g" $configFile
 sed -i "s/SUPPLY_MAX_NEVENTS/${MAX_NEVENTS}/g" $configFile
 sed -i "s/SUPPLY_CMS3_TAG/${CMS3_TAG}/g" $configFile
-sed -i "s/SUPPLY_DATASETNAME/${DATASETNAME}/g" $configFile
+sed -i "s,SUPPLY_DATASETNAME,${DATASETNAME},g" $configFile
 
 echo "ls -lrth"
 ls -lrth
