@@ -88,8 +88,8 @@ void test(){
     int suppress = false;
 
     //Make plot
-    tree_old->Draw(Form("%s%s>>hist_old", commonBranches[i].c_str(), commonBranches[i].find("_p4") < commonBranches[i].length() ? ".Pt()" : "")); 
-    tree_new->Draw(Form("%s%s>>hist_new", commonBranches[i].c_str(), commonBranches[i].find("_p4") < commonBranches[i].length() ? ".Pt()" : "")); 
+    tree_old->Draw(Form("%s%s>>hist_old", commonBranches[i].c_str(), commonBranches[i].find("p4") < commonBranches[i].length() ? ".Pt()" : "")); 
+    tree_new->Draw(Form("%s%s>>hist_new", commonBranches[i].c_str(), commonBranches[i].find("p4") < commonBranches[i].length() ? ".Pt()" : "")); 
 
     TH1F *hist_old = (TH1F*)gDirectory->Get("hist_old");
     TH1F *hist_new = (TH1F*)gDirectory->Get("hist_new");
@@ -109,8 +109,8 @@ void test(){
       delete hist_new;
       hist_old = new TH1F("hist_old", "hist_old", nbins, min, max); 
       hist_new = new TH1F("hist_new", "hist_new", nbins, min, max); 
-      tree_old->Draw(Form("%s%s>>hist_old", commonBranches[i].c_str(), commonBranches[i].find("_p4") < commonBranches[i].length() ? ".Pt()" : "")); 
-      tree_new->Draw(Form("%s%s>>hist_new", commonBranches[i].c_str(), commonBranches[i].find("_p4") < commonBranches[i].length() ? ".Pt()" : "")); 
+      tree_old->Draw(Form("%s%s>>hist_old", commonBranches[i].c_str(), commonBranches[i].find("p4") < commonBranches[i].length() ? ".Pt()" : "")); 
+      tree_new->Draw(Form("%s%s>>hist_new", commonBranches[i].c_str(), commonBranches[i].find("p4") < commonBranches[i].length() ? ".Pt()" : "")); 
     }
 
     //Determine number of histos that are empty in both
@@ -137,8 +137,8 @@ void test(){
       delete hist_new;
       hist_old = new TH1F("hist_old", "hist_old", nbins, min, max); 
       hist_new = new TH1F("hist_new", "hist_new", nbins, min, max); 
-      tree_old->Draw(Form("%s%s>>hist_old", commonBranches[i].c_str(), commonBranches[i].find("_p4") < commonBranches[i].length() ? ".Pt()" : "")); 
-      tree_new->Draw(Form("%s%s>>hist_new", commonBranches[i].c_str(), commonBranches[i].find("_p4") < commonBranches[i].length() ? ".Pt()" : "")); 
+      tree_old->Draw(Form("%s%s>>hist_old", commonBranches[i].c_str(), commonBranches[i].find("p4") < commonBranches[i].length() ? ".Pt()" : "")); 
+      tree_new->Draw(Form("%s%s>>hist_new", commonBranches[i].c_str(), commonBranches[i].find("p4") < commonBranches[i].length() ? ".Pt()" : "")); 
       nempty = 0; 
       for (int j = 1; j <= nbins; j++){
         if (hist_old->GetBinContent(j) == 0 && hist_new->GetBinContent(j) == 0) nempty++;
