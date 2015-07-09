@@ -95,7 +95,7 @@ do
   x509userproxy=${PROXY}
   executable=condorExecutable.sh
   transfer_executable=True
-  arguments=$PSET $libCMS3 $GLOBAL_TAG $INPUT_FILE_NAME $OUTPUT_DIR $OUTPUT_FILE_NAME $MAX_NEVENTS
+  arguments=$PSET $libCMS3 $GLOBAL_TAG $INPUT_FILE_NAME $OUTPUT_DIR $OUTPUT_FILE_NAME $MAX_NEVENTS $CMS3_TAG
   queue
   " > ${JOBCFGDIR}/condor_$OUTPUT_FILE_NAME.cmd
   
