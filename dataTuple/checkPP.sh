@@ -18,7 +18,7 @@ else
   exit 1
 fi
 mergedDir="/hadoop/cms/store/user/$USER/$jobDir/$taskname/merged"
-target="/hadoop/cms/store/group/snt/run2_data_test/$taskname/merged"
+target="/hadoop/cms/store/group/snt/run2_data/$taskname/merged"
 
 if [ ! -d $BASEPATH ]
 then
