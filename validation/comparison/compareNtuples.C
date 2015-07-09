@@ -93,7 +93,7 @@ void doSinglePlots(vector <std::string> branches, vector <std::string> commonBra
     //Scale
     hist->Scale(1./hist->GetEntries());
 
-    //Print
+    //Print plot, update ToC
     vector<TH1F*> hvec;
     hvec.push_back(hist);
     vector<string> titles;
@@ -111,15 +111,17 @@ void doSinglePlots(vector <std::string> branches, vector <std::string> commonBra
 
 void test(){
 
+  //Put in the files you want to compare here
   string filename_new = "/home/users/sicheng/play/comparison/merged_ntuple_143.root";
   string filename_old = "/home/users/sicheng/play/comparison/merged_ntuple_9.root";
 
+  //Load files
   file_old = new TFile(filename_old.c_str());
   file_new = new TFile(filename_new.c_str());
 
+  //Load trees
   TTree *tree_old = (TTree*)file_old->Get("Events");
   TTree *tree_new = (TTree*)file_new->Get("Events");
- 
 
   //LaTeX stuff
   myfile.open("overview.tex"); 
@@ -148,16 +150,17 @@ void test(){
   vector<std::string> oldAliasNames = getAliasNames(tree_old);
   vector<std::string> newAliasNames = getAliasNames(tree_new);
 
-  //Figure out common and notCommonBranches
+  //Holders for common and notCommonBranches
   vector<std::string> commonBranches;
   vector<std::string> oldOnlyBranches;
   vector<std::string> newOnlyBranches;
   
+  //Figure out common branches
   for(vector<std::string>::iterator it = oldAliasNames.begin(); it != oldAliasNames.end(); it++) {
     if(find(newAliasNames.begin(), newAliasNames.end(), *it) != newAliasNames.end()) commonBranches.push_back(*it);
   }
 
-  //Figure out which branches are not common 
+  //Figure out uncommon branches 
   oldOnlyBranches = getUncommonBranches(oldAliasNames, commonBranches);
   newOnlyBranches = getUncommonBranches(newAliasNames, commonBranches);
 
@@ -167,7 +170,7 @@ void test(){
   //Record chi2 of each plot
   vector< pair<float,int> > chi2pair;
 
-  //Loop over non-common branches
+  //Loop over non-common branches, update ToC for LaTeX
   doSinglePlots(oldOnlyBranches, commonBranches, 0, tree_old);
   myfile << "\\section*{Branches in NEW but not in OLD}\\addcontentsline{toc}{section}{Branches in New but not in Old}" << endl;
   doSinglePlots(newOnlyBranches, commonBranches, 1, tree_new);
@@ -175,7 +178,10 @@ void test(){
   //Loop over common branches, test for sameness
   for (unsigned int i = 0; i < commonBranches.size(); i++){
 
+    //Status
     cout << "Working on " << commonBranches[i] << endl;
+
+    //Identical plots should be suppressed
     int suppress = false;
 
     //Determine if it's a LorentzVector
@@ -187,6 +193,7 @@ void test(){
     tree_old->Draw(Form("%s%s>>hist_old", commonBranches[i].c_str(), isLorentz ? ".Pt()" : "")); 
     tree_new->Draw(Form("%s%s>>hist_new", commonBranches[i].c_str(), isLorentz ? ".Pt()" : "")); 
 
+    //Retrieve plot (this will use default binning)
     TH1F *hist_old = (TH1F*)gDirectory->Get("hist_old");
     TH1F *hist_new = (TH1F*)gDirectory->Get("hist_new");
 
@@ -209,18 +216,15 @@ void test(){
       tree_new->Draw(Form("%s%s>>hist_new", commonBranches[i].c_str(), isLorentz ? ".Pt()" : "")); 
     }
 
-    //Determine number of histos that are empty in both
-    int nempty = 0; 
-    int whichNotEmpty = 0;
-    for (int j = 1; j <= nbins; j++){
-      if (hist_old->GetBinContent(j) == 0 && hist_new->GetBinContent(j) == 0) nempty++;
-      else whichNotEmpty = j;
-    }
-
-    //If it's being fucking stupid and putting everything in 1 bin, redraw yet again
-    int niter = 0;
+    //If it's being fucking stupid and putting everything in 1 bin, redraw yet again.  Lowest & Highest bins shouldn't be empty
     bool keepGoing = ((std::min(hist_old->GetBinContent(1), hist_new->GetBinContent(1)) == 0) || (std::min(hist_old->GetBinContent(nbins), hist_new->GetBinContent(nbins)) == 0));
+ 
+    //Keep track of number of iterations so it doesn't get stuck
+    int niter = 0;
+
+    //Keep looping until lowest & highest bins aren't empty
     while (keepGoing == true && niter < 15){
+      //Determine highest/lowest bins that are filled
       for (int j = 1; j < nbins; j++){
         if (hist_old->GetBinContent(j) != 0){ min = hist_old->GetXaxis()->GetBinLowEdge(j); break; } 
         if (hist_new->GetBinContent(j) != 0){ min = hist_new->GetXaxis()->GetBinLowEdge(j); break; } 
@@ -229,20 +233,22 @@ void test(){
         if (hist_old->GetBinContent(j) != 0){ max = hist_old->GetXaxis()->GetBinLowEdge(j) + 2*hist_old->GetXaxis()->GetBinWidth(j); break; } 
         if (hist_new->GetBinContent(j) != 0){ max = hist_new->GetXaxis()->GetBinLowEdge(j) + 2*hist_new->GetXaxis()->GetBinWidth(j); break; } 
       }
+      //Redraw using the above bins
       delete hist_old;
       delete hist_new;
       hist_old = new TH1F("hist_old", "hist_old", nbins, min, max); 
       hist_new = new TH1F("hist_new", "hist_new", nbins, min, max); 
       tree_old->Draw(Form("%s%s>>hist_old", commonBranches[i].c_str(), isLorentz ? ".Pt()" : "")); 
       tree_new->Draw(Form("%s%s>>hist_new", commonBranches[i].c_str(), isLorentz ? ".Pt()" : "")); 
-      nempty = 0; 
-      for (int j = 1; j <= nbins; j++){
-        if (hist_old->GetBinContent(j) == 0 && hist_new->GetBinContent(j) == 0) nempty++;
-        else whichNotEmpty = i;
-      }
+
+      //Decide if we fixed the problem or if we need to try again
       niter++;
       keepGoing = ((std::max(hist_old->GetBinContent(1), hist_new->GetBinContent(1)) == 0) || (std::max(hist_old->GetBinContent(nbins), hist_new->GetBinContent(nbins)) == 0));
+
+      //No need to try again if the second-highest bin is filled (close enough, often saves a step)
      if (keepGoing && (std::max(hist_old->GetBinContent(1), hist_new->GetBinContent(1)) != 0) && (std::max(hist_old->GetBinContent(nbins-1), hist_new->GetBinContent(nbins-1)) != 0)) keepGoing = false;
+    
+     //No need to try again if max and min are fucking close (this will avoid problems if everything is in one bin)
      if ( (max-min)/max < .001){ keepGoing = false; suppress = true;} 
     }
 
@@ -250,11 +256,11 @@ void test(){
     hist_old->Scale(1./hist_old->GetEntries());
     hist_new->Scale(1./hist_new->GetEntries());
 
-    //Print results
+    //Figure out chi2, decide if you want to suppress
     float chi2test = hist_new->Chi2Test(hist_old, "CHI2/NDFWWOFUF");
     if (chi2test*100 < 0.1) suppress = true;
 
-    //Print histogram if not suppressed
+    //Print histogram, update LaTeX stuff if not suppressed
     if (suppress) cout << " --> Suppressed!" << endl;
     if (!suppress){ 
       vector<TH1F*> old_vector;
@@ -269,14 +275,19 @@ void test(){
       plotNum++;
     }
 
+    //Memory management
     delete hist_old;
     delete hist_new;
 
   }
 
+  //ToC stuff
   myfile << "\\section*{Branches in Common}\\addcontentsline{toc}{section}{Branches in Common}" << endl;
 
+  //Put worst plots first
   std::sort(chi2pair.begin(), chi2pair.end(), comparePair);
+
+  //LaTeX stuff
   for(unsigned int i = 0; i < chi2pair.size(); i++){
     myfile << "\\subsection*{" << commonBranches.at(chi2pair[i].second) << "}\\addcontentsline{toc}{subsection}{" << commonBranches.at(chi2pair[i].second) << "}" << endl
            << "\\begin{figure}[H]" << endl
