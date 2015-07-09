@@ -113,8 +113,10 @@ do
       NumMergedEventsConsistent=$?
       if [ $NumMergedEventsConsistent == 0 ]
       then
-        echo "moving $mergeFile to $target"
-        mv $mergeFile $target
+        if [ "$JOBTYPE" != "user" ]
+          echo "moving $mergeFile to $target"
+          mv $mergeFile $target
+        fi
         echo "$mergeFile" >> donePP.txt
       else
         echo "$mergeFile has the wrong number of events. Will delete and resubmit."
