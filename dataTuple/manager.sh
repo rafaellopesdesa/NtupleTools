@@ -50,7 +50,7 @@ CMS3tag=CMS3_V07-04-04
 GTAG=74X_dataRun2_Prompt_v0
 
 #State the maxmimum number of events
-MAX_NEVENTS=-1 #all events
+MAX_NEVENTS=100 #all events
 
 #Don't allow more than one instance to run
 if [ -e $BASEPATH/running.pid ] 
@@ -366,7 +366,7 @@ then
     cd $theUser
     cp /nfs-7/userdata/dataTuple/$theUser/completedList.txt . 
     cp -r /nfs-7/userdata/dataTuple/$theUser/mergedLists mergedLists/
-    cp -r /nfs-7/userdata/dataTuple/$theUser/mergedLists fileLists/
+    cp -r /nfs-7/userdata/dataTuple/$theUser/fileLists fileLists/
     cd ..
   done
   git add alex jason mark
