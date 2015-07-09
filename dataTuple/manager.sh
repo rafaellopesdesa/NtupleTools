@@ -47,7 +47,7 @@ CMS3tag=CMS3_V07-04-03
 
 #Set the global tag to use
 #GTAG=MCRUN2_74_V9
-GTAG=GR_P_V56
+GTAG=74X_dataRun2_Prompt_v0
 
 #State the maxmimum number of events
 MAX_NEVENTS=-1 #all events
