@@ -82,6 +82,9 @@ process.source.noEventSort = cms.untracked.bool( True )
 #Specify CMS3 tag
 process.eventMaker.CMS3tag = cms.string('SUPPLY_CMS3_TAG')
 
+#Specify dataset name
+process.eventMaker.datasetName = cms.string('SUPPLY_DATASETNAME')
+
 #Max Events
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(SUPPLY_MAX_NEVENTS) )
 

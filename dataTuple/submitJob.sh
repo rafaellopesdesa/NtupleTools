@@ -9,12 +9,14 @@ CMS3_TAG=$6
 MAX_EVENTS=$7
 GTAG=$8
 
+DATASETNAME=`awk "NR==1" filesToSubmit.txt | tr '/' ' ' | awk '{print "",$3, $4, $5}' | tr ' ' '/' `
+
 sed -n "$5p" $1 > tempSubmit.txt
 if [ "$JOBTYPE" == "cms3" ]
 then
   echo "cms3 job"
   cd cms3withCondor
-  . submit.sh ../tempSubmit.txt $TIME $OUTPUT_DIR $CMS3_TAG $MAX_EVENTS false $OUTPUT_NAME $GTAG pset_data.py
+  . submit.sh ../tempSubmit.txt $TIME $OUTPUT_DIR $CMS3_TAG $MAX_EVENTS false $OUTPUT_NAME $GTAG $DATASETNAME pset_data.py
   cd ..
 elif [ "$JOBTYPE" == "user" ]
 then

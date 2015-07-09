@@ -15,6 +15,7 @@ OUTPUT_DIR=$5
 OUTPUT_FILE_NAME=$6
 MAX_NEVENTS=$7
 CMS3_TAG=$8
+DATASETNAME=$9
 
 #Tell us where we're running
 echo "host: `hostname`" 
@@ -58,6 +59,7 @@ sed -i "s,SUPPLY_INPUT_FILE_NAME,${INPUT_FILE_NAME},g" $configFile
 sed -i "s/SUPPLY_OUTPUT_FILE_NAME/${OUTPUT_FILE_NAME}/g" $configFile
 sed -i "s/SUPPLY_MAX_NEVENTS/${MAX_NEVENTS}/g" $configFile
 sed -i "s/SUPPLY_CMS3_TAG/${CMS3_TAG}/g" $configFile
+sed -i "s/SUPPLY_DATASETNAME/${DATASETNAME}/g" $configFile
 
 echo "ls -lrth"
 ls -lrth

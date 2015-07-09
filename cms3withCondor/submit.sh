@@ -7,7 +7,8 @@ CMS3_TAG=$4
 MAX_NEVENTS=$5
 DO_NTUPLE_NUMBER=$6
 GLOBAL_TAG=$8
-PSET=$9
+DATASETNAME=$9
+PSET=${10}
 
 while  ! voms-proxy-info -exist
 do echo "No Proxy found issuing \"voms-proxy-init -voms cms\""
@@ -95,7 +96,7 @@ do
   x509userproxy=${PROXY}
   executable=condorExecutable.sh
   transfer_executable=True
-  arguments=$PSET $libCMS3 $GLOBAL_TAG $INPUT_FILE_NAME $OUTPUT_DIR $OUTPUT_FILE_NAME $MAX_NEVENTS $CMS3_TAG
+  arguments=$PSET $libCMS3 $GLOBAL_TAG $INPUT_FILE_NAME $OUTPUT_DIR $OUTPUT_FILE_NAME $MAX_NEVENTS $CMS3_TAG $DATASETNAME
   queue
   " > ${JOBCFGDIR}/condor_$OUTPUT_FILE_NAME.cmd
   
