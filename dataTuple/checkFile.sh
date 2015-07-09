@@ -75,7 +75,7 @@ then
   sed -i "s/current\ nEvents.*/current nEvents: $newTotalNevents/" $BASEPATH/mergedLists/$taskName/status.txt
 
   #If we now have enough to run post-processing, prepare the files 
-  if [ "$newTotalSize" -gt "300000000" ]
+  if [ "$newTotalSize" -gt "4000000000" ]
   then
     #(a) Reset counters for this script
     sed -i "s/currently filling.*/currently filling: $(( $mergedFileNumber + 1 ))/" $BASEPATH/mergedLists/$taskName/status.txt
