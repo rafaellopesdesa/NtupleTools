@@ -43,7 +43,7 @@ then
 fi
 
 #Set CMS3 tag to use
-CMS3tag=CMS3_V07-04-03
+CMS3tag=CMS3_V07-04-04
 
 #Set the global tag to use
 #GTAG=MCRUN2_74_V9
@@ -73,7 +73,7 @@ fi
 export SCRAM_ARCH=slc6_amd64_gcc491
 source /nfs-7/cmssoft/cms.cern.ch/cmssw/cmsset_default.sh
 pushd .
-cd /nfs-7/cmssoft/cms.cern.ch/cmssw/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_1_patch1
+cd /nfs-7/cmssoft/cms.cern.ch/cmssw/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_6_patch6
 eval `scramv1 runtime -sh`
 popd
 
