@@ -2,6 +2,8 @@
 
 if (( $# != 9 )); then
     echo "Illegal number of arguments."
+    echo "No.of args:  $#"
+    echo "args: $@"
     exit 1
 fi
 

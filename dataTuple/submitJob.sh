@@ -4,12 +4,12 @@ FILES=$1
 TIME=$2
 OUTPUT_DIR=$3
 OUTPUT_NAME=$4
-LINENO=$5
+LINENUMBER=$5
 CMS3_TAG=$6
 MAX_EVENTS=$7
 GTAG=$8
 
-DATASETNAME=`awk "NR==$LINENO" filesToSubmit.txt | tr '/' ' ' | awk '{print "",$3, $4, $5}' | tr ' ' '/' `
+DATASETNAME=`awk "NR==$LINENUMBER" filesToSubmit.txt | tr '/' ' ' | awk '{print "",$3, $4, $5}' | tr ' ' '/' `
 
 sed -n "$5p" $1 > tempSubmit.txt
 if [ "$JOBTYPE" == "cms3" ]
