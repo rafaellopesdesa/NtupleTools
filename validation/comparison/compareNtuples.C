@@ -10,8 +10,10 @@ TFile *file_old;
 TFile *file_new;
 int plotNum;
 
-bool comparePair(const std::pair<float, int> & a, const std::pair<float, int> & b) {
-  return a.first < b.first;
+struct trifecta { string plotName; int plotNumber; float chi2; };
+
+bool comparePair(trifecta a, trifecta b) {
+  return a.chi2 < b.chi2;
 }
 
 vector<std::string> getAliasNames(TTree *t){
@@ -66,7 +68,7 @@ vector<std::string> getUncommonBranches(vector<std::string> aliasnames, vector<s
 
 }
 
-void doSinglePlots(vector <std::string> branches, vector <std::string> commonBranches, bool isNew, TTree* tree){
+void doSinglePlots(vector <std::string> branches, bool isNew, TTree* tree){
 
   TH1F* empty = new TH1F("","", 1, 0, 1);
 
@@ -168,12 +170,12 @@ void test(){
   plotNum = 0;
 
   //Record chi2 of each plot
-  vector< pair<float,int> > chi2pair;
+  vector<trifecta> chi2pair;
 
   //Loop over non-common branches, update ToC for LaTeX
-  doSinglePlots(oldOnlyBranches, commonBranches, 0, tree_old);
+  doSinglePlots(oldOnlyBranches, 0, tree_old);
   myfile << "\\section*{Branches in NEW but not in OLD}\\addcontentsline{toc}{section}{Branches in New but not in Old}" << endl;
-  doSinglePlots(newOnlyBranches, commonBranches, 1, tree_new);
+  doSinglePlots(newOnlyBranches, 1, tree_new);
 
   //Reinitialize number of plots drawn
   plotNum = 0;
@@ -271,7 +273,11 @@ void test(){
       vector<string> titles;
       titles.push_back("Old");
       dataMCplotMaker(hist_new, old_vector, titles, Form("%.2f", chi2test*100), commonBranches[i].c_str(), Form("--noErrBars --isLinear --dataName New --topYaxisTitle New/Old --xAxisOverride --noDivisionLabel --outputName hists/diff%i", plotNum));
-      chi2pair.push_back(make_pair(chi2test, plotNum));
+      trifecta chi2pair_;
+      chi2pair_.plotName = commonBranches[i];
+      chi2pair_.plotNumber = plotNum;
+      chi2pair_.chi2 = chi2test; 
+      chi2pair.push_back(chi2pair_);
       plotNum++;
     }
 
@@ -289,11 +295,11 @@ void test(){
 
   //LaTeX stuff
   for(unsigned int i = 0; i < chi2pair.size(); i++){
-    myfile << "\\subsection*{" << commonBranches.at(chi2pair[i].second) << "}\\addcontentsline{toc}{subsection}{" << commonBranches.at(chi2pair[i].second) << "}" << endl
+    myfile << "\\subsection*{" << chi2pair[i].plotName << "}\\addcontentsline{toc}{subsection}{" << chi2pair[i].plotName << "}" << endl
            << "\\begin{figure}[H]" << endl
-           << Form("\\includegraphics[width=0.9\\textwidth]{./hists/diff%i.pdf}", chi2pair[i].second) << endl
+           << Form("\\includegraphics[width=0.9\\textwidth]{./hists/diff%i.pdf}", chi2pair[i].plotNumber) << endl
            << "\\end{figure}" << endl;
-    myfile << "The $\\chi^2$ test value between the Old and New is: " << chi2pair[i].first << endl;
+    myfile << "The $\\chi^2$ test value between the Old and New is: " << chi2pair[i].chi2 << endl;
   }
 
   myfile << "\\end{document}" << endl;
