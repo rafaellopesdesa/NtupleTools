@@ -10,7 +10,7 @@ fi
 readarray -t samples < $BASEPATH/input.txt
 for i in "${samples[@]}"
 do
-  input_from_das=`./das_client.py --query="file dataset= $i site=T2_US_*" --limit=10` #need to use --limit=0 to pick up all files!
+  input_from_das=`./das_client.py --query="file dataset= $i site=T2_US_*" --limit=0` #need to use --limit=0 to pick up all files!
   echo "$input_from_das" | grep "status: fail"
   if [ $? == 0 ]
   then 
