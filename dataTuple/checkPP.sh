@@ -114,6 +114,7 @@ do
       if [ $NumMergedEventsConsistent == 0 ]
       then
         if [ "$JOBTYPE" != "user" ]
+        then
           echo "moving $mergeFile to $target"
           mv $mergeFile $target
         fi
