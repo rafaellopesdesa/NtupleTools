@@ -276,11 +276,13 @@ do
       if [ ! -e sweepRoot ] 
       then
         pushd ../sweepRoot
+        make clean
         make
         popd
         cp ../sweepRoot/sweepRoot .
       fi
       . checkFile.sh $BASEPATH $outputPath/$outputDir/$fileName $currentFile $JOBTYPE
+      echo "try this: . checkFile.sh $BASEPATH $outputPath/$outputDir/$fileName $currentFile $JOBTYPE"
       continue
     fi
   fi
