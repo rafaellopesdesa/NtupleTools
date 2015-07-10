@@ -367,7 +367,7 @@ then
   git pull
   cd $theUser
   cp /nfs-7/userdata/dataTuple/$theUser/completedList.txt . 
-  cp -r /nfs-7/userdata/dataTuple/$theUser/mergedLists .
+  cp -r /nfs-7/userdata/dataTuple/$theUser/fileLists .
   cp -r /nfs-7/userdata/dataTuple/$theUser/mergedLists .
   cd ..
   git add $theUser
