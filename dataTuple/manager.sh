@@ -378,27 +378,6 @@ then
   fi
 fi
 
-
-if [ "$USER" == "cgeorge" ]; then theUser=alex; fi
-if [ "$USER" == "jgran" ]; then theUser=jason; fi
-if [ "$USER" == "mderdzinski" ]; then theUser=mark; fi
-
-#update backups
-if [ "$JOBTYPE" == "cms3" ] 
-then
-  pushd DataTuple-backup
-  git pull
-  cd $theUser
-  cp /nfs-7/userdata/dataTuple/$theUser/completedList.txt . 
-  cp -r /nfs-7/userdata/dataTuple/$theUser/fileLists .
-  cp -r /nfs-7/userdata/dataTuple/$theUser/mergedLists .
-  cd ..
-  git add $theUser
-  git commit -m "dataTuple commit on `date` by $USER"
-  git push origin master
-  popd
-fi
-
 #monitor script
 . monitor.sh
 
