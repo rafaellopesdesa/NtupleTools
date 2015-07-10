@@ -192,7 +192,7 @@ void test(){
     //Determine if it's a LorentzVector
     TBranch *branch = tree_new->GetBranch(tree_new->GetAlias(commonBranches[i].c_str()));
     TString branchname(branch->GetName());
-    bool isLorentz = branchname.Contains("p4"); 
+    bool isLorentz = branchname.Contains("p4") || branchname.Contains("MathLorentzVectors"); 
 
     //Make plot
     tree_old->Draw(Form("%s%s>>hist_old", commonBranches[i].c_str(), isLorentz ? ".Pt()" : "")); 
