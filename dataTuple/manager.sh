@@ -357,7 +357,7 @@ if [ -d $BASEPATH/mergedLists ]; then
    done
 fi
 
-if [ "$JOBTYPE" == "cms3" ] && if [ "$USER" == "cgeorge" ]
+if [ "$JOBTYPE" == "cms3" ] && [ "$USER" == "cgeorge" ]
 then
   pushd DataTuple-backup
   for theUser in alex jason mark
