@@ -45,4 +45,4 @@ done < listOfDatasets.txt
 
 rm listOfDatasets.txt
 
-cp $OUT /home/users/$USER/public_html
+cp $OUT /home/users/$USER/public_html/dataTupleMonitor.txt
