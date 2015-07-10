@@ -282,7 +282,6 @@ do
         cp ../sweepRoot/sweepRoot .
       fi
       . checkFile.sh $BASEPATH $outputPath/$outputDir/$fileName $currentFile $JOBTYPE
-      echo "try this: . checkFile.sh $BASEPATH $outputPath/$outputDir/$fileName $currentFile $JOBTYPE"
       continue
     fi
   fi
