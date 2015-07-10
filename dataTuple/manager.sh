@@ -356,20 +356,21 @@ if [ -d $BASEPATH/mergedLists ]; then
    done
 fi
 
+if [ "$USER" == "cgeorge" ]; then theUser=alex; fi
+if [ "$USER" == "jgran" ]; then theUser=jason; fi
+if [ "$USER" == "mderdzinski" ]; then theUser=mark; fi
+
 #update backups
 if [ "$JOBTYPE" == "cms3" ] 
 then
   pushd DataTuple-backup
   git pull
-  for theUser in alex jason mark
-  do
-    cd $theUser
-    cp /nfs-7/userdata/dataTuple/$theUser/completedList.txt . 
-    cp -r /nfs-7/userdata/dataTuple/$theUser/mergedLists mergedLists/
-    cp -r /nfs-7/userdata/dataTuple/$theUser/mergedLists fileLists/
-    cd ..
-  done
-  git add alex jason mark
+  cd $theUser
+  cp /nfs-7/userdata/dataTuple/$theUser/completedList.txt . 
+  cp -r /nfs-7/userdata/dataTuple/$theUser/mergedLists mergedLists/
+  cp -r /nfs-7/userdata/dataTuple/$theUser/mergedLists fileLists/
+  cd ..
+  git add $theUser
   git commit -m "dataTuple commit on `date` by $USER"
   git push origin master
   popd
