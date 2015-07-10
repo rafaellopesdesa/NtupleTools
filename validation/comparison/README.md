@@ -3,11 +3,11 @@
 This is a "core dump" of every branch in CMS3 for **TWO RELEASES**.  If you want one release by itself, you are looking for cmstas/NtupleTools/validation/branchDumper.  
 
 ###Instructions:
-1. In do.C, put the OLD SAMPLE on line 5 and the NEW sample on line 6.  You should also decide if you want to do force it to draw even the identical histograms (arg3, true/false). Whether draw the error bars in the New/Old comparisons (arg4, true/false). The chi2 value required for identical judgement (arg5, 0-1, higher for stricter).
-2. A hists subdirectory is required in comparison. 
+1. In compareNtuples.C, put the OLD and NEW samples on line 114-115. 
+2. "mkdir hists"
 3. "root -b do.C"
 4. ". process.sh" 
-5. Now overview.pdf has everything you need. The table of contents can be clicked to jump to the plots and it's also easier to have sidebar for the TOC when viewing the pdf.
+5. Now overview.pdf has everything you need. 
 
 ###Sample:
 For run-2, we have been using the following sample for validation:
