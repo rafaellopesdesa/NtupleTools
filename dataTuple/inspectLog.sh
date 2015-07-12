@@ -16,6 +16,12 @@ else
   echo "all good"
 fi
 
+#If not fucked, done
+if [ "$isFucked" == "false" ]
+then
+  exit 0
+fi
+
 #If it is, check to see if it's already reported
 status=`awk 'NR==1' voms_status.txt | awk '{print $1}'`
 if [ "$status" == "subject" ]
@@ -27,7 +33,7 @@ then
 fi
 
 #If not already reported, report it
-if [ "$isReported" == "no" ]
+if [ "$isReported" == "no" ] 
 then
   echo "Error!! $USER doesn't have a proxy!!" | /bin/mail -r "george@physics.ucsb.edu" -s "[dataTuple] error report" "george@physics.ucsb.edu, jgran@physics.ucsb.edu, mark.derdzinski@gmail.com" 
   echo "passwordProblem" > voms_status.txt
