@@ -86,5 +86,6 @@ fi
 crontab -l > mycron 2>/dev/null
 echo "*/30 * * * * cd ${PWD} && /bin/sh ${PWD}/manager.sh -b $BASEPATH -t $JOBTYPE >> $BASEPATH/dataTuple.log 2>&1" >> mycron;
 echo "*/10 * * * * cd ${PWD} && /bin/sh suicide.sh $BASEPATH" >> mycron
+echo "*/10 * * * * cd ${PWD} && /bin/sh inspectLog.sh $BASEPATH" >> mycron
 crontab mycron
 rm mycron
