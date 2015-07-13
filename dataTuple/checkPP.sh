@@ -6,7 +6,7 @@
 
 taskname=$1
 JOBTYPE=$2
-CMS3tag=$3
+CMS3tag=`echo $3 | tr '_' ' ' | awk '{print $2}'`
 
 if [ "$JOBTYPE" == "cms3" ]
 then
