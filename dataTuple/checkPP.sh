@@ -18,7 +18,7 @@ else
   echo "JOBTYPE not recognized"
   exit 1
 fi
-mergedDir="/hadoop/cms/store/user/$USER/$jobDir/$taskname/merged/$CMS3tag"
+mergedDir="/hadoop/cms/store/user/$USER/$jobDir/$taskname/merged"
 target="/hadoop/cms/store/group/snt/run2_data/$taskname/merged/$CMS3tag"
 
 if [ ! -d $BASEPATH ]
