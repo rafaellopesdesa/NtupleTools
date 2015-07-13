@@ -352,7 +352,7 @@ if [ -d $BASEPATH/mergedLists ]; then
     do
 	task=`basename $dir`
 	echo "checking PP for $task"
-	. checkPP.sh $task $JOBTYPE
+	. checkPP.sh $task $JOBTYPE $CMS3tag
 	echo "done checking PP for $task"
    done
 fi

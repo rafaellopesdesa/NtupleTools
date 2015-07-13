@@ -6,6 +6,7 @@
 
 taskname=$1
 JOBTYPE=$2
+CMS3tag=$3
 
 if [ "$JOBTYPE" == "cms3" ]
 then
@@ -17,8 +18,8 @@ else
   echo "JOBTYPE not recognized"
   exit 1
 fi
-mergedDir="/hadoop/cms/store/user/$USER/$jobDir/$taskname/merged"
-target="/hadoop/cms/store/group/snt/run2_data/$taskname/merged"
+mergedDir="/hadoop/cms/store/user/$USER/$jobDir/$taskname/merged/$CMS3tag"
+target="/hadoop/cms/store/group/snt/run2_data/$taskname/merged/$CMS3tag"
 
 if [ ! -d $BASEPATH ]
 then
