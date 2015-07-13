@@ -13,7 +13,6 @@ then
   isFucked="true"
 else
   isFucked="false"
-  echo "all good"
 fi
 
 #If not fucked, done
