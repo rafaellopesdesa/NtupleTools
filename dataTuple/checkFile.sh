@@ -62,7 +62,7 @@ then
   if [ ! -d $BASEPATH/mergedLists/$taskName ]; then mkdir -p $BASEPATH/mergedLists/$taskName; fi
   if [ ! -e $BASEPATH/mergedLists/$taskName/status.txt ]
   then
-    echo "currently filling: 0" >> $BASEPATH/mergedLists/$taskName/status.txt
+    echo "currently filling: 1" >> $BASEPATH/mergedLists/$taskName/status.txt
     echo "current size (bytes): 0" >> $BASEPATH/mergedLists/$taskName/status.txt
     echo "current nEvents: 0" >> $BASEPATH/mergedLists/$taskName/status.txt
   fi
@@ -95,7 +95,7 @@ then
     . submitPPJob.sh $taskName $mergedFileNumber $JOBTYPE
     if [ ! -e submitPPList.txt ]; then touch submitPPList.txt; fi
     submitTime=`date +%s`
-    echo "/hadoop/cms/store/user/$USER/dataTuple/$taskName/merged/merged_ntuple_$mergeFileNumber.root $submitTime" >> submitPPList.txt
+    echo "/hadoop/cms/store/user/$USER/dataTuple/$taskName/merged/merged_ntuple_$mergedFileNumber.root $submitTime" >> submitPPList.txt
   fi
 
 fi
