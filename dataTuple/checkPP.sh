@@ -6,7 +6,7 @@
 
 taskname=$1
 JOBTYPE=$2
-CMS3tag=`echo $3 | tr '_' ' ' | awk '{print $2}'`
+CMS3tagFragment=`echo $3 | tr '_' ' ' | awk '{print $2}'`
 
 if [ "$JOBTYPE" == "cms3" ]
 then
@@ -19,7 +19,7 @@ else
   exit 1
 fi
 mergedDir="/hadoop/cms/store/user/$USER/$jobDir/$taskname/merged"
-target="/hadoop/cms/store/group/snt/run2_data/$taskname/merged/$CMS3tag"
+target="/hadoop/cms/store/group/snt/run2_data/$taskname/merged/$CMS3tagFragment"
 
 if [ ! -d $BASEPATH ]
 then
