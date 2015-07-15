@@ -133,6 +133,7 @@ if( len(sys.argv)<14 ):
     print '                              -k kFactor'
     print '                              -e filter Efficiency'
     print '                              -x x-Section'
+    print '                              --overrideCrab if you don\'t have the crab logs (usually true)'
 
     sys.exit()
 
@@ -218,6 +219,7 @@ goodRootFiles = []
 rootFilesToMerge = []
 
 totalNumEventsRun = 0
+effectiveNumEventsRun = 0
 if(overrideCrab):
     ### get number of events in a TChain of root files in datapath
     status, macroData = commands.getstatusoutput("root -l -b -q -n 'libC/counts.C(\"%s\")' | grep nevents" % datapath)
