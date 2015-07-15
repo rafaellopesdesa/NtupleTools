@@ -69,6 +69,7 @@ def getGoodRootFiles(datapath,outpath):
     inputfiles = [file.split()[-1] for file in inputfiles.split("\n") if ".root" in file]
     print inputfiles
     #this is where we parse the crab fjrs to find the file size, path to the file, and if it is good or not.
+    nEntries = 0;
     for ntuple in inputfiles:
 
         fullPath = '%s/%s' % (datapath, ntuple)
@@ -82,13 +83,16 @@ def getGoodRootFiles(datapath,outpath):
             print "sweepRoot source exists in sweepRoot directory."
             sys.exit()
 
-        cmd = "./sweepRoot -o Events %s" % fullPath
+        cmd = "./sweepRoot -o Events -t Events %s" % fullPath
         output = commands.getoutput(cmd).split('\n')
 
         for sweepRootCode in output:
 
             if sweepRootCode.find('SUMMARY') != -1:
                 print sweepRootCode
+
+            if sweepRootCode.find('nEntries') != -1:
+                nEntries += int(sweepRootCode[10:]);
 
             if sweepRootCode.find('SUMMARY: 1 bad, 0 good') != -1:
                 print 'File: %s does not seem to be good!!!!\n' % fullPath
@@ -110,6 +114,8 @@ def getGoodRootFiles(datapath,outpath):
                     fileiter.write( '%s\n' %(fullPath) )
                 else:
                     fileiter.close()
+                    os.system("sed -i '1s/^/nEntries: %i\\n/' %s/mergeFiles/mergeLists/merged_list_%s.txt" %(nEntries,crabpath,str(fileNumber)))
+                    nEntries = 0
                     fileNumber += 1
                     # totalFileSize = os.path.getsize(path)
                     totalFileSize = int(singleFileSize)
@@ -120,6 +126,7 @@ def getGoodRootFiles(datapath,outpath):
                 tempXMLFileList.append(ntuple)
 
     fileiter.close()
+    os.system("sed -i '1s/^/nEntries: %i\\n/' %s/mergeFiles/mergeLists/merged_list_%s.txt" %(nEntries,crabpath,str(fileNumber)))
     goodCrabXMLFiles = tempXMLFileList
 
 

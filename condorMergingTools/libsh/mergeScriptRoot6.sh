@@ -28,6 +28,14 @@ nFilesAG=`wc -l < $inputList`
 echo "The list contains the following $nFilesAG files:"
 less $inputList
 
+#If the input list starts with nEvents:, remove that line
+firstLine=`awk 'NR==1 {print $1}' $inputList`
+if [ "$firstLine" == "nEntries:" ] 
+then
+  nEvents=`awk 'NR==1 {print $2}' $inputList` 
+  sed -i '1d' $inputList
+fi
+
 # Environment
 #export CMS_PATH=/cvmfs/cms.cern.ch
 #export SCRAM_ARCH=slc6_amd64_gcc491
