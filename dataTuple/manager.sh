@@ -43,7 +43,7 @@ then
 fi
 
 #Set CMS3 tag to use
-CMS3tag=CMS3_V07-04-04
+CMS3tag=CMS3_V07-04-06
 
 #Set the global tag to use
 #GTAG=MCRUN2_74_V9
@@ -236,7 +236,9 @@ do
   fi
 
   #set Output path, make sure it exists
+  CMS3tagFragment=`echo $CMS3tag | tr '_' ' ' | awk '{print $2}'`
   outputDir=`echo $currentFile | tr '/' ' ' |  awk '{print $3"_"$4"_"$5"_"$6}'`
+  outputDir=$outputDir/$CMS3tagFragment
   echo "outputDir: $outputDir"
   if [ ! -d $outputPath/$outputDir ]
   then
@@ -320,7 +322,9 @@ then
     #5b. Submit them
     echo "step 5b"
     outputName=$(python getFileName.py $currentLine 2>&1)
+    CMS3tagFragment=`echo $CMS3tag | tr '_' ' ' | awk '{print $2}'`
     outputDir=`echo $currentLine | tr '/' ' ' |  awk '{print $3"_"$4"_"$5"_"$6}'`
+    outputDir=$outputDir/$CMS3tagFragment
     . submitJob.sh filesToSubmit.txt $currentTime $outputPath/$outputDir $outputName $lineno $CMS3tag $MAX_NEVENTS $GTAG
     echo "submitting!  $currentTime $outputPath/$outputDir $outputName $lineno $CMS3tag $MAX_NEVENTS $GTAG"
 
