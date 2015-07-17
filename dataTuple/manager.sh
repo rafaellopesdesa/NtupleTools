@@ -154,6 +154,7 @@ fi
 if [ "$?" == 1 ] 
 then
   echo "Aborting -- you don't have a proxy"
+  rm -f $BASEPATH/running.pid > /dev/null 2>&1 
   exit 1
 fi
 
