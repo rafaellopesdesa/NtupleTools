@@ -67,7 +67,7 @@ then
   rm heldPPList.txt
 fi
 
-counter="0"
+counter="1"
 
 while [ -e $BASEPATH/mergedLists/$taskname/metaData_$counter.txt ]
 do
