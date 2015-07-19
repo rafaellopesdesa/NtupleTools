@@ -5,6 +5,9 @@ if [ "$USER" == "cgeorge" ]; then name="alex"; fi
 if [ "$USER" == "jgran" ]; then name="jason"; fi
 if [ "$USER" == "mark" ]; then name="mderdzinski"; fi
 
+#Error check
+if [ "$name" == "" ]; then echo "problems!"; exit 1; fi
+
 #Set Basepath
 BASEPATH="/nfs-7/userdata/dataTuple/$name"
 
