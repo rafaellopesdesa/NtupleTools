@@ -3,7 +3,7 @@
 #Figure out name
 if [ "$USER" == "cgeorge" ]; then name="alex"; fi
 if [ "$USER" == "jgran" ]; then name="jason"; fi
-if [ "$USER" == "mark" ]; then name="mderdzinski"; fi
+if [ "$USER" == "mderdzinski" ]; then name="mark"; fi
 
 #Error check
 if [ "$name" == "" ]; then echo "problems!"; exit 1; fi
