@@ -22,7 +22,7 @@ do
   mergedFileNumber=`grep -r "filling" $BASEPATH/mergedLists/$taskName | awk '{print $3}'`
 
   #Write metaData
-  echo "n: $newTotalNevents" >> $BASEPATH/mergedLists/$taskName/metaData_$mergedFileNumber.txt
+  echo "n: $nEvents" >> $BASEPATH/mergedLists/$taskName/metaData_$mergedFileNumber.txt
   echo "k: 1" >> $BASEPATH/mergedLists/$taskName/metaData_$mergedFileNumber.txt
   echo "f: 1" >> $BASEPATH/mergedLists/$taskName/metaData_$mergedFileNumber.txt
   echo "x: 1" >> $BASEPATH/mergedLists/$taskName/metaData_$mergedFileNumber.txt
