@@ -34,7 +34,7 @@ else
 fi
 
 INPUT="$PSET, $libCMS3"
-SITE="T2_US_UCSD,T2_US_Nebraska,T2_US_Wisconsin,T2_US_MIT,T2_US_FLORIDA"
+SITE="T2_US_UCSD,T2_US_Nebraska,T2_US_Wisconsin,T2_US_MIT"
 PROXY=$(voms-proxy-info -path)
 SUBMITLOGDIR="${PWD}/submit_logs"
 JOBLOGDIR="${PWD}/job_logs"
