@@ -310,7 +310,10 @@ then
       echo "nTries: $nTries" 
       if [ "$nTries" -gt "10" ] && [ "$nTries" -lt "130" ]
       then
+        currentLine_escaped=`echo $currentLine | sed 's,/,\\\/,g'`
+        sed -i "/$currentLine_escaped/d" submitList.txt
         let "nTries=$nTries+1"
+        echo "$currentLine $jobid $currentTime $nTries 0" >> submitList.txt
         continue
       elif [ "$nTries" -eq "135" ] 
       then
