@@ -55,6 +55,8 @@ int mergeScript(const string& fileList, const string& outFile ){
   TTree *mergedTree = (TTree*)mergedFile->Get("Events");
   const int mergedCount = mergedTree->GetEntries();
   const int unmergedCount = ch1.GetEntries();
+  cout << "Merged Entries: " << mergedCount << endl;
+  cout << "Unmerged Entries: " << unmergedCount << endl;
   if (mergedCount != unmergedCount){
     cout << "Merged count not equal to unmerged count. Exiting..." << endl;
     return 4;

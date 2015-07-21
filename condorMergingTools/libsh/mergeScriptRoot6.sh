@@ -92,7 +92,7 @@ cd ..
 mv sweepRootStuff/sweepRoot . 
 
 #runs merging script, and if it fails tries one more time.
-root -b -q -l "mergeScript.C (\"$inputList\",\"merged_ntuple.root\")"
+root -b -q -l "mergeScript.C (\"$inputList\",\"merged_ntuple.root\")" > temp_merging.log
 ./sweepRoot -o "Events" -t "Events" merged_ntuple.root 
 didMerge=$?
 
@@ -105,7 +105,7 @@ if [ $didMerge != 0 ]; then
 		rm merged_ntuple.root
 	fi
 
-	root -b -q -l "mergeScript.C (\"$inputList\",\"merged_ntuple.root\")"
+	root -b -q -l "mergeScript.C (\"$inputList\",\"merged_ntuple.root\")" > temp_merging.log
 	./sweepRoot -o "Events" -t "Events" merged_ntuple.root
 	didMerge=$?	
 fi
@@ -121,6 +121,20 @@ if [ $didMerge != 0 ]; then
 	fi
 	
 	exit 2	
+fi
+
+if [ -e temp_merging.log ]; then
+    nEventsMerged = `grep "Merged Entries:" temp_merging.log | awk '{print $3}'`
+    rm temp_merging.log
+fi
+
+#check that number of merged events is same as input from mergelist
+if [ $nEvents != $nEventsMerged ]; then
+    echo "Error in merging. Events in does not equal events out. Exiting."
+    if [ -e "merged_ntuple.root" ]; then		
+	rm merged_ntuple.root
+    fi
+    exit 4
 fi
 
 #Makes the name of the output ntuple depending on the name of the file list
@@ -187,6 +201,7 @@ if [ $didAddBranches == 0 ]; then
 
 	fi
 fi
+
 
 echo "Cleaning up."
 rm $outFileName merged_ntuple.root *.txt
