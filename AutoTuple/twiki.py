@@ -24,7 +24,7 @@ parser.add_argument('--location'        , type=types.StringType, help='location 
 parser.add_argument('--nIn'             , type=types.IntType   , help='number of events in (from MCM)')
 parser.add_argument('--nOut'            , type=types.IntType   , help='number of events on the hadoop directory (should equal nIn unless there is a filter somewhere)')
 parser.add_argument('--makeInstructions', type=types.StringType, help='username for AutoTupler instructions file.  Leave blank if not making instructions file') 
-parser.add_argument('--getOnlyNew'      , action='store_true'  , help='Use with makeInstructions. Only gets unmade samples.') 
+parser.add_argument('--getUnmade'       , action='store_true'  , help='Use with makeInstructions. Only gets unmade samples.') 
 parser.add_argument('--manual'          , type=types.IntType   , help='use this argument to manually change the twiki.  Argument: 1 to download updateTwiki2.txt and 2 to upload updateTwiki2.txt') 
 parser.add_argument('--allSamples'      , type=types.IntType  , help='use this argument to download all samples. Argument: 1') 
 args = parser.parse_args()
@@ -62,7 +62,6 @@ if (args.manual == 2):
   if (check != "yes"): 
     print "You did not type yes.  Aborting..."
     sys.exit() 
-print args.getOnlyNew
 #Set up a browser
 br = mechanize.Browser()
 
@@ -158,7 +157,7 @@ if (args.makeInstructions != None):
       #If you found one of your samples
 
       theLine = line.split('|')
-      if(args.getOnlyNew and len(theLine[10]) > 1): continue
+      if(args.getUnmade and len(theLine[10]) > 1): continue
       nSamples += 1
       dataset = theLine[1]
       xsec = theLine[5]
