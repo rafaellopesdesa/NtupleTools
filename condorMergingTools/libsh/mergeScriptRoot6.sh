@@ -129,21 +129,21 @@ if [ -e temp_merging.log ]; then
     rm temp_merging.log
 fi
 
-#echo "retrievedEventsMerged is $retrievedEventsMerged"
-#echo "nEventsMerged is $nEventsMerged"
-#echo "nEvents is $nEvents"
-#
-##check that number of merged events is same as input from mergelist
-##only do this if grep was successful and nEvents exists
-#if [ $retrievedEventsMerged == 0 ] && [ $nEvents != "" ]; then
-#    if [ $nEvents != $nEventsMerged ]; then
-#	echo "Error in merging. Events in does not equal events out. Exiting."
-#	if [ -e "merged_ntuple.root" ]; then		
-#	    rm merged_ntuple.root
-#	fi
-#	exit 4
-#    fi
-#fi
+echo "retrievedEventsMerged is $retrievedEventsMerged"
+echo "nEventsMerged is $nEventsMerged"
+echo "nEvents is $nEvents"
+
+check that number of merged events is same as input from mergelist
+only do this if grep was successful and nEvents exists
+if [ $retrievedEventsMerged == 0 ] && [ $nEvents != "" ]; then
+   if [ $nEvents != $nEventsMerged ]; then
+	echo "Error in merging. Events in does not equal events out. Exiting."
+	if [ -e "merged_ntuple.root" ]; then		
+	    rm merged_ntuple.root
+	fi
+	exit 4
+   fi
+fi
 
 #Makes the name of the output ntuple depending on the name of the file list
 outFileName=`echo $inputList | sed 's/list/ntuple/g' | sed 's/txt/root/g'`
