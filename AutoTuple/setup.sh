@@ -7,10 +7,12 @@ fi
 
 gtag=`sed -n '1p' $1`
 tag=`sed -n '2p' $1`
+CMSSW_VER=CMSSW_7_4_6
+# CMSSW_VER=CMSSW_7_4_1_patch1
 export PATH=$PATH:`pwd`
 source /cvmfs/cms.cern.ch/crab3/crab.sh
 export SCRAM_ARCH=slc6_amd64_gcc491
-scramv1 p -n CMSSW_7_4_1_patch1 CMSSW CMSSW_7_4_1_patch1
+scramv1 p -n $CMSSW_VER CMSSW $CMSSW_VER
 pushd .
 cd ../sweepRoot
 make
@@ -27,7 +29,7 @@ then
   mv lib_$tag.tar.gz /nfs-7/userdata/libCMS3/lib_$tag.tar.gz
   cd $CMSSW_BASE
 else
-  cd CMSSW_7_4_1_patch1
+  cd $CMSSW_VER
   cmsenv
   cp /nfs-7/userdata/libCMS3/lib_$tag.tar.gz . 
   tar -xzvf lib_$tag.tar.gz
