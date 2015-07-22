@@ -70,6 +70,7 @@ def getGoodRootFiles(datapath,outpath):
     print inputfiles
     #this is where we parse the crab fjrs to find the file size, path to the file, and if it is good or not.
     nEntries = 0;
+    nCurrentEntries = 0;
     for ntuple in inputfiles:
 
         fullPath = '%s/%s' % (datapath, ntuple)
@@ -92,7 +93,7 @@ def getGoodRootFiles(datapath,outpath):
                 print sweepRootCode
 
             if sweepRootCode.find('nEntries') != -1:
-                nEntries += int(sweepRootCode[10:]);
+                nCurrentEntries = int(sweepRootCode[10:]);
 
             if sweepRootCode.find('SUMMARY: 1 bad, 0 good') != -1:
                 print 'File: %s does not seem to be good!!!!\n' % fullPath
@@ -112,10 +113,11 @@ def getGoodRootFiles(datapath,outpath):
                 # if totalFileSize < 7730900000:
                     f1.write( '%s\n' %(fullPath) )
                     fileiter.write( '%s\n' %(fullPath) )
+                    nEntries += int(nCurrentEntries)
                 else:
                     fileiter.close()
                     os.system("sed -i '1s/^/nEntries: %i\\n/' %s/mergeFiles/mergeLists/merged_list_%s.txt" %(nEntries,crabpath,str(fileNumber)))
-                    nEntries = 0
+                    nEntries = nCurrentEntries
                     fileNumber += 1
                     # totalFileSize = os.path.getsize(path)
                     totalFileSize = int(singleFileSize)
