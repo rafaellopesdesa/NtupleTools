@@ -2,6 +2,13 @@
 
 theDir="run2"
 
+#Set the username
+USERNAME="$USER"
+if [ "$USERNAME" == "dsklein" ]; then USERNAME="dklein"; fi
+if [ "$USERNAME" == "iandyckes" ]; then USERNAME="gdyckes"; fi
+if [ "$USERNAME" == "mderdzinski" ]; then USERNAME="mderdzin"; fi
+if [ "$USERNAME" == "rclsa" ]; then USERNAME="rcoelhol"; fi
+
 #Needed for later
 containsElement () {
   local e
@@ -175,13 +182,13 @@ do
       grep -m 1 -r "Looking up detailed status of task" crab_$filename/crab.log | awk '{print $10}' | cut -c 1-13 > crab_$filename/jobDateTime.txt
       dateTime=`less crab_$filename/jobDateTime.txt`
     else
-      dateTime=`ls -lthr --ignore=$CMS3tag /hadoop/cms/store/user/$USER/$short_filename/crab_$filename/ | awk '{print $NF}' | tail -1`
+      dateTime=`ls -lthr --ignore=$CMS3tag /hadoop/cms/store/user/$USERNAME/$short_filename/crab_$filename/ | awk '{print $NF}' | tail -1`
     fi
 
     #If already finished......
     if [ "${WHICHDONE[$fileNumber]}" == "done" ] || [ "${WHICHDONE[$fileNumber]}" == "notPP" ]
     then
-      root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/user/$USER/$short_filename/crab_$filename/$dateTime/0000/\"\) > crab_status_logs/temp2.txt 2>&1
+      root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/user/$USERNAME/$short_filename/crab_$filename/$dateTime/0000/\"\) > crab_status_logs/temp2.txt 2>&1
       nIn=`grep -r "nEntries" crab_status_logs/temp2.txt | tail -1 | awk '{print $NF}'`
       root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/group/snt/$theDir/$filename/$tagDir\"\) > crab_status_logs/temp.txt 2>&1
       grep -r "trying to recover" crab_status_logs/temp.txt &> /dev/null
@@ -229,7 +236,7 @@ do
           do
             rm /hadoop/cms/store/group/snt/$theDir/$filename/$tagDir/merged_ntuple_$i.root
           done
-          mv /hadoop/cms/store/group/snt/$theDir/$filename/$tagDir/*.root /hadoop/cms/store/user/$USER/$short_filename/crab_$filename/CMS3_$tagDir/merged/
+          mv /hadoop/cms/store/group/snt/$theDir/$filename/$tagDir/*.root /hadoop/cms/store/user/$USERNAME/$short_filename/crab_$filename/CMS3_$tagDir/merged/
           WHICHDONE[$fileNumber]="true"
           echo "<font color=\"red\"> &nbsp; &nbsp; <b> Shiver me timbers!  There was a problem copying this file.  File $i is corrupt. Fixing..... nEventsIn: $nIn.  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
           let "fileNumber += 1"
@@ -263,7 +270,7 @@ do
     #if crab has finished but post-processing has not, check on post-processing
     if [ "${WHICHDONE[$fileNumber]}" == "true" ] 
     then
-      root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/user/$USER/$short_filename/crab_$filename/$dateTime/0000/\"\) > crab_status_logs/temp2.txt 2>&1
+      root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/user/$USERNAME/$short_filename/crab_$filename/$dateTime/0000/\"\) > crab_status_logs/temp2.txt 2>&1
       nIn=`grep -r "nEntries" crab_status_logs/temp2.txt | tail -1 | awk '{print $NF}'`
       #Print header
       echo "  " >> AutoTupleHQ.html
@@ -322,12 +329,12 @@ do
     then
       echo '<font color="blue"> &nbsp; &nbsp; <b> Ready for Post-Processing!!  <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
       WHICHDONE[$fileNumber]="true"
-      numDirs=`ls /hadoop/cms/store/user/$USER/$short_filename/crab_$filename/$dateTime/ | wc -l` 
+      numDirs=`ls /hadoop/cms/store/user/$USERNAME/$short_filename/crab_$filename/$dateTime/ | wc -l` 
       while [ "$numDirs" -gt "1" ]
       do
-        if [ ! -e /hadoop/cms/store/user/$USER/$short_filename/crab_$filename/$dateTime/000$(( $numDirs-1 )) ]; then echo "does not exist, not copying"; continue; fi
-        mv /hadoop/cms/store/user/$USER/$short_filename/crab_$filename/$dateTime/000$(( $numDirs-1 ))/* /hadoop/cms/store/user/$USER/$short_filename/crab_$filename/$dateTime/0000/
-         rmdir /hadoop/cms/store/user/$USER/$short_filename/crab_$filename/$dateTime/000$(( $numDirs-1 ))
+        if [ ! -e /hadoop/cms/store/user/$USERNAME/$short_filename/crab_$filename/$dateTime/000$(( $numDirs-1 )) ]; then echo "does not exist, not copying"; continue; fi
+        mv /hadoop/cms/store/user/$USERNAME/$short_filename/crab_$filename/$dateTime/000$(( $numDirs-1 ))/* /hadoop/cms/store/user/$USERNAME/$short_filename/crab_$filename/$dateTime/0000/
+         rmdir /hadoop/cms/store/user/$USERNAME/$short_filename/crab_$filename/$dateTime/000$(( $numDirs-1 ))
          numDirs=$(( $numDirs - 1 )) 
       done
       python process.py $file $fileNumber $dateTime &
