@@ -29,10 +29,10 @@ if [ "$USERNAME" == "mderdzinski" ]; then USERNAME="mderdzin"; fi
 if [ "$USERNAME" == "rclsa" ]; then USERNAME="rcoelhol"; fi
 
 #check CMS3
-nRedo=`grep -r "Too few merged events\!" copy_log_$shortName.log | awk '{print $5}'`
-root -b -q checkCMS3.C\(\"/hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$CMS3tag/merged/\",\"/hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$dateTime/0000/\",0,0,\"$dataSet\"\) > copy_log_$shortName.log
-nProblems=`grep -r "Problems found:" copy_log_$shortName.log | awk '{print $3}'`
-grep -r  "Too few merged events!" copy_log_$shortName.log &>/dev/null
+nRedo=`grep -r "Too few merged events\!" autoTupleLogs/copy_log_$shortName.log | awk '{print $5}'`
+root -b -q checkCMS3.C\(\"/hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$CMS3tag/merged/\",\"/hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$dateTime/0000/\",0,0,\"$dataSet\"\) > autoTupleLogs/copy_log_$shortName.log
+nProblems=`grep -r "Problems found:" autoTupleLogs/copy_log_$shortName.log | awk '{print $3}'`
+grep -r  "Too few merged events!" autoTupleLogs/copy_log_$shortName.log &>/dev/null
 mergingProblems=$?
 
 if [ "$nProblems" == "0" ]
@@ -48,7 +48,7 @@ elif [ "$nProblems" == "1" ] && [ "$mergingProblems" == "0" ]
 then
   #Resubmit merge jobs
   if [ "$nRedo" == "" ]; then nRedo2=0; else nRedo2=$(( $nRedo + 1 )); fi
-  sed -i "s/Too few merged events! $nRedo/Too few merged events! $nRedo2/" copy_log_$shortName.log 
+  sed -i "s/Too few merged events! $nRedo/Too few merged events! $nRedo2/" autoTupleLogs/copy_log_$shortName.log 
   rm /hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$CMS3tag/merged/*.root
   #echo "Should resubmit here!! Fix me!!" 
   fileNumber=$(grep -n $dataSet *.txt | grep -v updateTwiki | cut -d ':' -f2)
@@ -65,5 +65,5 @@ else
   echo "mv /hadoop/cms/store/user/$USERNAME/$shortName/crab_$longName/$CMS3tag/merged/*.root /hadoop/cms/store/group/snt/$thedir/$longName/$myDir/bad/"
   echo "$longName" >> crab_status_logs/copy.txt
   root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/group/snt/$thedir/$longName/$myDir\"\) >> crab_status_logs/copy.txt 2>&1
-  #mv copy_log_$shortName.log /hadoop/cms/store/group/snt/$thedir/$longName/$myDir/bad/
+  #mv autoTupleLogs/copy_log_$shortName.log /hadoop/cms/store/group/snt/$thedir/$longName/$myDir/bad/
 fi
