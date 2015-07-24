@@ -254,6 +254,31 @@ f.close()
 
 print "Total number of events run over: ",totalNumEventsRun
 
+#check if number of files in mergelists equals number of input files
+#if not, delete all the mergelists and exit with error
+print "Checking file count..."
+totalFiles = 0
+status, mergelists = commands.getstatusoutput('ls -l %s/mergeFiles/mergeLists/' % crabpath)
+mergelists = [file.split()[-1] for file in mergelists.split("\n") if "merged_list" in file]
+for list in mergelists:
+    status, linecount = commands.getstatusoutput('wc -l %s/mergeFiles/mergeLists/%s | awk \'{print $1}\' ' % (crabpath,list))
+    nFiles = int(linecount)
+    #subtract 1 if first line is nEntries
+    status, containsEntries = commands.getstatusoutput('grep nEntries %s/mergeFiles/mergeLists/%s' % (crabpath,list))
+    if containsEntries.find('nEntries') != -1:
+        nFiles = int(linecount) - 1
+    totalFiles += nFiles
+status, inputfiles = commands.getstatusoutput('ls -l %s' % datapath)
+inputfiles = [file.split()[-1] for file in inputfiles.split("\n") if ".root" in file]
+if totalFiles == len(inputfiles):
+    print "Number of input files matches mergelists."
+if totalFiles != len(inputfiles):
+    print "Number of input files does not match mergelists! Deleting mergelists and exiting..."
+    os.system("rm  %s/mergeFiles/mergeLists/merged_list*" % crabpath)
+    os.system("rm  %s/mergeFiles/metaData.txt" % crabpath)
+    sys.exit(1)
+
+
 print "Writing cfg file to cfg/%s.sh" %(samplename)
 f_cfg = open("cfg/%s_cfg.sh" %(samplename),"w")
 f_cfg.write("export inputListDirectory=%s/mergeFiles/mergeLists/\n" %(crabpath))
