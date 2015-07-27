@@ -60,7 +60,7 @@ completelyDone = False
 dataSet = parts[0].split('/')[1] + '_' + parts[0].split('/')[2]
 nLoops = 0
 nEventsIn = 0
-temp = "temp" + parts[0].split('/')[1] + ".txt"
+temp = "autoTupleLogs/temp" + parts[0].split('/')[1] + ".txt"
 
 while (completelyDone == False):
   #Submit all the jobs
@@ -88,7 +88,7 @@ while (completelyDone == False):
   #Get ID numbers of jobs submitted
   ids = []
   done = []
-  log_list = 'jobs_' + date + '.txt'
+  log_list = 'autoTupleLogs/jobs_' + date + '.txt'
   os.system('ls -lthr /data/tmp/' + user2 + '/' + dataSet + '/' + date + '/std_logs/ > ' + log_list)
   file = open(log_list, "r")
   for line in file:

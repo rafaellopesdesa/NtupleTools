@@ -37,6 +37,7 @@ else
 fi
 mkdir crab
 cd crab
+mkdir autoTupleLogs
 cp ../../../sweepRoot/sweepRoot ${CMSSW_BASE}/crab/
 cp -r ../../../condorMergingTools/* ${CMSSW_BASE}/crab/
 cp ${CMSSW_BASE}/src/CMS3/NtupleMaker/test/MCProduction2015_NoFilter_cfg.py skeleton_cfg.py
