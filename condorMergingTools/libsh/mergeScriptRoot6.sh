@@ -133,8 +133,8 @@ echo "retrievedEventsMerged is $retrievedEventsMerged"
 echo "nEventsMerged is $nEventsMerged"
 echo "nEvents is $nEvents"
 
-check that number of merged events is same as input from mergelist
-only do this if grep was successful and nEvents exists
+#check that number of merged events is same as input from mergelist
+#only do this if grep was successful and nEvents exists
 if [ $retrievedEventsMerged == 0 ] && [ $nEvents != "" ]; then
    if [ $nEvents != $nEventsMerged ]; then
 	echo "Error in merging. Events in does not equal events out. Exiting."
