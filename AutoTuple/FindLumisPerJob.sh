@@ -2,9 +2,14 @@
 
 EVT_PER_JOB=30000
 STATUS="$(./das_client.py --query="dataset=$1 | grep dataset.status" | tail -1)" 
+if [ "$STATUS" == "[]" ]
+then
+  echo "Aborting. Not on DAS $1"
+  exit 
+fi
 if [ "$STATUS" == "INVALID" ]
 then
-  echo "Aborting    $1"
+  echo "Aborting. Invalid sample $1"
   exit 
 fi
 NEVENTS="$(./das_client.py --query="dataset= $1 | grep dataset.nevents" | tail -1)"
