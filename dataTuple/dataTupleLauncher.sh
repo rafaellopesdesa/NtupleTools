@@ -1,7 +1,8 @@
 #Check arguments, set BASEPATH, JOBTYPE
-while getopts ":b:t:" opt; do
+while getopts ":b:t:h:" opt; do
   case $opt in
     b) BASEPATH="$OPTARG";;
+    h) echo "./dataTupleLauncher -b PATH_TO_BASEPATH -t CMS3";;
     t)
        if [ $OPTARG == "cms3" ]
        then
