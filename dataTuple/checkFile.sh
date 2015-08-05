@@ -54,7 +54,7 @@ rm validFileOutput.txt
 #Check number of events
 goodNevents=$( ./das_client.py --query="file=$sampleName | grep file.nevents" --limit=0 )
 ourNevents=$( rot getNevents.C\(\"$file\"\) )
-if [ "$goodNevents != $ourNevents" ]; then echo "FALIING! $ourNevents is not right, should be $goodNevents"; isGood=0; fi;
+if [ "$goodNevents" != "$ourNevents" ]; then echo "FALIING! $ourNevents is not right, should be $goodNevents"; isGood=0; fi;
 
 
 currentNumber=0
