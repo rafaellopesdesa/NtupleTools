@@ -30,14 +30,11 @@ then
 fi
 
 #Check number of events
-filenameAG=`echo $sampleName | tr '/' ' ' | awk '{print $4,$5,$6,$7,$8}' | tr ' ' '_'`
-dirnameAG=`echo $sampleName | tr '/' ' ' | awk '{print $3,$4,$5,$6}' | tr ' ' '_'`
-fileAG="/hadoop/cms/store/user/$USER/dataTuple/$dirnameAG/V07-04-07/${filenameAG}"
 goodNeventsTemp=$( ./das_client.py --query="file=$sampleName | grep file.nevents" --limit=0 )
-ourNeventsTemp=$( root -b -q getNevents.C\(\"$fileAG\"\) )
+ourNeventsTemp=$( root -b -q getNevents.C\(\"$2\"\) )
 goodNevents=`echo "$goodNeventsTemp" | xargs`
 ourNevents=`echo "$ourNeventsTemp" | tail -1 | awk '{print $NF}'`
-if [ "$goodNevents" != "$ourNevents" ]; then echo "FALIING! $ourNevents is not right, should be $goodNevents"; isGood=0; fi;
+if [ "$goodNevents" != "$ourNevents" ]; then echo "FAILING! $ourNevents is not right, should be $goodNevents"; isGood=0; fi;
 
 readarray -t results < validFileOutput.txt
 for i in "${results[@]}"
