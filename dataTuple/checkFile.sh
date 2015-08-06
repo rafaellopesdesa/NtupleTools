@@ -22,17 +22,22 @@ else
   exit 1
 fi
 
-isGood=0
+isGood=1
 
 if [ ! -d $BASEPATH/fileLists ] 
 then
   mkdir -p $BASEPATH/fileLists
 fi
 
+#Check number of events
+goodNevents=$( ./das_client.py --query="file=$sampleName | grep file.nevents" --limit=0 )
+ourNevents=$( root -b -q getNevents.C\(\"$file\"\) )
+if [ "$goodNevents" != "$ourNevents" ]; then echo "FALIING! $ourNevents is not right, should be $goodNevents"; isGood=0; fi;
+
 readarray -t results < validFileOutput.txt
 for i in "${results[@]}"
 do
-  if [ "$i" == "SUMMARY: 0 bad, 1 good" ]; then
+  if [ "$isGood" == "1" ] && [ "$i" == "SUMMARY: 0 bad, 1 good" ]; then
     echo $2 >> $BASEPATH/fileLists/`date +%F`.txt
     echo $3 >> $BASEPATH/completedList.txt
     filename_escaped=`echo $3 | sed 's,/,\\\/,g'`
@@ -40,22 +45,16 @@ do
     if [ -e failureList.txt ]; then
       sed -i "/$filename_escaped/d" failureList.txt
     fi
-    isGood=1
     break;
   elif [ "$i" == "SUMMARY: 1 bad, 0 good" ]; then
     rm $2
+    isGood=0
     echo $3 >> filesToSubmit.txt
     break;
   fi
 done
 
 rm validFileOutput.txt
-
-#Check number of events
-goodNevents=$( ./das_client.py --query="file=$sampleName | grep file.nevents" --limit=0 )
-ourNevents=$( rot getNevents.C\(\"$file\"\) )
-if [ "$goodNevents" != "$ourNevents" ]; then echo "FALIING! $ourNevents is not right, should be $goodNevents"; isGood=0; fi;
-
 
 currentNumber=0
 currentSize=0
