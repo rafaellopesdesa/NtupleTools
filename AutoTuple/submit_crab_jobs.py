@@ -30,7 +30,8 @@ except OSError:
     pass
 
 lnum = 3
-while (lnum <= inFile_size):
+while (lnum <= inFile_size): 
+  print "checking file on line", lnum, "for size and validity."
   line = linecache.getline(inFile, lnum)
   parts = line.split()
   os.system('./FindLumisPerJob.sh ' + parts[0] + ' >> LumisPerJob.txt')
