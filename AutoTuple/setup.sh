@@ -26,8 +26,8 @@ fi
 popd
 if [ ! -e /nfs-7/userdata/libCMS3/lib_$tag.tar.gz ]
 then
-  echo "Trying to make this on the fly.  Might not work......"
-  source ../cms3withCondor/make_libCMS3.sh $tag
+  echo "Trying to make this on the fly.  Hopefully this works......"
+  source ../cms3withCondor/make_libCMS3.sh $tag $CMSSW_VER
   mv lib_$tag.tar.gz /nfs-7/userdata/libCMS3/lib_$tag.tar.gz
   cd $CMSSW_BASE
 else
