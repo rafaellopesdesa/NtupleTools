@@ -59,7 +59,7 @@ while (lnum <= inFile_size):
       f.close()
       continue
   print numLumiPerJob
-  command = 'python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d ' + parts[0] + ' -t ' + tag + ' -gtag ' + gtag + ' -isData ' + parts[4] + ' -lumisPerJob ' + numLumiPerJob
+  command = 'python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d ' + parts[0] + ' -t ' + tag + ' -gtag ' + gtag + ' -lumisPerJob ' + numLumiPerJob
   if len(parts) > 5:
     command += ' -sParms ' + parts[5]
   print command

@@ -3,28 +3,19 @@
 import string
 import commands, os, re
 import sys 
-                      
 
 cmsswSkelFile = ''
 configPfx = 'cfg/'
 psetPfx = 'pset/'
 dataSet = ''
-numEvtsTotal = -1
-numEvtsPerJob = 20000
 numLumisPerJob = 1000
-filesPerJob = 1
 outNtupleName = 'ntuple.root'
 storageElement = 'T2_US_UCSD'
 tag = 'V07-00-03'
-mode = 'remoteGlidein'
 dbs_url = 'global'
 report_every = 1000;
 global_tag = '';
 sParms = [];
-
-fastSim = False;
-MCatNLO = False;
-isData  = False;
 
 def makeCrab3Config():
     outFileName = dataSet.split('/')[1]+'_'+dataSet.split('/')[2]
@@ -41,14 +32,11 @@ def makeCrab3Config():
     outFile.write('config.section_(\'JobType\')\n')
     outFile.write('config.JobType.pluginName = \'Analysis\'\n')
     outFile.write('config.JobType.psetName = \'%s_cfg.py\'\n' % ('./' + psetPfx + outFileName))
-    # outFile.write('config.JobType.outputFiles = [\'%s\']\n' % outNtupleName)
     outFile.write('\n')
     outFile.write('config.section_(\'Data\')\n')
     outFile.write('config.Data.inputDataset = \'%s\'\n' % dataSet)
     outFile.write('config.Data.publication = False\n')
-    #outFile.write('config.Data.unitsPerJob = %i \n' % filesPerJob)
     outFile.write('config.Data.unitsPerJob = %i \n' % int(numLumisPerJob))
-    #outFile.write('config.Data.splitting = \'FileBased\'\n')
     outFile.write('config.Data.splitting = \'LumiBased\'\n')
     outFile.write('config.Data.inputDBS = \'%s\'\n' % dbs_url)
     #outFile.write('config.Data.ignoreLocality = True\n')
@@ -126,10 +114,6 @@ def checkConventions():
     
     print 'CRAB submission should happen outside of {%s,%s}' % (configPfx, psetPfx)
 
-#def FindLumisPerJob():
-    #os.process()
-
-
 if len(sys.argv) < 9 :
     print 'Usage: makeCrabFiles.py [OPTIONS]'
     print '\nWhere the required options are: '
@@ -138,17 +122,13 @@ if len(sys.argv) < 9 :
     print '\t-t\t\tCMS3 tag'
     print '\t-gtag\t\tglobal tag'
     print '\nOptional arguments:'
-    print '\t-isData\t\tFlag to specify if you are running on data.'
     print '\t-strElem\tpreferred storage element. Default is T2_US_UCSD if left unspecified'
     print '\t-nEvts\t\tNumber of events you want to run on. Default is -1'
     print '\t-evtsPerJob\tNumber of events per job. Default is 20000'
     #print '\t-n\t\tName of output Ntuple file. Default is ntuple.root'
-    print '\t-m\t\tsubmission mode (possible: condor_g, condor, glite). Default is glidein'
     print '\t-dbs\t\tdbs url'
     print '\t-re\t\tMessage Logger modulus for error reporting. Default is 1000'
     print '\t-sParms\t\tComma seperated, ordered list of Susy Parameter names.'
-    print '\t-fastSim\t\tUse a subset of the sequence that is compatible with FastSim. Default is to not use it.'
-    print '\t-MCatNLO\t\tUse a subset of the sequence that is compatible with MC@NLO samples. Default is to not use it.'
     sys.exit()
 
 
@@ -157,18 +137,12 @@ for i in range(0, len(sys.argv)):
         cmsswSkelFile = sys.argv[i+1]
     if sys.argv[i] == '-d':
         dataSet = sys.argv[i+1]
-    if sys.argv[i] == '-nEvts':
-        numEvtsTotal = sys.argv[i+1]
-    if sys.argv[i] == '-evtsPerJob':
-        numEvtsPerJob = sys.argv[i+1]
     if sys.argv[i] == '-lumisPerJob':
         numLumisPerJob = sys.argv[i+1]
     if sys.argv[i] == '-strElem':
         storageElement = sys.argv[i+1]
     if sys.argv[i] == '-t':
         tag  = str(sys.argv[i+1])
-    if sys.argv[i] == '-m':
-        mode  = str(sys.argv[i+1])
     if sys.argv[i] == '-dbs':
         dbs_url = str(sys.argv[i+1])
     if sys.argv[i] == '-re':
@@ -177,12 +151,6 @@ for i in range(0, len(sys.argv)):
         global_tag = str(sys.argv[i+1])
     if sys.argv[i] == '-sParms':
         sParms = str(sys.argv[i+1]).split(',')
-    if sys.argv[i] == '-fastSim':
-        fastSim = True
-    if sys.argv[i] == '-MCatNLO':
-        MCatNLO = True
-    if sys.argv[i] == '-isData':
-        isData = True
 
 if os.path.exists(cmsswSkelFile) == False:
     print 'CMSSW skeleton file does not exist. Exiting'
