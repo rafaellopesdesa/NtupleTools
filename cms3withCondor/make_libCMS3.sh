@@ -19,13 +19,13 @@ DIR=$PWD
 
 source install.sh
 cd $CMSSW_BASE
+cp $CMSSW_BASE/src/PhysicsTools/PatAlgos/test/*.db .
 echo "Making the tarball..."
 stuff1=`find src/ -name "data"`
 stuff2=`find src/ -name "interface"`
 stuff3=`find src/ -name "python"`
 jettoolbox="src/JMEAnalysis"
-tar -chzvf lib_$THE_CMS3_TAG.tar.gz lib/ python/ $stuff1 $stuff2 $stuff3 $jettolbox src/CMS3/NtupleMaker/test/*_cfg.py
-
+tar -chzvf lib_$THE_CMS3_TAG.tar.gz *.db lib/ python/ $stuff1 $stuff2 $stuff3 $jettolbox src/CMS3/NtupleMaker/test/*_cfg.py
 
 mv lib_$THE_CMS3_TAG.tar.gz $DIR/lib_$THE_CMS3_TAG.tar.gz
 cd $DIR
