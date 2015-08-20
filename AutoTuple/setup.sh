@@ -58,7 +58,7 @@ cp ../../copy.sh .
 cp ../../numEventsROOT.C .
 cp ../../../checkCMS3/checkCMS3.C . 
 cp ../../../checkCMS3/das_client.py .
-cp $CMSSW_BASE/src/PhysicsTools/PatAlgos/test/Summer15_50nsV4*.db .
+cp $CMSSW_BASE/*.db .
 mkdir crab_status_logs
 python submit_crab_jobs.py $1
 . monitor.sh $1 
