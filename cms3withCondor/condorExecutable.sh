@@ -70,7 +70,6 @@ ls -lrth
 mv $CMSSW_BASE/*.db .
 
 #Run it
-exit_with_error=false
 cmsRun $configFile
 exit_code=$?
 
