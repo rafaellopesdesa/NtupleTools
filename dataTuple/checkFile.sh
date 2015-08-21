@@ -30,7 +30,9 @@ then
 fi
 
 #Check number of events
-goodNeventsTemp=$( ./das_client.py --query="file=$sampleName | grep file.nevents" --limit=0 )
+filename_escaped=`echo $3 | sed 's,/,\\\/,g'`
+lineNo_forNEvents=`sed -n /$currentFile_escaped/= numEventsList.txt`
+goodNeventsTemp=`awk -v var="$lineNo_forNEvents" 'NR==var {print $2}' numEventsList.txt`
 ourNeventsTemp=$( root -b -q getNevents.C\(\"$2\"\) )
 goodNevents=`echo "$goodNeventsTemp" | xargs`
 ourNevents=`echo "$ourNeventsTemp" | tail -1 | awk '{print $NF}'`
