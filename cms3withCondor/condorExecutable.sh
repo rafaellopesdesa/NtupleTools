@@ -66,11 +66,21 @@ sed -i "s,SUPPLY_DATASETNAME,${DATASETNAME},g" $configFile
 echo "ls -lrth"
 ls -lrth
 
+#copy JEC files to location where we run the pset
+mv $CMSSW_BASE/*.db .
+
 #Run it
+exit_with_error=false
 cmsRun $configFile
+exit_code=$?
 
 echo "ls -lrth"
 ls -lrth
 
 #Copy the output
-lcg-cp -b -D srmv2 --vo cms --connect-timeout 2400 --verbose file://`pwd`/${OUTPUT_FILE_NAME} srm://bsrm-3.t2.ucsd.edu:8443/srm/v2/server?SFN=${OUTPUT_DIR}/${OUTPUT_FILE_NAME}
+if [ $exit_code == 0 ]
+then
+  lcg-cp -b -D srmv2 --vo cms --connect-timeout 2400 --verbose file://`pwd`/${OUTPUT_FILE_NAME} srm://bsrm-3.t2.ucsd.edu:8443/srm/v2/server?SFN=${OUTPUT_DIR}/${OUTPUT_FILE_NAME}
+else
+  echo "cmsRun exited with error code $exit_code"
+fi
