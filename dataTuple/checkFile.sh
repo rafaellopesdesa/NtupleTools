@@ -31,7 +31,7 @@ fi
 
 #Check number of events
 filename_escaped=`echo $3 | sed 's,/,\\\/,g'`
-lineNo_forNEvents=`sed -n /$currentFile_escaped/= numEventsList.txt`
+lineNo_forNEvents=`sed -n /$filename_escaped/= numEventsList.txt`
 goodNevents=`awk -v var="$lineNo_forNEvents" 'NR==var {print $2}' numEventsList.txt`
 ourNeventsTemp=$( root -b -q getNevents.C\(\"$2\"\) )
 ourNevents=`echo "$ourNeventsTemp" | tail -1 | awk '{print $NF}'`
