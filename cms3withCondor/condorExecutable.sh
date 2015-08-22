@@ -30,7 +30,7 @@ export PATH=$PWD:$PATH
 export PYTHONPATH=$PWD/python:$PYTHONPATH:python/
 
 #Set environment
-pushd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_6_patch6/src/
+pushd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_7_patch2/src/
 eval `scramv1 runtime -sh`
 echo "should be in cvmfs: $PWD"
 popd
@@ -40,9 +40,9 @@ echo "libCMS3 = $libCMS3"
 
 if [ -e $libCMS3 ]
 then
-  scramv1 project CMSSW CMSSW_7_4_6_patch6
-  mv $libCMS3 CMSSW_7_4_6_patch6/
-  cd CMSSW_7_4_6_patch6
+  scramv1 project CMSSW CMSSW_7_4_7_patch2
+  mv $libCMS3 CMSSW_7_4_7_patch2/
+  cd CMSSW_7_4_7_patch2
   tar -xzvf $libCMS3
   scram b -j 8
   eval `scramv1 runtime -sh`

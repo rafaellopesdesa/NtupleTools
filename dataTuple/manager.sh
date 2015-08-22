@@ -73,7 +73,7 @@ fi
 export SCRAM_ARCH=slc6_amd64_gcc491
 source /nfs-7/cmssoft/cms.cern.ch/cmssw/cmsset_default.sh
 pushd .
-cd /nfs-7/cmssoft/cms.cern.ch/cmssw/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_6_patch6
+cd /nfs-7/cmssoft/cms.cern.ch/cmssw/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_7_patch1
 eval `scramv1 runtime -sh`
 popd
 
@@ -162,6 +162,10 @@ fi
 echo "Populating masterList.txt with files for datasets in $BASEPATH/input.txt"
 . GenerateMasterList.sh
 echo "masterList.txt written"
+
+echo "Getting number of events in each input file"
+. GetNumEventsPerFile.sh
+echo "numEventsList.txt written"
 
 #2. Diff between masterList and completedList to make notDoneList.
 echo "Getting list of files that are on masterList but not on completedList.  Output in notDoneList.txt"
