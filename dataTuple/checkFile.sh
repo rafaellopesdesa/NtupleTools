@@ -32,9 +32,8 @@ fi
 #Check number of events
 filename_escaped=`echo $3 | sed 's,/,\\\/,g'`
 lineNo_forNEvents=`sed -n /$currentFile_escaped/= numEventsList.txt`
-goodNeventsTemp=`awk -v var="$lineNo_forNEvents" 'NR==var {print $2}' numEventsList.txt`
+goodNevents=`awk -v var="$lineNo_forNEvents" 'NR==var {print $2}' numEventsList.txt`
 ourNeventsTemp=$( root -b -q getNevents.C\(\"$2\"\) )
-goodNevents=`echo "$goodNeventsTemp" | xargs`
 ourNevents=`echo "$ourNeventsTemp" | tail -1 | awk '{print $NF}'`
 if [ "$goodNevents" != "$ourNevents" ]; then echo "FAILING! $ourNevents is not right, should be $goodNevents"; isGood=0; fi;
 
