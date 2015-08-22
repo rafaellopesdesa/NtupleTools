@@ -69,9 +69,15 @@ ls -lrth
 #copy JEC files to location where we run the pset
 mv $CMSSW_BASE/*.db .
 
+#remove .root for FrameworkJobReport name
+FJR_NAME="FJR_"
+FJR_NAME+=`echo $OUTPUT_FILE_NAME | sed s/\.root//g`
+FJR_NAME+=".xml"
+
 #Run it
-cmsRun $configFile
+cmsRun --jobreport $FJR_NAME $configFile
 exit_code=$?
+
 
 echo "ls -lrth"
 ls -lrth
@@ -79,7 +85,30 @@ ls -lrth
 #Copy the output
 if [ $exit_code == 0 ]
 then
-  lcg-cp -b -D srmv2 --vo cms --connect-timeout 2400 --verbose file://`pwd`/${OUTPUT_FILE_NAME} srm://bsrm-3.t2.ucsd.edu:8443/srm/v2/server?SFN=${OUTPUT_DIR}/${OUTPUT_FILE_NAME}
+  if [ -e $OUTPUT_FILE_NAME ]
+  then
+    echo "Sending output file $OUTPUT_FILE_NAME"
+    lcg-cp -b -D srmv2 --vo cms --connect-timeout 2400 --verbose file://`pwd`/${OUTPUT_FILE_NAME} srm://bsrm-3.t2.ucsd.edu:8443/srm/v2/server?SFN=${OUTPUT_DIR}/${OUTPUT_FILE_NAME}
+  else
+    echo "Output file $OUTPUT_FILE_NAME does not exist!"
+  fi
 else
   echo "cmsRun exited with error code $exit_code"
 fi
+
+#Copy the FrameworkJobReport
+if [ -e $FJR_NAME ]
+then
+  echo "Sending FrameworkJobReport $FJR_NAME.tar.gz"
+  tar -czvf $FJR_NAME.tar.gz $FJR_NAME
+  lcg-cp -b -D srmv2 --vo cms --connect-timeout 2400 --verbose file://`pwd`/$FJR_NAME.tar.gz srm://bsrm-3.t2.ucsd.edu:8443/srm/v2/server?SFN=${OUTPUT_DIR}/FJR/$FJR_NAME.tar.gz
+else
+  echo "No FrameworkJobReport created!"
+fi
+
+#clean up
+echo "cleaning up"
+for FILE in `find . -not -name "*stderr" -not -name "*stdout"`; do rm -rf $FILE; done
+echo "ls -lrth"
+ls -lrth
+
