@@ -43,7 +43,7 @@ then
 fi
 
 #Set CMS3 tag to use
-CMS3tag=CMS3_V07-04-06
+CMS3tag=CMS3_V07-04-08
 
 #Set the global tag to use
 #GTAG=MCRUN2_74_V9
