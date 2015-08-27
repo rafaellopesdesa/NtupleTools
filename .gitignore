@@ -28,3 +28,6 @@ cms3withCondor/job_logs/
 cms3withCondor/makeListsForMergingCrab3.py
 cms3withCondor/whichMissing.txt
 validation/comparison/hists/*.pdf
+validation/comparison/overview.out
+validation/comparison/overview.pdf
+validation/comparison/overview.toc
