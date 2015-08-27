@@ -24,14 +24,14 @@ process.load("Configuration.StandardSequences.GeometryRecoDB_cff")
 
 # services
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.GlobalTag.globaltag = "MCRUN2_74_V9A"
+process.GlobalTag.globaltag = "SUPPLY_GLOBAL_TAG"
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 process.MessageLogger.cerr.threshold  = ''
 process.MessageLogger.suppressWarning = cms.untracked.vstring('ecalLaserCorrFilter','manystripclus53X','toomanystripclus53X')
 process.options = cms.untracked.PSet( allowUnscheduled = cms.untracked.bool(True),SkipEvent = cms.untracked.vstring('ProductNotFound') )
 
 process.out = cms.OutputModule("PoolOutputModule",
-  fileName     = cms.untracked.string('ntuple.root'),
+  fileName     = cms.untracked.string('SUPPLY_OUTPUT_FILE_NAME'),
   dropMetaData = cms.untracked.string("NONE")
 )
 process.outpath = cms.EndPath(process.out)
@@ -72,21 +72,21 @@ process.hypDilepMaker.LooseLepton_PtCut  = cms.double(10.0)
 
 #Options for Input
 process.source = cms.Source("PoolSource",
-                            #fileNames = cms.untracked.vstring('file:///home/users/gzevi/ntupling/CMSSW_7_4_1/src/CMS3/NtupleMaker/QCD_Pt_1400to1800_Asympt50ns_MCRUN2_74_V9A-v1.root')
-                            # fileNames = cms.untracked.vstring('file:/hadoop/cms/phedex/store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v1/00000/20AD8065-31FD-E411-9D75-00259073E2F2.root')
-                            fileNames = cms.untracked.vstring(
-                                'file:/nfs-7/userdata/cwelke/TTTo2L2Nu_13TeV-powheg_MINIAODSIM_Asympt50ns_MCRUN2_74_V9A-v2/04C26C81-A30C-E511-8A0D-B083FED76C6C.root',
-                                "file:/hadoop/cms/phedex/store/mc/RunIISpring15DR74/TTTo2L2Nu_13TeV-powheg/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v2/60000/00EFF2EE-E60B-E511-B422-B499BAAC0A22.root",
-                                "file:/hadoop/cms/phedex/store/mc/RunIISpring15DR74/TTTo2L2Nu_13TeV-powheg/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v2/60000/02C1F466-EE0B-E511-877D-00074305CC91.root",
-                            )
+  fileNames = cms.untracked.vstring('SUPPLY_INPUT_FILE_NAME')
 )
 process.source.noEventSort = cms.untracked.bool( True )
 
-#Max Events
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
-
 #Branches 
 process.out.outputCommands = cms.untracked.vstring( 'keep *' )
+
+#Specify CMS3 tag
+process.eventMaker.CMS3tag = cms.string('SUPPLY_CMS3_TAG')
+
+#Specify dataset name
+process.eventMaker.datasetName = cms.string('SUPPLY_DATASETNAME')
+
+#Max Events
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(SUPPLY_MAX_NEVENTS) )
 
 #Run corrected MET maker
 
