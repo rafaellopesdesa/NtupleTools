@@ -218,3 +218,4 @@ process.p = cms.Path(
 )
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 process.eventMaker.isData                        = cms.bool(False)
+process.sParmMaker.vsparms                       = cms.untracked.vstring("sparm1", "sparm2")

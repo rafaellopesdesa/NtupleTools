@@ -18,7 +18,11 @@ cms3tag=CMS3_V07-04-08
 #Give the maximum number of events
 max_nEvents="-1"
 
+#Global tag
 GTAG=MCRUN2_74_V9
+
+#nSparms
+nSparms=$2
 
 #------HERE THERE BE DRAGONS----------
 
@@ -67,9 +71,16 @@ then
 fi
 
 #Submit it
-. submit.sh tempfile.txt $currentTime $outputPath $cms3tag $max_nEvents true thisDoesntMatter $GTAG $DATASETNAME pset_mc.py
-DATASETNAME=$9
-PSET=${10}
+if [ "$nSparms" == "0" ] 
+then
+  . submit.sh tempfile.txt $currentTime $outputPath $cms3tag $max_nEvents true thisDoesntMatter $GTAG $DATASETNAME pset_mc.py
+elif [ "$nSparms" == "2" ] 
+then
+  . submit.sh tempfile.txt $currentTime $outputPath $cms3tag $max_nEvents true thisDoesntMatter $GTAG $DATASETNAME pset_mc_2sparms.py
+elif [ "$nSparms" == "3" ]
+then
+  . submit.sh tempfile.txt $currentTime $outputPath $cms3tag $max_nEvents true thisDoesntMatter $GTAG $DATASETNAME pset_mc_3sparms.py
+fi
 
 #Delete temporary stuff
 #rm tempfile.txt &>/dev/null
