@@ -6,16 +6,19 @@
   #(no way to look them up remotely, have to go to eos)
 instructions=SS_samples/$1.txt
 
+#dataset name  -- this will be saved into the final ntuple as the 'dataset' branch
+DATASETNAME=$1
+
 #State the absolute output path (in hadoop) where output should go
-outputPath=/hadoop/cms/store/user/$USER/condor/SSPrivate/v07-02-08/$1/
+outputPath=/hadoop/cms/store/user/$USER/condor/SSPrivate/v07-04-08/$1/
 
 #State the CMS3 tag you want to use
-cms3tag=CMS3_V07-02-08
+cms3tag=CMS3_V07-04-08
 
 #Give the maximum number of events
 max_nEvents="-1"
 
-#Note: the global tag is hardcoded (for now at least) to PHYS14_25_V2::All
+GTAG=MCRUN2_74_V9
 
 #------HERE THERE BE DRAGONS----------
 
@@ -64,7 +67,9 @@ then
 fi
 
 #Submit it
-. submit.sh tempfile.txt $currentTime $outputPath $cms3tag $max_nEvents true
+. submit.sh tempfile.txt $currentTime $outputPath $cms3tag $max_nEvents true thisDoesntMatter $GTAG $DATASET_NAME pset_mc.py
+DATASETNAME=$9
+PSET=${10}
 
 #Delete temporary stuff
 #rm tempfile.txt &>/dev/null
