@@ -67,7 +67,7 @@ then
 fi
 
 #Submit it
-. submit.sh tempfile.txt $currentTime $outputPath $cms3tag $max_nEvents true thisDoesntMatter $GTAG $DATASET_NAME pset_mc.py
+. submit.sh tempfile.txt $currentTime $outputPath $cms3tag $max_nEvents true thisDoesntMatter $GTAG $DATASETNAME pset_mc.py
 DATASETNAME=$9
 PSET=${10}
 

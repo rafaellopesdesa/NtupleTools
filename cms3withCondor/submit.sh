@@ -65,17 +65,9 @@ do
 
   INPUT_FILE_NAME=$line
 
-  if (( $# == 6 )) && [ "$DO_NTUPLE_NUMBER" == "true" ]
+  if (( $# >= 6 )) && [ "$DO_NTUPLE_NUMBER" == "true" ]
   then
     OUTPUT_FILE_NAME="ntuple_$number.root"
-  elif (( $# == 6 )) && [ "$DO_NTUPLE_NUMBER" != "true" ]
-  then
-    echo "Need to supply OUTPUT_FILE_NAME argument or set DO_NTUPLE_NUMBER = true"
-    exit 1
-  elif (( $# == 7 )) && [ "$DO_NTUPLE_NUMBER" == "true" ]
-  then
-    echo "Error: If passing OUTPUT_FILE_NAME argument, must set DO_NTUPLE_NUMBER = false"
-    exit 1
   else
     OUTPUT_FILE_NAME=$7
   fi
