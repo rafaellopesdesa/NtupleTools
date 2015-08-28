@@ -62,7 +62,7 @@ for list in $filesList; do
 		echo "File exists, will not submit job for $outputDir/$outFileName."
 	else
 		echo "submitting job for file $outFileName"
-		libsh/submit.sh -e $executableScript -a "$inputArguments" -i $inputFiles -u ${workingDirectory}/${dataSet}_cfg -l /data/tmp/$USER/$dataSet/$batch/test_logs/$dateS.log -L /data/tmp/$USER/$dataSet/$batch/std_logs/
+		libsh/submit.sh -e $executableScript -a "$inputArguments" -i $inputFiles -u ${workingDirectory}/${dataSet}_cfg -l /data/tmp/$USER/$dataSet/$batch/test_logs/$dateS.log -L /data/tmp/$USER/$dataSet/$batch/std_logs/ -s "T2_US_UCSD"
 		numjobssubmitted=$(($numjobssubmitted+1))
 	fi
 done
