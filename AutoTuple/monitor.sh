@@ -438,7 +438,7 @@ do
     nTransferred=`grep -r "transferred" $status_filename | grep "%" | awk '{print $NF}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $1}'`
     nCooloff=`grep -r "cooloff" $status_filename | grep "%" | awk '{print $NF}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $1}'`
     nFinished=`grep -r "finished" $status_filename | grep "%" | awk '{print $NF}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $1}'`
-    denominator=`grep -r "%" $status_filename | grep ")" | grep "Details:" | awk '{print $NF}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $2}'`
+    denominator=`grep -r "%" $status_filename | grep ")" | grep "Jobs status:" | awk '{print $NF}' | sed 's/(//' | sed 's/)//' | sed 's/\//\ /' | awk '{print $2}'`
 
     #If any are empty, set them to 0
     if [ "$nUnsubmitted"  == "" ]; then nUnsubmitted="0"; fi
