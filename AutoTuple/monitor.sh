@@ -155,6 +155,7 @@ do
     #if crab directory doesn't exist (i.e. was added), make and submit crab jobs
     if ! [ -d crab_$filename ]
     then
+      echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
       if [ "${NCRABREDO[$fileNumber]}" == "" ] 
       then
         NCRABREDO+=(0)
