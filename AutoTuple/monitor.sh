@@ -155,7 +155,10 @@ do
     #if crab directory doesn't exist (i.e. was added), make and submit crab jobs
     if ! [ -d crab_$filename ]
     then
-      if [ "${NCRABREDO[$fileNumber]}" -lt "2" ] 
+      if [ "${NCRABREDO[$fileNumber]}" == "" ] 
+      then
+        NCRABREDO+=(0)
+      elif [ "${NCRABREDO[$fileNumber]}" -lt "2" ] 
       then
         echo '<font color="red"> &nbsp; &nbsp; <b> New crab task! Submitting..... <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
         ./FindLumisPerJob.sh $inputDS > LumisPerJob_temp.txt
