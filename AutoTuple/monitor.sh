@@ -72,11 +72,13 @@ chmod a+r ~/public_html/crabPic.png
 WHICHDONE=()
 NCRABREDO=()
 NREDOPP=()
+NEVTS=()
 while read p 
 do
   WHICHDONE+=("false")
   NCRABREDO+=(0)
   NREDOPP+=(0)
+  NEVTS+=(0)
 done < $file
 WHICHDONE[0]="done"
 WHICHDONE[1]="done"
@@ -160,6 +162,7 @@ do
       then
         NCRABREDO+=(0)
         NREDOPP+=(0)
+        NEVTS+=(0)
       elif [ "${NCRABREDO[$fileNumber]}" -lt "2" ] 
       then
         echo '<font color="red"> &nbsp; &nbsp; <b> New crab task! Submitting..... <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
@@ -193,17 +196,27 @@ do
     #If already finished......
     if [ "${WHICHDONE[$fileNumber]}" == "done" ] || [ "${WHICHDONE[$fileNumber]}" == "notPP" ]
     then
-      root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/user/$USERNAME/$short_filename/crab_$filename/$dateTime/0000/\"\) > crab_status_logs/temp2.txt 2>&1
-      nIn=`grep -r "nEntries" crab_status_logs/temp2.txt | tail -1 | awk '{print $NF}'`
-      root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/group/snt/$theDir/$filename/$tagDir\"\) > crab_status_logs/temp.txt 2>&1
-      grep -r "trying to recover" crab_status_logs/temp.txt &> /dev/null
-      if [ "$?" == "0" ] 
-      then 
-        nOut="Error in Copying!" 
-        copyProblem="1"
+      if [ "${NEVTS[$fileNumber]}" -gt "0" ]
+      then
+        nIn="${NEVTS[$fileNumber]}"
+        nOut="${NEVTS[$fileNumber]}"
       else
-        nOut=`grep -r "nEntries" crab_status_logs/temp.txt | tail -1 | awk '{print $NF}'`
-        copyProblem="0"
+        root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/user/$USERNAME/$short_filename/crab_$filename/$dateTime/0000/\"\) > crab_status_logs/temp2.txt 2>&1
+        nIn=`grep -r "nEntries" crab_status_logs/temp2.txt | tail -1 | awk '{print $NF}'`
+        root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/group/snt/$theDir/$filename/$tagDir\"\) > crab_status_logs/temp.txt 2>&1
+        grep -r "trying to recover" crab_status_logs/temp.txt &> /dev/null
+        if [ "$?" == "0" ] 
+        then 
+          nOut="Error in Copying!" 
+          copyProblem="1"
+        else
+          nOut=`grep -r "nEntries" crab_status_logs/temp.txt | tail -1 | awk '{print $NF}'`
+          copyProblem="0"
+          if [ "$nIn" == "$nOut" ] 
+          then
+            NEVTS[$fileNumber]=$nIn
+          fi
+        fi
       fi
       #check for nOut > nIn
       if [ "$copyProblem" == "0" ] && [ "$nOut" -gt "$nIn" ] 
@@ -304,6 +317,7 @@ do
           elif [ "$isDonePP" == "alreadyThere" ] 
           then
             if [ ! -e /hadoop/cms/store/group/snt/$theDir/$filename/$tagDir/merged_ntuple_1.root ]
+            then
               echo "Alex, here's the problem.  alreadyThere is true, but I don't see anything here: /hadoop/cms/store/group/snt/$theDir/$filename/$tagDir."
             else
               echo "Alex, alreadyThere is true, and I see stuff here: /hadoop/cms/store/group/snt/$theDir/$filename/$tagDir."
