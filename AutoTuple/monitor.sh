@@ -159,6 +159,7 @@ do
       if [ "${NCRABREDO[$fileNumber]}" == "" ] 
       then
         NCRABREDO+=(0)
+        NREDOPP+=(0)
       elif [ "${NCRABREDO[$fileNumber]}" -lt "2" ] 
       then
         echo '<font color="red"> &nbsp; &nbsp; <b> New crab task! Submitting..... <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
@@ -302,8 +303,13 @@ do
             WHICHDONE[$fileNumber]="done"
           elif [ "$isDonePP" == "alreadyThere" ] 
           then
-            echo "<font color=\"blue\"> &nbsp; &nbsp; <b> Not going to postprocess; already exists on hadoop....  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
-            WHICHDONE[$fileNumber]="notPP"
+            if [ ! -e /hadoop/cms/store/group/snt/$theDir/$filename/$tagDir/merged_ntuple_1.root ]
+              echo "Alex, here's the problem.  alreadyThere is true, but I don't see anything here: /hadoop/cms/store/group/snt/$theDir/$filename/$tagDir."
+            else
+              echo "Alex, alreadyThere is true, and I see stuff here: /hadoop/cms/store/group/snt/$theDir/$filename/$tagDir."
+              echo "<font color=\"blue\"> &nbsp; &nbsp; <b> Not going to postprocess; already exists on hadoop....  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
+              WHICHDONE[$fileNumber]="notPP"
+            fi
           else
             nEntriesIn=`grep -r "$filename" crab_status_logs/pp.txt | tail -1 | awk '{print $2}'`
             nFinished=`grep -r "$filename" crab_status_logs/pp.txt | tail -1 | awk '{print $3}'`
