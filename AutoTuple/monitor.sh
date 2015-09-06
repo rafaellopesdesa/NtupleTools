@@ -155,7 +155,7 @@ do
     tagDir=`echo $CMS3tag | cut -c 6-`
 
     #if crab directory doesn't exist (i.e. was added), make and submit crab jobs
-    if [ ! -d crab_$filename ] && [ "${WHICHDONE[$fileNumber]}" != "invalid" ] 
+    if [ ! -d crab_$filename ] && [ "${WHICHDONE[$fileNumber]}" != "invalid" ] && [ ! -e crab_status_logs/noCrab_$filename.txt ]
     then
       echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
       if [ "${NCRABREDO[$fileNumber]}" == "" ] 
@@ -206,6 +206,14 @@ do
       dateTime=`less crab_$filename/jobDateTime.txt`
     else
       dateTime=`ls -lthr --ignore=$CMS3tag /hadoop/cms/store/user/$USERNAME/$short_filename/crab_$filename/ | awk '{print $NF}' | tail -1`
+    fi
+
+    if [ ! -d crab_$filename ] && [ -e crab_status_logs/noCrab_$filename.txt ] && [ ${WHICHDONE[$fileNumber]} == "false" ]
+    then
+      WHICHDONE[$fileNumber]="true"
+      python process.py $file $fileNumber $dateTime &
+      let "fileNumber += 1"
+      continue
     fi
 
     #If already finished......

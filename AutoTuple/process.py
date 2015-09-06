@@ -42,12 +42,10 @@ parts += lines[lineno].split()[5:]
   #7 - sparms
 
 #See if already exists
-dir="/hadoop/cms/store/group/snt/" + dir2 + "/" +parts[0].split('/')[1]+"_"+parts[0].split('/')[2]+'/'+tag[5:]+"/*.root"
-try:
+dir="/hadoop/cms/store/group/snt/" + dir2 + "/" +parts[0].split('/')[1]+"_"+parts[0].split('/')[2]+'/'+tag[5:]+"/merged_ntuple_1.root"
+if os.path.isfile(dir):
   os.system('echo "%s alreadyThere" >> crab_status_logs/pp.txt' % (parts[0].split('/')[1]+'_'+parts[0].split('/')[2]))
   sys.exit()
-except OSError:
-  pass
 
 #Figure out output directory
 if (dateTime == "0"):
