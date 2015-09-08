@@ -22,3 +22,9 @@
   - When a sample is re-processed, this will allow you to do a bulk update of the twiki
   - Need to set the variables at the top of the script
   - Input file to this comes from Nick's script (to be added here)
+
+###dumpSamples.py 
+  - Dump all datasets (along with person responsible, CMS3tag) to a text file
+
+###checkSamples.py
+  - Takes output of dumpSamples.py and checks validity (does the sample exist on hadoop? is there a newer tag? etc)
