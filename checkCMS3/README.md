@@ -1,15 +1,19 @@
 #checkCMS3
-A macro to check certain trouble spots in CMS3 ntuples
+A macro to check certain trouble spots in CMS3 ntuples. It runs automatically when you use the AutoTupler. It can also be run manually, on the ROOT command line.
 
-###To use:
-Compile the macro in root, then run it, with the path to a CMS3 sample as the only argument.
+###To run this macro by hand:
+Compile the macro in root, then run it, with the first argument (mandatory) being the path to the sample you want to check. This macro is designed to work both on merged and unmerged samples.
 
-This macro is designed to work both on merged and unmerged samples.
+If you're checking a merged CMS3 sample, you can (optionally) put the path to the unmerged version as the second argument, and the macro will check to make sure that the merged and unmerged versions have the same number of events.
 
 ```
 $ root
 root[0] .L checkCMS3.C+
 root[1] checkCMS3("/path/to/some/sample/directory/")
+```
+or
+```
+root[1] checkCMS3("/path/to/some/merged/sample/", "/optional/path/to/unmerged/version/")
 ```
 
 Return value: the number of problems found.
