@@ -27,6 +27,8 @@ parser.add_argument('--makeInstructions', type=types.StringType, help='username 
 parser.add_argument('--getUnmade'       , action='store_true'  , help='Use with makeInstructions. Only gets unmade samples.') 
 parser.add_argument('--manual'          , type=types.IntType   , help='use this argument to manually change the twiki.  Argument: 1 to download updateTwiki2.txt and 2 to upload updateTwiki2.txt') 
 parser.add_argument('--allSamples'      , type=types.IntType  , help='use this argument to download all samples. Argument: 1') 
+parser.add_argument('--whichTwiki'      , type=types.IntType  , help='twiki = 1 for phys14, 2 for 25 ns, 3 for 50 ns.  Otherwise will ask you')
+parser.add_argument('--passwordFile'    , type=types.StringType, help='File that contains only twiki password.  Make permissions strict!', default="")
 args = parser.parse_args()
 
 #Error checking
@@ -79,13 +81,17 @@ br.select_form(nr=0)
 
 #Put in username and password, and submit
 br.form[ 'username' ] = args.username
-password = getpass.getpass('Please enter your password for the UCSD twiki ')
+if (args.passwordFile != ""):
+  with open(args.passwordFile, "r") as myfile:
+    password = myfile.read().replace('\n', '')
+else:  
+  password = getpass.getpass('Please enter your password for the UCSD twiki ')
 br.form[ 'password' ] = password
 br.submit()
 
 #Look for the link to Phys14 from our home page
 
-which = 0
+which = args.whichTwiki;
 while (which != 1 and which != 2 and which != 3): 
   which = int(raw_input("Which one do you want?  Type 1 for phys14, 2 for run2_25ns, or 3 for run2_50ns "))
 
