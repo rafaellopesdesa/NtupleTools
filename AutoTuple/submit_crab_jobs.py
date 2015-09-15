@@ -62,6 +62,9 @@ while (lnum <= inFile_size):
   command = 'python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d ' + parts[0] + ' -t ' + tag + ' -gtag ' + gtag + ' -lumisPerJob ' + numLumiPerJob
   if len(parts) > 5:
     command += ' -sParms ' + parts[5]
+  if parts[0].endswith("/USER"):
+    command += ' -dbs phys03'
+    print "Found USER dataset, so setting dbs_url to phys03"
   print command
   os.system(command)
   crab_dir = parts[0].split('/')[1]+'_'+parts[0].split('/')[2]
