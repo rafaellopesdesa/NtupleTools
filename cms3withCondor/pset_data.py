@@ -215,6 +215,6 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 100
 process.eventMaker.isData                        = cms.bool(True)
 process.pfmetMaker.isData                        = process.eventMaker.isData
 
-+# redefine
-+process.slimmedMETs.t01Variation = cms.InputTag("slimmedMETs","",configProcessName.name)
-+process.slimmedMETsNoHF.t01Variation = cms.InputTag("slimmedMETsNoHF","",configProcessName.name)
+# redefine
+process.slimmedMETs.t01Variation = cms.InputTag("slimmedMETs","",configProcessName.name)
+process.slimmedMETsNoHF.t01Variation = cms.InputTag("slimmedMETsNoHF","",configProcessName.name)
