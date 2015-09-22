@@ -43,11 +43,10 @@ then
 fi
 
 #Set CMS3 tag to use
-CMS3tag=CMS3_V07-04-08
+CMS3tag=CMS3_V07-04-09
 
 #Set the global tag to use
-#GTAG=MCRUN2_74_V9
-GTAG=74X_dataRun2_Prompt_v0
+GTAG=74X_dataRun2_Prompt_v2
 
 #State the maxmimum number of events
 MAX_NEVENTS=-1 #all events
@@ -70,10 +69,10 @@ else
 fi
 
 #Set environment
+source /code/osgcode/cmssoft/cmsset_default.sh
 export SCRAM_ARCH=slc6_amd64_gcc491
-source /nfs-7/cmssoft/cms.cern.ch/cmssw/cmsset_default.sh
 pushd .
-cd /nfs-7/cmssoft/cms.cern.ch/cmssw/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_7_patch1
+cd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_12
 eval `scramv1 runtime -sh`
 popd
 

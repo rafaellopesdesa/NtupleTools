@@ -92,7 +92,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(SUPPLY_MAX_N
 
 #configurable options =======================================================================
 runOnData=True #data/MC switch
-usePrivateSQlite=False #use external JECs (sqlite file)
+usePrivateSQlite=True #use external JECs (sqlite file)
 useHFCandidates=False #create an additionnal NoHF slimmed MET collection if the option is set to false
 applyResiduals=True #application of residual corrections. Have to be set to True once the 13 TeV residual corrections are available. False to be kept meanwhile. Can be kept to False later for private tests or for analysis checks and developments (not the official recommendation!).
 #===================================================================
@@ -100,7 +100,7 @@ applyResiduals=True #application of residual corrections. Have to be set to True
 if usePrivateSQlite:
     from CondCore.DBCommon.CondDBSetup_cfi import *
     import os
-    era="Summer15_50nsV4_DATA"
+    era="Summer15_25nsV3_DATA"
     process.jec = cms.ESSource("PoolDBESSource",CondDBSetup,
                                connect = cms.string( "sqlite_file:"+era+".db" ),
                                toGet =  cms.VPSet(
@@ -193,6 +193,8 @@ process.p = cms.Path(
   process.subJetMaker *
 #  process.ca12subJetMaker *
   process.pfmetMaker *
+  process.pfmetNoHFMaker *
+  process.pfmetpuppiMaker *
   process.T1pfmetMaker *
   process.T1pfmetNoHFMaker *
   process.hltMakerSequence *
@@ -213,3 +215,6 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 100
 process.eventMaker.isData                        = cms.bool(True)
 process.pfmetMaker.isData                        = process.eventMaker.isData
 
+# redefine
+process.slimmedMETs.t01Variation = cms.InputTag("slimmedMETs","",configProcessName.name)
+process.slimmedMETsNoHF.t01Variation = cms.InputTag("slimmedMETsNoHF","",configProcessName.name)
