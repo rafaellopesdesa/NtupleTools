@@ -34,7 +34,7 @@ while (lnum <= inFile_size):
   print "checking file on line", lnum, "for size and validity."
   line = linecache.getline(inFile, lnum)
   parts = line.split()
-  os.system('./FindLumisPerJob.sh ' + parts[0] + ' >> LumisPerJob.txt')
+  os.system('./FindLumisPerJobNoDAS.sh ' + parts[0] + ' >> LumisPerJob.txt')
   lnum+=1
 
 for line in open("LumisPerJob.txt"):

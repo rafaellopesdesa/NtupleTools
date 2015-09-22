@@ -166,7 +166,7 @@ do
       elif [ "${NCRABREDO[$fileNumber]}" -lt "2" ] 
       then
         echo '<font color="red"> &nbsp; &nbsp; <b> New crab task! Submitting..... <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
-        ./FindLumisPerJob.sh $inputDS > LumisPerJob_temp.txt
+        ./FindLumisPerJobNoDAS.sh $inputDS > LumisPerJob_temp.txt
         numLumiPerJob=`less LumisPerJob_temp.txt | awk '{print $1}'`
         rm LumisPerJob_temp.txt
         NCRABREDO[$fileNumber]=$(( ${NCRABREDO[$fileNumber]} + 1 ))
@@ -421,7 +421,7 @@ do
       then
         echo '<font color="red"> &nbsp; &nbsp; <b> Avast!  Blasted Crab Task Failed!! Resubmitting..... <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
         rm -rf crab_$crab_filename &> /dev/null
-        ./FindLumisPerJob.sh $inputDS > LumisPerJob_temp.txt
+        ./FindLumisPerJobNoDAS.sh $inputDS > LumisPerJob_temp.txt
         numLumiPerJob=`less LumisPerJob_temp.txt | awk '{print $1}'`
         rm LumisPerJob_temp.txt
         NCRABREDO[$fileNumber]=$(( ${NCRABREDO[$fileNumber]} + 1 ))
@@ -455,7 +455,7 @@ do
         if [ $minsQueued -gt $((12*60)) ]; then
           echo '<font color="red"> &nbsp; &nbsp; <b> Task has been queued for more than 12 hours. Resubmitting!! <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
           rm -rf crab_$crab_filename &> /dev/null
-          ./FindLumisPerJob.sh $inputDS > LumisPerJob_temp.txt
+          ./FindLumisPerJobNoDAS.sh $inputDS > LumisPerJob_temp.txt
           numLumiPerJob=`less LumisPerJob_temp.txt | awk '{print $1}'`
           rm LumisPerJob_temp.txt
           NCRABREDO[$fileNumber]=$(( ${NCRABREDO[$fileNumber]} + 1 ))

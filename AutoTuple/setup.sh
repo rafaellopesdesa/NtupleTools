@@ -52,6 +52,8 @@ cp ../../process.py .
 cp ../../pirate.txt .
 cp ../../theDir.txt .
 cp ../../FindLumisPerJob.sh . 
+cp ../../FindLumisPerJobNoDAS.sh . 
+cp ../../FindLumisPerJob.py . 
 cp ../../das_client.py . 
 cp ../../crabPic.png .
 cp ../../copy.sh .
