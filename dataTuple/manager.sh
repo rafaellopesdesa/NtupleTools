@@ -69,8 +69,8 @@ else
 fi
 
 #Set environment
-export SCRAM_ARCH=slc6_amd64_gcc491
 source /code/osgcode/cmssoft/cmsset_default.sh
+export SCRAM_ARCH=slc6_amd64_gcc491
 pushd .
 cd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_12
 eval `scramv1 runtime -sh`
