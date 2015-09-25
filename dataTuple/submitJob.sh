@@ -16,7 +16,7 @@ if [ "$JOBTYPE" == "cms3" ]
 then
   echo "cms3 job"
   cd cms3withCondor
-  . submit.sh ../tempSubmit.txt $TIME $OUTPUT_DIR $CMS3_TAG $MAX_EVENTS false $OUTPUT_NAME $GTAG $DATASETNAME pset_data.py
+  . submit.sh ../tempSubmit.txt $TIME $OUTPUT_DIR $CMS3_TAG $MAX_EVENTS false $OUTPUT_NAME $GTAG $DATASETNAME pset_fastsim.py
   cd ..
 elif [ "$JOBTYPE" == "user" ]
 then
