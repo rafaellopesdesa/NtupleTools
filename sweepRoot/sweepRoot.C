@@ -125,7 +125,7 @@ int main(int argc, char** argv) {
       /* check file */
       /**************/
       TFile* f = 0;
-      char fname[200];
+      char fname[2000];
       if (useRfio) sprintf(fname, "rfio:%s", argv[it]);
       else if (useDcache) sprintf(fname, "dcache:%s", argv[it]);
       else strcpy(fname, argv[it]);
@@ -176,6 +176,7 @@ int main(int argc, char** argv) {
       //std::cout << "good!" << std::endl;
       if (doPrintGood) printgood.push_back(target);
       f->Close();
+      delete f;
    }
 
    std::cout << std::endl;
