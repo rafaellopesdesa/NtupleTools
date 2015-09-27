@@ -43,7 +43,7 @@ mkdir autoTupleLogs
 cp ../../../sweepRoot/sweepRoot ${CMSSW_BASE}/crab/
 cp -r ../../../condorMergingTools/* ${CMSSW_BASE}/crab/
 cp ${CMSSW_BASE}/src/CMS3/NtupleMaker/test/MCProduction2015_NoFilter_cfg.py skeleton_cfg.py
-cp ${CMSSW_BASE}/src/CMS3/NtupleMaker/test/MCProduction2015_NoFilter_cfg.py skeleton_fsim_cfg.py
+cp ${CMSSW_BASE}/src/CMS3/NtupleMaker/test/MCProduction2015_FastSim_NoFilter_cfg.py skeleton_fsim_cfg.py
 sed -i s/process.GlobalTag.globaltag\ =\ .*/process.GlobalTag.globaltag\ =\ \"$gtag\"/ skeleton_cfg.py
 sed -i s/process.GlobalTag.globaltag\ =\ .*/process.GlobalTag.globaltag\ =\ \"$gtag\"/ skeleton_fsim_cfg.py
 cp ../../submitMergeJobs.sh .
