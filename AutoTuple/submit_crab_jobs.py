@@ -59,7 +59,13 @@ while (lnum <= inFile_size):
       f.close()
       continue
   print numLumiPerJob
-  command = 'python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d ' + parts[0] + ' -t ' + tag + ' -gtag ' + gtag + ' -lumisPerJob ' + numLumiPerJob
+  isFsim = False
+  if "FSPremix" in parts[0]: 
+    isFsim = true
+    print "Detected fastsim"
+    command = 'python makeCrab3Files.py -CMS3cfg skeleton_fsim_cfg.py -d ' + parts[0] + ' -t ' + tag + ' -gtag ' + gtag + ' -lumisPerJob ' + numLumiPerJob
+  else
+    command = 'python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d ' + parts[0] + ' -t ' + tag + ' -gtag ' + gtag + ' -lumisPerJob ' + numLumiPerJob
   if len(parts) > 5:
     command += ' -sParms ' + parts[5]
   if parts[0].endswith("/USER"):
