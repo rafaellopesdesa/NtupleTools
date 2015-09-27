@@ -61,7 +61,7 @@ while (lnum <= inFile_size):
   print numLumiPerJob
   isFsim = False
   if "FSPremix" in parts[0]: 
-    isFsim = true
+    isFsim = True
     print "Detected fastsim"
     command = 'python makeCrab3Files.py -CMS3cfg skeleton_fsim_cfg.py -d ' + parts[0] + ' -t ' + tag + ' -gtag ' + gtag + ' -lumisPerJob ' + numLumiPerJob
   else:
