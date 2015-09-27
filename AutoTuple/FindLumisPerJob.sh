@@ -18,4 +18,10 @@ NEVENTS="$(./das_client.py --query="dataset=$1 $INSTANCE | grep dataset.nevents"
 NLUMIS="$(./das_client.py --query="dataset=$1 $INSTANCE | grep dataset.nlumis" | tail -1)"
 EVT_PER_LUMI=$(echo "$NEVENTS/$NLUMIS" | bc)
 LUMI_PER_JOB=$(echo "$EVT_PER_JOB/$EVT_PER_LUMI" | bc)
-echo $LUMI_PER_JOB
+MAXEVENTS="$(./das_client.py --query="file dataset=$1 $INSTANCE | grep file.nevents" --limit=0 | xargs ./maxAG.sh)"
+if [ "$MAXEVENTS" -lt "70000" ] && [ "$MAXEVENTS" -gt "15000" ]
+then
+  echo "FILEBASED"
+else
+  echo $LUMI_PER_JOB
+fi

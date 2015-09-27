@@ -23,5 +23,13 @@ if(len(output)==1):
     evt_per_lumi = 1.0*nevents/nlumis
     lumi_per_job = evt_per_job/evt_per_lumi
 
-    print int(lumi_per_job+1)
+    dump = api.listFiles(dataset=dataset, detail=1, validFileOnly=1)
+    nevents = []; 
+    for i in range(0,len(dump)):
+      nevents.append(dump[i]['event_count'])
+  
+    if (max(nevents) > 15000 and max(nevents) < 70000):
+      print "FILEBASED"
+    else:
+      print int(lumi_per_job+1)
 

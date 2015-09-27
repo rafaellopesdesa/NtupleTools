@@ -37,8 +37,12 @@ def makeCrab3Config():
     outFile.write('config.section_(\'Data\')\n')
     outFile.write('config.Data.inputDataset = \'%s\'\n' % dataSet)
     outFile.write('config.Data.publication = False\n')
-    outFile.write('config.Data.unitsPerJob = %i \n' % int(numLumisPerJob))
-    outFile.write('config.Data.splitting = \'LumiBased\'\n')
+    if (numLumisPerJob == "FILEBASED"):
+      outFile.write('config.Data.unitsPerJob = 1 \n')
+      outFile.write('config.Data.splitting = \'FileBased\'\n')
+    else:
+      outFile.write('config.Data.unitsPerJob = %i \n' % int(numLumisPerJob))
+      outFile.write('config.Data.splitting = \'LumiBased\'\n')
     outFile.write('config.Data.inputDBS = \'%s\'\n' % dbs_url)
     #outFile.write('config.Data.ignoreLocality = True\n')
     outFile.write('\n')
