@@ -1,11 +1,15 @@
 #!/bin/bash
 
 #Need two arguments
-if [ "$#" != 2 ]; then echo "GRRR!!!!! I NEED TWO ARGUMENTS, sample name and tag!!!  I quit!!"; return 3; fi
+if [ "$#" -lt 2 ]; then echo "GRRR!!!!! I NEED TWO ARGUMENTS, sample name and tag!!!  I quit!!"; return 3; fi
 
 #Arguments
 filename=$1
 tag=$2
+basedir=$3
+
+#Set basedir default
+if [ "$basedir" == "" ]; then basedir="/nfs-7/userdata/dataTuple/$shortusername" ; fi
 
 #Short usernames
 if [ "$USER" == "cgeorge"     ]; then shortusername="alex" ; fi
@@ -55,7 +59,7 @@ else
 fi
 
 #Delete all the old merged lists
-mergedListsDir="/nfs-7/userdata/dataTuple/${shortusername}/mergedLists/${run}_${sample}_${format}_${era}-${version}/"
+mergedListsDir="$basedir/mergedLists/${run}_${sample}_${format}_${era}-${version}/"
 if [ ! -d $mergedListsDir ]
 then 
   echo "Your merged dir does not exist!!!  Should be here...."
@@ -72,8 +76,9 @@ sed -i "/\/hadoop\/cms\/store\/user\/$USER\/dataTuple\/${run}_${sample}_${format
 #Now loop over the unmerged and call checkfile on them
 for file in $( ls -l $unmergedDir/ | awk '{print $9}' )
 do
+  if [ -d $unmergedDir/$file ]; then continue; fi 
   stuff=`echo $file | tr '_' ' ' | awk '{printf "%s/%s/%s/%s/%s",$4,$5,$6,$7,$8}'`
   currentFile=/store/data/$run/$sample/$format/${era}-${version}/$stuff
   outputDir=`echo $currentFile | tr '/' ' ' |  awk '{print $3"_"$4"_"$5"_"$6}'`
-  . checkFile.sh /nfs-7/userdata/dataTuple/${shortusername} /hadoop/cms/store/user/$USER/dataTuple/$outputDir/$tag/$file $currentFile cms3
+  . checkFile.sh $basedir /hadoop/cms/store/user/$USER/dataTuple/$outputDir/$tag/$file $currentFile cms3
 done
