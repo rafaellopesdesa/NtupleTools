@@ -10,9 +10,10 @@ In principle, this should handle all aspects of CMS3 making, from submission to 
   2. "/usr/bin/python twiki.py YOUR_TWIKI_LOGIN_NAME --makeInstructions NAME_IN_ASSIGNED_COLUMN_ON_TWIKI".  
     - For example, Alex would use "george" for the first name, because that's how he logs into the twiki, and "Alex" for the second name, because that's what his samples are assigned to.  This will create instructions.txt using samples assigned to name NAME.  Alternatively, you can write this by hand, see instructions.txt in this repo for example.
     - Time-saving tip: use the "--getUnmade" flag ("/usr/bin/python twiki.py YOUR_TWIKI_LOGIN_NAME --makeInstructions NAME_IN_ASSIGNED_COLUMN_ON_TWIKI --getUnmade") to only populate the text file with the samples that don't have output directories filled in on the Twiki!
-  3. ". setup.sh instructions.txt" (no quotes)
-  4. Monitor it fairly closely for ~5 mins or so (until the AutoTupleHQ page is available); it may ask for passwords, proxies, etc.  You can find the status page at http://uaf-7.t2.ucsd.edu/~USER/AutoTupleHQ.html, where USER is your username on the uaf
-  5. When all jobs finished, use twiki.py to update the twiki, or you can do it manually.  Make sure it was copied successfully to hadoop and is not in a /bad/ subdirectory, which indicates that there were problems.  
+  3.  Inspect your instructions.txt carefully!  If you have data samples, change False --> True.  If you have signal samples, add a column with the susy sparms (no spaces, comma separated).  Make SURE your global and CMS3 tags are correct.  
+  4. ". setup.sh instructions.txt" (no quotes)
+  5. Monitor it fairly closely for ~5 mins or so (until the AutoTupleHQ page is available); it may ask for passwords, proxies, etc.  You can find the status page at http://uaf-7.t2.ucsd.edu/~USER/AutoTupleHQ.html, where USER is your username on the uaf
+  6. When all jobs finished, use twiki.py to update the twiki, or you can do it manually.  Make sure it was copied successfully to hadoop and is not in a /bad/ subdirectory, which indicates that there were problems.  
 
 ###To inject new jobs after you started the AutoTupler:
 - Stop monitor.sh
