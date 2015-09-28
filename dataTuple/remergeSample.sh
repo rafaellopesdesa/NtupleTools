@@ -22,7 +22,7 @@ version=`echo $filename | tr '/' ' ' | awk '{print $2}' | tr '-' ' ' | awk '{pri
 #parse tag
 pretag=`echo "$tag" | tr '_' ' ' | awk '{print $1}'`
 if [ "$pretag" == "CMS3" ]; then tag=`echo "$tag" | tr '_' ' ' | awk '{print $2}'`; fi
-if [ "$tag" == "" ]; then echo "tag is empty!"; return 1; fi
+if [ "$tag" == "" ]; then echo "Problem with your tag!"; return 1; fi
 
 #See if label unmerged files exist
 unmergedDir="/hadoop/cms/store/user/$USER/dataTuple/${run}_${sample}_${format}_${era}-${version}/$tag/"
@@ -68,8 +68,6 @@ fi
 
 #Take all these files off the donePP.txt
 sed -i "/\/hadoop\/cms\/store\/user\/$USER\/dataTuple\/${run}_${sample}_${format}_${era}-${version}\/merged\/merged_ntuple/d" testAlex.txt
-
-echo "tag: $tag" 
 
 #Now loop over the unmerged and call checkfile on them
 for file in $( ls -l $unmergedDir/ | awk '{print $9}' )
