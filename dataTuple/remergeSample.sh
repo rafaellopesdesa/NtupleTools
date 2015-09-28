@@ -38,6 +38,15 @@ then
   return 2;
 fi
 
+#Make sure the merged dir exists
+mergedDir="/hadoop/cms/store/group/snt/run2_data/${run}_${sample}_${format}_${era}-${version}/merged/$tag/"
+if [ ! -d $mergedDir ]
+then 
+  echo "Your merged dir does not exist!!!  Should be here...."
+  echo "$mergedDir"
+  return 4;
+fi
+
 #Be sure you fucking do this right
 read -p "You are about to remerge filename $1.  This will delete all the old merged files.  Are you sure? (y/n)" -n 1 -r
 echo 
@@ -47,16 +56,8 @@ then
   return 4;
 fi
 
-#Delete all the old merged files
-mergedDir="/hadoop/cms/store/group/snt/run2_data/${run}_${sample}_${format}_${era}-${version}/merged/$tag/"
-if [ ! -d $mergedDir ]
-then 
-  echo "Your merged dir does not exist!!!  Should be here...."
-  echo "$mergedDir"
-  return 4;
-else
-  rm $mergedDir/*.root
-fi
+#Delete the merged files
+rm $mergedDir/*.root
 
 #Delete all the old merged lists
 mergedListsDir="$basedir/mergedLists/${run}_${sample}_${format}_${era}-${version}/"
