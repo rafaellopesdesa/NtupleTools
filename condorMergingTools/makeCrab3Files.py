@@ -35,6 +35,7 @@ def makeCrab3Config():
     outFile.write('config.JobType.psetName = \'%s_cfg.py\'\n' % ('./' + psetPfx + outFileName))
     outFile.write('\n')
     outFile.write('config.section_(\'Data\')\n')
+    outFile.write('config.Data.allowNonValidInputDataset = True\n')
     outFile.write('config.Data.inputDataset = \'%s\'\n' % dataSet)
     outFile.write('config.Data.publication = False\n')
     if (numLumisPerJob == "FILEBASED"):
