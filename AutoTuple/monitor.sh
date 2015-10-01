@@ -409,35 +409,35 @@ do
         isFailed="$result"
       fi
     fi
-    #Also failed if no requestcache file
-    if [ "$isFailed" != "0" ]
-    then 
-      grep -r "Cannot find .requestcache file inside the working directory for task" $status_filename &>/dev/null 
-      isFailed="$?"
-    fi
-    if [ "$isFailed" == "0" ]
-    then
-      if [ "${NCRABREDO[$fileNumber]}" -lt "2" ] 
-      then
-        echo '<font color="red"> &nbsp; &nbsp; <b> Avast!  Blasted Crab Task Failed!! Resubmitting..... <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
-        rm -rf crab_$crab_filename &> /dev/null
-        ./FindLumisPerJobNoDAS.sh $inputDS > LumisPerJob_temp.txt
-        numLumiPerJob=`less LumisPerJob_temp.txt | awk '{print $1}'`
-        rm LumisPerJob_temp.txt
-        NCRABREDO[$fileNumber]=$(( ${NCRABREDO[$fileNumber]} + 1 ))
-        if [ "$sparms" == "" ]
-        then
-          python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d $inputDS -t $CMS3tag -gtag $gtag -isData $isData -lumisPerJob $numLumiPerJob &> /dev/null
-        else
-          python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d $inputDS -t $CMS3tag -gtag $gtag -isData $isData -lumisPerJob $numLumiPerJob -sParms $sparms &> /dev/null
-        fi
-        crab submit -c cfg/$crab_filename.py &> /dev/null
-      else
-        echo '<font color="red"> &nbsp; &nbsp; <b> Avast!  Blasted Crab Task Failed even after we resubmitted!! Giving up..... <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
-      fi
-      let "fileNumber += 1"
-      continue
-    fi
+#    #Also failed if no requestcache file
+#    if [ "$isFailed" != "0" ]
+#    then 
+#      grep -r "Cannot find .requestcache file inside the working directory for task" $status_filename &>/dev/null 
+#      isFailed="$?"
+#    fi
+#    if [ "$isFailed" == "0" ]
+#    then
+#      if [ "${NCRABREDO[$fileNumber]}" -lt "2" ] 
+#      then
+#        echo '<font color="red"> &nbsp; &nbsp; <b> Avast!  Blasted Crab Task Failed!! Resubmitting..... <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
+#        rm -rf crab_$crab_filename &> /dev/null
+#        ./FindLumisPerJobNoDAS.sh $inputDS > LumisPerJob_temp.txt
+#        numLumiPerJob=`less LumisPerJob_temp.txt | awk '{print $1}'`
+#        rm LumisPerJob_temp.txt
+#        NCRABREDO[$fileNumber]=$(( ${NCRABREDO[$fileNumber]} + 1 ))
+#        if [ "$sparms" == "" ]
+#        then
+#          python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d $inputDS -t $CMS3tag -gtag $gtag -isData $isData -lumisPerJob $numLumiPerJob &> /dev/null
+#        else
+#          python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d $inputDS -t $CMS3tag -gtag $gtag -isData $isData -lumisPerJob $numLumiPerJob -sParms $sparms &> /dev/null
+#        fi
+#        crab submit -c cfg/$crab_filename.py &> /dev/null
+#      else
+#        echo '<font color="red"> &nbsp; &nbsp; <b> Avast!  Blasted Crab Task Failed even after we resubmitted!! Giving up..... <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
+#      fi
+#      let "fileNumber += 1"
+#      continue
+#    fi
 
     #If status is queued, we're done
     grep -r "QUEUED" $status_filename &>/dev/null
