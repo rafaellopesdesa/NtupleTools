@@ -37,6 +37,8 @@ while (lnum <= inFile_size):
   os.system('./FindLumisPerJobNoDAS.sh ' + parts[0] + ' >> LumisPerJob.txt')
   lnum+=1
 
+sed -i '/^\s*$/d' LumisPerJob.txt
+
 for line in open("LumisPerJob.txt"):
   if "Aborting" in line: 
     print "One of your samples is invalid!  See LumisPerJob.txt for details."
