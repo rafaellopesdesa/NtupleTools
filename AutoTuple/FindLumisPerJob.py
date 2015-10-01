@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # https://twiki.cern.ch/twiki/bin/view/CMS/DBS3APIInstructions
 import  sys
+import os
 from dbs.apis.dbsClient import DbsApi
 
 if(len(sys.argv) < 2):
@@ -13,6 +14,10 @@ evt_per_job = 30000
 url="https://cmsweb.cern.ch/dbs/prod/global/DBSReader"
 api=DbsApi(url=url)
 output = api.listDatasets(dataset=dataset)
+
+if (output == []): 
+  os.system("./FindLumisPerJob.sh " +  dataset)
+  sys.exit()
 
 if(len(output)==1):
     inp=output[0]['dataset']
