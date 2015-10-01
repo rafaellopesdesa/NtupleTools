@@ -12,8 +12,8 @@ CMSSW_VER=CMSSW_7_4_6
 export PATH=$PATH:`pwd`
 source /cvmfs/cms.cern.ch/crab3/crab.sh
 export SCRAM_ARCH=slc6_amd64_gcc491
-scramv1 p -n ${CMSSW_VER}_alex CMSSW $CMSSW_VER
-pushd ${CMSSW_VER}_alex
+scramv1 p -n ${CMSSW_VER} CMSSW $CMSSW_VER
+pushd ${CMSSW_VER}
 cmsenv
 popd
 pushd ../sweepRoot
@@ -31,7 +31,7 @@ then
   mv lib_$tag.tar.gz /nfs-7/userdata/libCMS3/lib_$tag.tar.gz
   cd $CMSSW_BASE
 else
-  cd ${CMSSW_VER}_alex
+  cd ${CMSSW_VER}
   cmsenv
   cp /nfs-7/userdata/libCMS3/lib_$tag.tar.gz . 
   tar -xzvf lib_$tag.tar.gz
