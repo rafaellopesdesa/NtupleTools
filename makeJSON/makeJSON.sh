@@ -13,4 +13,5 @@ then
 else
   csv2json.py temp.txt > $BASEDIR/json_lists/$sample/${end_name}_json.txt
 fi
-#mergeJSON.py 
+
+mergeJSON.py $BASEDIR/json_lists/$sample/*_json.txt > $BASEDIR/json_lists/full_JSON_$sample.txt
