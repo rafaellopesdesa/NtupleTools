@@ -46,6 +46,8 @@ fi
 
 chmod +x ./*.sh
 chmod +x ./*.py
+chmod +x ../makeJSON/makeJSON.sh
+
 if [ -e submitList.txt ]
 then
   rm submitList.txt

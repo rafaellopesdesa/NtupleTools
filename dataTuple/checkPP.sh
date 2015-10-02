@@ -117,7 +117,13 @@ do
         if [ "$JOBTYPE" != "user" ]
         then
           echo "moving $mergeFile to $target"
+          echo "I am here: $PWD"
           mv $mergeFile $target
+          pushd ../makeJSON
+          echo "./makeJSON.sh $mergeFile $BASEPATH" 
+          nameAG=`echo $mergeFile | tr '/' ' ' | awk '{print $NF}'`
+          ./makeJSON.sh $target/$nameAG $BASEPATH
+          popd
         fi
         echo "$mergeFile" >> donePP.txt
       else
