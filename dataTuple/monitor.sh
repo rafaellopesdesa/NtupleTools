@@ -18,7 +18,7 @@ echo "" >> $OUT
 echo "User running the cron job: $USER <BR><BR>" >> $OUT
 echo "" >> $OUT
 
-echo "List of datasets being processed: " >> $OUT
+echo "List of datasets being processed: <BR>" >> $OUT
 for i in `cat listOfDatasets.txt`
 do
   echo "$i<BR>" >> $OUT
