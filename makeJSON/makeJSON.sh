@@ -3,6 +3,11 @@
 file=$1
 BASEDIR=$2
 
+if [ -e $BASEDIR/json_lists/$sample/${end_name}_json.txt ]
+then
+  exit 0
+fi
+
 end_name=`echo $file | tr '/' ' ' | awk '{print $NF}' | tr '.' ' ' | awk '{print $1}'` 
 sample=`echo $file | tr '/' ' ' | awk '{print $(NF-3)}'`
 
