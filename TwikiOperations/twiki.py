@@ -92,15 +92,16 @@ br.submit()
 #Look for the link to Phys14 from our home page
 
 which = args.whichTwiki;
-while (which != 1 and which != 2 and which != 3): 
-  which = int(raw_input("Which one do you want?  Type 1 for phys14, 2 for run2_25ns, or 3 for run2_50ns "))
+while (which != 1 and which != 2 and which != 3 and which != 4): 
+  which = int(raw_input("Which one do you want?  Type 1 for phys14, 2 for run2_25ns, 3 for run2_50ns, or 4 for run2_25ns_MiniAODv2  "))
 
-hadoopDirs = ["phys14", "run2_25ns", "run2_50ns"]
+hadoopDirs = ["phys14", "run2_25ns", "run2_50ns", "run2_25ns_MiniAODv2"]
 os.system("echo \"" + hadoopDirs[which-1] + "\" > theDir.txt")
 for link in br.links():
   if (which == 1 and link.url == '/tastwiki/bin/view/CMS/Phys14Samples'): br.follow_link(link)
   if (which == 2 and link.url == '/tastwiki/bin/view/CMS/Run2Samples_25ns'): br.follow_link(link)
   if (which == 3 and link.url == '/tastwiki/bin/view/CMS/Run2Samples_50ns'): br.follow_link(link)
+  if (which == 4 and link.url == '/tastwiki/bin/view/CMS/Run2SamplesReMINIAOD_25ns'): br.follow_link(link)
 
 #Look for the link to 'raw edit'
 for link in br.links():
