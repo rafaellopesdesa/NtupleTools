@@ -35,11 +35,20 @@ First argument is your twiki username.  Then you'll need at least one optional a
 
 Note: In principle, you can write scripts that call twiki.py and even feed the password in.  Be VERY careful with these, it's easy to overwrite the twiki.  
 
+###Developing the AutoTupler 
+  *When changing campaigns, you should only ever have to change the following:*
+  - The JEC files should be kept here: /nfs-7/userdata/JECs
+  - copy.sh needs updated with where you want the files to go
+  - makeCrab3Files.sh needs updated with the JEC file name
+  - setup.sh needs the correct CMSSW release
+  - twiki.py needs the correct twiki to read from
+  - the config file (in the NtupleMaker itself) needs told which JEC file to use
+
 ###AutoTupler development -- to do list:
-  - none!!
+  - Reduce the above list to one file!
 
 ###AutoTupler -- (far) Future Development (good projects for undergrads, etc.)
   - Add line-by-line global/CMS3 tags
-  - Print a document for each sample containing the absolute path of the MINAODSIM file for each job, so we can manually run on the job if it fails repeatedly
+  - Print a document for each sample containing the absolute path of the MINAODSIM file for each job, so we can manually run on the job if it fails repeatedly.  There's no (good) way to predict in advance the MINIAOD file, so have to check the logs :-(
   - Integrate twiki.py into this (carefully) 
   - Consider more efficient ways to do the checking (ex: if nEventsInUnmerged != nEventsFromDAS, don't bother post-processing)
