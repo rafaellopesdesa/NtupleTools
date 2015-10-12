@@ -37,40 +37,42 @@ else
   tar -xzvf lib_$tag.tar.gz
   scram b -j 10
 fi
-#mkdir crab
-#cd crab
-#mkdir autoTupleLogs
-#cp ../../../sweepRoot/sweepRoot ${CMSSW_BASE}/crab/
-#cp -r ../../../condorMergingTools/* ${CMSSW_BASE}/crab/
-#if [ -e "${CMSSW_BASE}/src/CMS3/NtupleMaker/test/MCProduction2015_NoFilter_cfg.py" ] 
-#then
-#  cp ${CMSSW_BASE}/src/CMS3/NtupleMaker/test/MCProduction2015_NoFilter_cfg.py skeleton_cfg.py
-#  sed -i s/process.GlobalTag.globaltag\ =\ .*/process.GlobalTag.globaltag\ =\ \"$gtag\"/ skeleton_cfg.py
-#fi
-#if [ -e "${CMSSW_BASE}/src/CMS3/NtupleMaker/test/MCProduction2015_FastSim_NoFilter_cfg.py" ] 
-#then
-#  cp ${CMSSW_BASE}/src/CMS3/NtupleMaker/test/MCProduction2015_FastSim_NoFilter_cfg.py skeleton_fsim_cfg.py
-#  sed -i s/process.GlobalTag.globaltag\ =\ .*/process.GlobalTag.globaltag\ =\ \"$gtag\"/ skeleton_fsim_cfg.py
-#fi
-#cp ../../submitMergeJobs.sh .
-#cp ../../submit_crab_jobs.py  .
-#cp ../../$1 .
-#cp ../../monitor.sh . 
-#cp ../../process.py .
-#cp ../../pirate.txt .
-#cp ../../theDir.txt .
-#cp ../../FindLumisPerJob.sh . 
-#cp ../../maxAG.sh . 
-#chmod a+x maxAG.sh
-#cp ../../FindLumisPerJobNoDAS.sh . 
-#cp ../../FindLumisPerJob.py . 
-#cp ../../das_client.py . 
-#cp ../../crabPic.png .
-#cp ../../copy.sh .
-#cp ../../numEventsROOT.C .
-#cp ../../../checkCMS3/checkCMS3.C . 
-#cp ../../../checkCMS3/das_client.py .
-#cp $CMSSW_BASE/*.db .
-#mkdir crab_status_logs
-#python submit_crab_jobs.py $1
-#. monitor.sh $1 
+mkdir crab
+cd crab
+mkdir autoTupleLogs
+cp ../../../sweepRoot/sweepRoot ${CMSSW_BASE}/crab/
+cp -r ../../../condorMergingTools/* ${CMSSW_BASE}/crab/
+if [ -e "${CMSSW_BASE}/src/CMS3/NtupleMaker/test/MCProduction2015_NoFilter_cfg.py" ] 
+then
+  cp ${CMSSW_BASE}/src/CMS3/NtupleMaker/test/MCProduction2015_NoFilter_cfg.py skeleton_cfg.py
+  sed -i s/process.GlobalTag.globaltag\ =\ .*/process.GlobalTag.globaltag\ =\ \"$gtag\"/ skeleton_cfg.py
+fi
+if [ -e "${CMSSW_BASE}/src/CMS3/NtupleMaker/test/MCProduction2015_FastSim_NoFilter_cfg.py" ] 
+then
+  cp ${CMSSW_BASE}/src/CMS3/NtupleMaker/test/MCProduction2015_FastSim_NoFilter_cfg.py skeleton_fsim_cfg.py
+  sed -i s/process.GlobalTag.globaltag\ =\ .*/process.GlobalTag.globaltag\ =\ \"$gtag\"/ skeleton_fsim_cfg.py
+fi
+cp ../../submitMergeJobs.sh .
+cp ../../submit_crab_jobs.py  .
+cp ../../$1 .
+cp ../../monitor.sh . 
+cp ../../process.py .
+cp ../../pirate.txt .
+cp ../../theDir.txt .
+cp ../../FindLumisPerJob.sh . 
+cp ../../maxAG.sh . 
+chmod a+x maxAG.sh
+cp ../../FindLumisPerJobNoDAS.sh . 
+cp ../../FindLumisPerJob.py . 
+cp ../../das_client.py . 
+cp ../../crabPic.png .
+cp ../../copy.sh .
+cp ../../numEventsROOT.C .
+cp ../../../checkCMS3/checkCMS3.C . 
+cp ../../../checkCMS3/das_client.py .
+cp $CMSSW_BASE/*.db .
+cp ../../checkProxy.sh . 
+mkdir crab_status_logs
+. checkProxy.sh 
+python submit_crab_jobs.py $1
+. monitor.sh $1 
