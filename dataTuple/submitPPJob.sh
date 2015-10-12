@@ -52,6 +52,7 @@ then
   ./submitMergeJobs.sh
   popd
 else
-  echo "JOBTYPE in submitPPJob.sh not recognized!"
-  exit 1
+  echo "JOBTYPE in submitPPJob.sh not recognized!  JOBTYPE is $JOBTYPE"
+  echo "Arguments to submitPPJob.sh are 1: $1 2: $2 3: $3"
+  echo "Problem with submitPPJob.sh again for user $USERNAME." | /bin/mail -r "george@physics.ucsb.edu" -s "[dataTuple] error report" "george@physics.ucsb.edu, jgran@physics.ucsb.edu, mark.derdzinski@gmail.com" 
 fi
