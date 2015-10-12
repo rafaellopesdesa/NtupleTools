@@ -12,6 +12,10 @@ elif [[ $dataSet == *"25ns"* ]]
 then
   thedir="run2_25ns"
   echo "25" 
+elif [[ $dataSet == *"RunIISpring15MiniAODv2"* ]] 
+then
+  thedir="run2_25ns_MiniAODv2"
+  echo "25_redo"
 else
   echo "Aborting!  Can't figure out if 25 or 50 ns!!"
   return 1
