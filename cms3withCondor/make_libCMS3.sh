@@ -19,7 +19,7 @@ DIR=$PWD
 
 source install.sh
 cd $CMSSW_BASE
-cp $CMSSW_BASE/src/PhysicsTools/PatAlgos/test/*.db .
+cp /nfs-7/userdata/JECs/*.db . 
 echo "Making the tarball..."
 stuff1=`find src/ -name "data"`
 stuff2=`find src/ -name "interface"`
