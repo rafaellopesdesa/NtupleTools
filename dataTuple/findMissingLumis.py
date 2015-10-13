@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # instructions: call as 
 #     python findMissingLumis.py [json] ["datasetpattern"] 
-# ex: python findMissingLumis.py Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt "/%s/Run2015D-PromptReco-v3/MINIAOD"
+# example: python findMissingLumis.py Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt "/%s/Run2015D-PromptReco-v3/MINIAOD"
 # https://twiki.cern.ch/twiki/bin/view/CMS/DBS3APIInstructions
 import  sys
 try:
