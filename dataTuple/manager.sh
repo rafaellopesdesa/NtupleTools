@@ -73,7 +73,7 @@ fi
 source /code/osgcode/cmssoft/cmsset_default.sh
 export SCRAM_ARCH=slc6_amd64_gcc491
 pushd .
-cd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_16
+cd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_14
 eval `scramv1 runtime -sh`
 popd
 
