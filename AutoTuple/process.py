@@ -60,6 +60,15 @@ nEventsIn = 0
 temp = "autoTupleLogs/temp" + parts[0].split('/')[1] + ".txt"
 
 while (completelyDone == False):
+  #See if jobs already done.
+  thedir="run2_25ns"
+  if ("50ns" in dataSet): thedir="run2_50ns";
+  if ("25ns" in dataSet): thedir="run2_25ns";
+  if ("RunIISpring15MiniAODv2" in dataSet): thedir="run2_25ns_MiniAODv2";
+  if (os.path.isfile("/hadoop/cms/store/group/" + thedir + "/" + dataSet + "/" + tag[4:] + "/merged_ntuple_1.root")): 
+    completelyDone = True
+    break
+
   #Submit all the jobs
   date=str(datetime.datetime.now().strftime('%y-%m-%d_%H:%M:%S'))
   crab_dir = 'crab_' + parts[0].split('/')[1]+'_'+parts[0].split('/')[2]
