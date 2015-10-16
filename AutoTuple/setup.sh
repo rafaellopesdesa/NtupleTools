@@ -4,6 +4,7 @@ if [ $# -eq 0 ]
   echo "No arguments!" 
   return
 fi
+source /code/osgcode/cmssoft/cms/cmsset_default.sh
 
 gtag=`sed -n '1p' $1`
 tag=`sed -n '2p' $1`
