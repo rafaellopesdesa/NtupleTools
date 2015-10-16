@@ -211,7 +211,7 @@ do
     if [ ! -d crab_$filename ] && [ -e crab_status_logs/noCrab_$filename.txt ] && [ ${WHICHDONE[$fileNumber]} == "false" ]
     then
       WHICHDONE[$fileNumber]="true"
-      python process.py $file $fileNumber $dateTime &
+      nice -n 10  python process.py $file $fileNumber $dateTime &
       let "fileNumber += 1"
       continue
     fi
@@ -302,7 +302,7 @@ do
           rm /hadoop/cms/store/group/snt/$theDir/$filename/$tagDir/*.root
           WHICHDONE[$fileNumber]="true"
           echo "<font color=\"red\"> &nbsp; &nbsp; <b> Shiver me timbers!  Did not post-process, but found a corrupt file in the output dirrrectory on the cmstas hadoop.... </b> <BR> Deleting everything and redoing it.  nEventsIn: $nIn.  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
-          python process.py $file $fileNumber $dateTime &
+          nice -n 10 python process.py $file $fileNumber $dateTime &
           let "fileNumber += 1"
           continue
       fi
@@ -384,7 +384,7 @@ do
          rmdir /hadoop/cms/store/user/$USERNAME/$short_filename/crab_$filename/$dateTime/000$(( $numDirs-1 ))
          numDirs=$(( $numDirs - 1 )) 
       done
-      python process.py $file $fileNumber $dateTime &
+      nice -n 10 python process.py $file $fileNumber $dateTime &
       let "fileNumber += 1"
       continue
     fi
@@ -400,7 +400,7 @@ do
       if [ "$result" == "0" ] && [ -e "crab_status_logs/noCrab_$filename.txt" ] 
       then
         WHICHDONE[$fileNumber]="true"
-        python process.py $file $fileNumber $dateTime &
+        nice -n 10 python process.py $file $fileNumber $dateTime &
         let "fileNumber += 1"
         echo "<font color=\"blue\"> &nbsp; &nbsp; <b> Trying to proceed without redoing the crab stuff.  date_time is $dateTime..... <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
         continue
