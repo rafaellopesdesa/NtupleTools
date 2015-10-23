@@ -1,0 +1,7 @@
+/store/cmst3/group/susy/gpetrucc/13TeV/RunIISpring15DR74/T5qqqqWW_mGo1200_mCh1000_mChi800_dilep/
+T5qqqqWW_mGo1200_mCh1000_mChi800_dilep.MINIAODSIM00.root
+T5qqqqWW_mGo1200_mCh1000_mChi800_dilep.MINIAODSIM01.root
+T5qqqqWW_mGo1200_mCh1000_mChi800_dilep.MINIAODSIM02.root
+T5qqqqWW_mGo1200_mCh1000_mChi800_dilep.MINIAODSIM03.root
+T5qqqqWW_mGo1200_mCh1000_mChi800_dilep.MINIAODSIM04.root
+T5qqqqWW_mGo1200_mCh1000_mChi800_dilep.MINIAODSIM05.root
