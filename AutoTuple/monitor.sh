@@ -453,25 +453,25 @@ do
         minsQueued=$(( ($timeNow-$timeThen)/60 ))
         echo '<font color="blue"> &nbsp; &nbsp; <b> Task has been queued for '"$minsQueued"' minutes!! <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
         if [ $minsQueued -gt $((12*60)) ]; then
-          echo '<font color="red"> &nbsp; &nbsp; <b> Task has been queued for more than 12 hours. Resubmitting!! <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
-          rm -rf crab_$crab_filename &> /dev/null
-          ./FindLumisPerJobNoDAS.sh $inputDS > LumisPerJob_temp.txt
-          numLumiPerJob=`less LumisPerJob_temp.txt | awk '{print $1}'`
-          rm LumisPerJob_temp.txt
-          NCRABREDO[$fileNumber]=$(( ${NCRABREDO[$fileNumber]} + 1 ))
-          if [ "numLumiPerJob" == "Aborting." ]
-          then
-            WHICHDONE[$fileNumber]="invalid"
-            isDonePP="invalid"
-            echo "$filename invalid" >> crab_status_logs/pp.txt
-          elif [ "$sparms" == "" ]
-          then
-            python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d $inputDS -t $CMS3tag -gtag $gtag -isData $isData -lumisPerJob $numLumiPerJob &> /dev/null
-            crab submit -c cfg/$crab_filename.py &> /dev/null
-          else
-            python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d $inputDS -t $CMS3tag -gtag $gtag -isData $isData -lumisPerJob $numLumiPerJob -sParms $sparms &> /dev/null
-            crab submit -c cfg/$crab_filename.py &> /dev/null
-          fi
+          echo '<font color="red"> &nbsp; &nbsp; <b> Task has been queued for more than 12 hours. Not going to do anything (commented out automatic resubmission because of general crab ridiculousness)!! <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
+          #rm -rf crab_$crab_filename &> /dev/null
+          #./FindLumisPerJobNoDAS.sh $inputDS > LumisPerJob_temp.txt
+          #numLumiPerJob=`less LumisPerJob_temp.txt | awk '{print $1}'`
+          #rm LumisPerJob_temp.txt
+          #NCRABREDO[$fileNumber]=$(( ${NCRABREDO[$fileNumber]} + 1 ))
+          #if [ "numLumiPerJob" == "Aborting." ]
+          #then
+          #  WHICHDONE[$fileNumber]="invalid"
+          #  isDonePP="invalid"
+          #  echo "$filename invalid" >> crab_status_logs/pp.txt
+          #elif [ "$sparms" == "" ]
+          #then
+          #  python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d $inputDS -t $CMS3tag -gtag $gtag -isData $isData -lumisPerJob $numLumiPerJob &> /dev/null
+          #  crab submit -c cfg/$crab_filename.py &> /dev/null
+          #else
+          #  python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d $inputDS -t $CMS3tag -gtag $gtag -isData $isData -lumisPerJob $numLumiPerJob -sParms $sparms &> /dev/null
+          #  crab submit -c cfg/$crab_filename.py &> /dev/null
+          #fi
         fi
       else
         echo '<font color="blue"> &nbsp; &nbsp; <b> Task is Queued!! <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
