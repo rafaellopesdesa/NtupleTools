@@ -27,7 +27,7 @@ def makeCrab3Config():
     outFile.write('config.section_(\'General\')\n')
     outFile.write('config.General.transferOutputs = True\n')
     outFile.write('config.General.transferLogs = True\n')
-    outFile.write('config.General.requestName = \'%s\'\n' % outFileName)
+    outFile.write('config.General.requestName = \'%s\'\n' % outFileName[:140])#crab has a limit on characters in the requestName... take first 140
     outFile.write('\n')
     outFile.write('config.section_(\'JobType\')\n')
     outFile.write('config.JobType.inputFiles = [ \'Summer15_25nsV5_MC.db\' ]\n')

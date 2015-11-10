@@ -66,6 +66,10 @@ while (lnum <= inFile_size):
     isFsim = True
     print "Detected fastsim"
     command = 'python makeCrab3Files.py -CMS3cfg skeleton_fsim_cfg.py -d ' + parts[0] + ' -t ' + tag + ' -gtag ' + gtag + ' -lumisPerJob ' + numLumiPerJob
+  elif "FastAsympt" in parts[0]:
+    isFsim = True
+    print "Detected fastsim"
+    command = 'python makeCrab3Files.py -CMS3cfg skeleton_fsim_cfg.py -d ' + parts[0] + ' -t ' + tag + ' -gtag ' + gtag + ' -lumisPerJob ' + numLumiPerJob
   else:
     command = 'python makeCrab3Files.py -CMS3cfg skeleton_cfg.py -d ' + parts[0] + ' -t ' + tag + ' -gtag ' + gtag + ' -lumisPerJob ' + numLumiPerJob
   if len(parts) > 5:
