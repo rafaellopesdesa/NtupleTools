@@ -1,0 +1,6 @@
+/store/cmst3/group/susy/gpetrucc/13TeV/RunIISpring15DR74/T5qqqqWWDeg_mGo1000_mCh315_mChi300_dilep/
+T5qqqqWWDeg_mGo1000_mCh315_mChi300_dilep.MINIAODSIM00.root
+T5qqqqWWDeg_mGo1000_mCh315_mChi300_dilep.MINIAODSIM01.root
+T5qqqqWWDeg_mGo1000_mCh315_mChi300_dilep.MINIAODSIM02.root
+T5qqqqWWDeg_mGo1000_mCh315_mChi300_dilep.MINIAODSIM03.root
+T5qqqqWWDeg_mGo1000_mCh315_mChi300_dilep.MINIAODSIM04.root
