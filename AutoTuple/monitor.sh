@@ -371,7 +371,18 @@ do
 
     #If status is done, we're done
     grep -r "Task status" $status_filename | grep "COMPLETED" &>/dev/null
-    if [ "$?" == "0" ]; then isDone="1"; else isDone="0"; fi
+    if [ "$?" == "0" ]
+    then 
+      #Double check to make sure crab didn't fuck it up
+      numberOfRunnings=`grep -r "running" $status_filename | grep "running" | wc -l`
+      if [ "$numberOfRunnings" == "0" ] 
+      then  
+        isDone="1" 
+      else
+        isDone="0"
+    else 
+      isDone="0"
+    fi
     if [ "$isDone" == "1" ]
     then
       echo '<font color="blue"> &nbsp; &nbsp; <b> Ready for Post-Processing!!  <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
