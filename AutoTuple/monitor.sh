@@ -380,6 +380,7 @@ do
         isDone="1" 
       else
         isDone="0"
+      fi
     else 
       isDone="0"
     fi
