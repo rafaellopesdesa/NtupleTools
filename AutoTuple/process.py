@@ -31,6 +31,9 @@ parts = lines[lineno].split()[0:5]
 parts.append(tag)
 parts.append(gtag)
 parts += lines[lineno].split()[5:]
+tempstr = parts[0].split('/')[1]+'_'+parts[0].split('/')[2]
+#now have some stupid additional requestname for SMSes
+requestname = tempstr[:140]
 #Parts contents:
   #0 - name 
   #1 - xsec
@@ -49,8 +52,8 @@ if os.path.isfile(dir):
 
 #Figure out output directory
 if (dateTime == "0"):
-  os.system('grep -m 1 -r "Looking up detailed status of task" %s | awk \'{print $10}\' | cut -c 1-13 > %s' % ('crab_'+parts[0].split('/')[1]+'_'+parts[0].split('/')[2]+'/crab.log','crab_'+parts[0].split('/')[1]+'_'+parts[0].split('/')[2]+'/jobDateTime.txt'))
-  timeFile = open('crab_'+parts[0].split('/')[1]+'_'+parts[0].split('/')[2]+'/jobDateTime.txt', "r")
+  os.system('grep -m 1 -r "Looking up detailed status of task" %s | awk \'{print $10}\' | cut -c 1-13 > %s' % ('crab_'+requestname+'/crab.log','crab_'+requestname+'/jobDateTime.txt'))
+  timeFile = open('crab_'+requestname+'/jobDateTime.txt', "r")
   dateTime=timeFile.readline().rstrip("\n")
 
 completelyDone = False
@@ -65,13 +68,14 @@ while (completelyDone == False):
   if ("50ns" in dataSet): thedir="run2_50ns";
   if ("25ns" in dataSet): thedir="run2_25ns";
   if ("RunIISpring15MiniAODv2" in dataSet): thedir="run2_25ns_MiniAODv2";
+  if ("RunIISpring15MiniAODv2-FastAsympt25ns" in dataSet): thedir="run2_fastsim";
   if (os.path.isfile("/hadoop/cms/store/group/" + thedir + "/" + dataSet + "/" + tag[4:] + "/merged_ntuple_1.root")): 
     completelyDone = True
     break
 
   #Submit all the jobs
   date=str(datetime.datetime.now().strftime('%y-%m-%d_%H:%M:%S'))
-  crab_dir = 'crab_' + parts[0].split('/')[1]+'_'+parts[0].split('/')[2]
+  crab_dir = 'crab_' + requestname
   os.system('python makeListsForMergingCrab3.py -c ' + crab_dir + ' -d /hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/' + dateTime + '/0000/ -o /hadoop/cms/store/user/' + user + '/' + parts[0].split('/')[1] + '/' + crab_dir + '/' + parts[5] + '/merged/ -s ' + dataSet + ' -k ' + parts[2] + ' -e ' + parts[3] + ' -x ' + parts[1] + ' --overrideCrab >> ' + temp + '2')
   os.system('./submitMergeJobs.sh cfg/' + dataSet + '_cfg.sh ' + date + ' > ' + temp)  
 
