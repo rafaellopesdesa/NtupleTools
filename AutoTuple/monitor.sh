@@ -151,11 +151,12 @@ do
     #Calculate directory names
     temp3=`echo ${inputDS//\//_} | cut -c 2-`
     crab_filename=${temp3%_*}
+    crab_filename=`echo $crab_filename | cut -c 1-140`
     status_filename="crab_status_logs/${crab_filename}_log.txt"
     tagDir=`echo $CMS3tag | cut -c 6-`
 
     #if crab directory doesn't exist (i.e. was added), make and submit crab jobs
-    if [ ! -d crab_$filename ] && [ "${WHICHDONE[$fileNumber]}" != "invalid" ] && [ ! -e crab_status_logs/noCrab_$filename.txt ]
+    if [ ! -d crab_${crab_filename} ] && [ "${WHICHDONE[$fileNumber]}" != "invalid" ] && [ ! -e crab_status_logs/noCrab_${crab_filename}.txt ]
     then
       echo "<A HREF=\"http://uaf-7.t2.ucsd.edu/~$USER/${crab_filename}_log.txt\"> ${crab_filename}</A><BR>" >> AutoTupleHQ.html
       if [ "${NCRABREDO[$fileNumber]}" == "" ] 
@@ -200,15 +201,15 @@ do
     fi
     
     #date and time
-    if [ -e crab_$filename/crab.log ] 
+    if [ -e crab_${crab_filename}/crab.log ] 
     then
-      grep -m 1 -r "Looking up detailed status of task" crab_$filename/crab.log | awk '{print $10}' | cut -c 1-13 > crab_$filename/jobDateTime.txt
-      dateTime=`less crab_$filename/jobDateTime.txt`
+      grep -m 1 -r "Looking up detailed status of task" crab_${crab_filename}/crab.log | awk '{print $10}' | cut -c 1-13 > crab_${crab_filename}/jobDateTime.txt
+      dateTime=`less crab_${crab_filename}/jobDateTime.txt`
     else
-      dateTime=`ls -lthr --ignore=$CMS3tag /hadoop/cms/store/user/$USERNAME/$short_filename/crab_$filename/ | awk '{print $NF}' | tail -1`
+      dateTime=`ls -lthr --ignore=$CMS3tag /hadoop/cms/store/user/$USERNAME/$short_filename/crab_${crab_filename}/ | awk '{print $NF}' | tail -1`
     fi
 
-    if [ ! -d crab_$filename ] && [ -e crab_status_logs/noCrab_$filename.txt ] && [ ${WHICHDONE[$fileNumber]} == "false" ]
+    if [ ! -d crab_${crab_filename} ] && [ -e crab_status_logs/noCrab_${crab_filename}.txt ] && [ ${WHICHDONE[$fileNumber]} == "false" ]
     then
       WHICHDONE[$fileNumber]="true"
       nice -n 10  python process.py $file $fileNumber $dateTime &
@@ -224,7 +225,7 @@ do
         nIn="${NEVTS[$fileNumber]}"
         nOut="${NEVTS[$fileNumber]}"
       else
-        root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/user/$USERNAME/$short_filename/crab_$filename/$dateTime/0000/\"\) > crab_status_logs/temp2.txt 2>&1
+        root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/user/$USERNAME/$short_filename/crab_${crab_filename}/$dateTime/0000/\"\) > crab_status_logs/temp2.txt 2>&1
         nIn=`grep -r "nEntries" crab_status_logs/temp2.txt | tail -1 | awk '{print $NF}'`
         root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/group/snt/$theDir/$filename/$tagDir\"\) > crab_status_logs/temp.txt 2>&1
         grep -r "trying to recover" crab_status_logs/temp.txt &> /dev/null
@@ -277,7 +278,7 @@ do
           do
             rm /hadoop/cms/store/group/snt/$theDir/$filename/$tagDir/merged_ntuple_$i.root
           done
-          mv /hadoop/cms/store/group/snt/$theDir/$filename/$tagDir/*.root /hadoop/cms/store/user/$USERNAME/$short_filename/crab_$filename/CMS3_$tagDir/merged/
+          mv /hadoop/cms/store/group/snt/$theDir/$filename/$tagDir/*.root /hadoop/cms/store/user/$USERNAME/$short_filename/crab_${crab_filename}/CMS3_$tagDir/merged/
           WHICHDONE[$fileNumber]="true"
           echo "<font color=\"red\"> &nbsp; &nbsp; <b> Shiver me timbers!  There was a problem copying this file.  File $i is corrupt. Fixing..... nEventsIn: $nIn.  <font color=\"black\"></b><BR><BR>" >> AutoTupleHQ.html
           let "fileNumber += 1"
@@ -311,7 +312,7 @@ do
     #if crab has finished but post-processing has not, check on post-processing
     if [ "${WHICHDONE[$fileNumber]}" == "true" ] 
     then
-      root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/user/$USERNAME/$short_filename/crab_$filename/$dateTime/0000/\"\) > crab_status_logs/temp2.txt 2>&1
+      root -b -l -q numEventsROOT.C\(\"/hadoop/cms/store/user/$USERNAME/$short_filename/crab_${crab_filename}/$dateTime/0000/\"\) > crab_status_logs/temp2.txt 2>&1
       nIn=`grep -r "nEntries" crab_status_logs/temp2.txt | tail -1 | awk '{print $NF}'`
       #Print header
       echo "  " >> AutoTupleHQ.html
@@ -380,6 +381,7 @@ do
         isDone="1" 
       else
         isDone="0"
+      fi
     else 
       isDone="0"
     fi
@@ -387,12 +389,12 @@ do
     then
       echo '<font color="blue"> &nbsp; &nbsp; <b> Ready for Post-Processing!!  <font color="black"></b><BR><BR>' >> AutoTupleHQ.html
       WHICHDONE[$fileNumber]="true"
-      numDirs=`ls /hadoop/cms/store/user/$USERNAME/$short_filename/crab_$filename/$dateTime/ | wc -l` 
+      numDirs=`ls /hadoop/cms/store/user/$USERNAME/$short_filename/crab_${crab_filename}/$dateTime/ | wc -l` 
       while [ "$numDirs" -gt "1" ]
       do
-        if [ ! -e /hadoop/cms/store/user/$USERNAME/$short_filename/crab_$filename/$dateTime/000$(( $numDirs-1 )) ]; then echo "does not exist, not copying"; continue; fi
-        mv /hadoop/cms/store/user/$USERNAME/$short_filename/crab_$filename/$dateTime/000$(( $numDirs-1 ))/* /hadoop/cms/store/user/$USERNAME/$short_filename/crab_$filename/$dateTime/0000/
-         rmdir /hadoop/cms/store/user/$USERNAME/$short_filename/crab_$filename/$dateTime/000$(( $numDirs-1 ))
+        if [ ! -e /hadoop/cms/store/user/$USERNAME/$short_filename/crab_${crab_filename}/$dateTime/000$(( $numDirs-1 )) ]; then echo "does not exist, not copying"; numDirs=$(( $numDirs - 1 )); continue; fi
+        mv /hadoop/cms/store/user/$USERNAME/$short_filename/crab_${crab_filename}/$dateTime/000$(( $numDirs-1 ))/* /hadoop/cms/store/user/$USERNAME/$short_filename/crab_${crab_filename}/$dateTime/0000/
+         rmdir /hadoop/cms/store/user/$USERNAME/$short_filename/crab_${crab_filename}/$dateTime/000$(( $numDirs-1 ))
          numDirs=$(( $numDirs - 1 )) 
       done
       nice -n 10 python process.py $file $fileNumber $dateTime &
@@ -408,7 +410,7 @@ do
     then 
       grep -r "not found" $status_filename | grep "Working directory for task" &>/dev/null 
       result="$?"
-      if [ "$result" == "0" ] && [ -e "crab_status_logs/noCrab_$filename.txt" ] 
+      if [ "$result" == "0" ] && [ -e "crab_status_logs/noCrab_${crab_filename}.txt" ] 
       then
         WHICHDONE[$fileNumber]="true"
         nice -n 10 python process.py $file $fileNumber $dateTime &
