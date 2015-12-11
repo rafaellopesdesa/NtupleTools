@@ -151,7 +151,7 @@ do
     #Calculate directory names
     temp3=`echo ${inputDS//\//_} | cut -c 2-`
     crab_filename=${temp3%_*}
-    crab_filename=`echo $crab_filename | cut -c 1-140`
+    crab_filename=`echo $crab_filename | cut -c 1-100`
     status_filename="crab_status_logs/${crab_filename}_log.txt"
     tagDir=`echo $CMS3tag | cut -c 6-`
 

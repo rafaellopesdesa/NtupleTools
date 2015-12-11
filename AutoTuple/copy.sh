@@ -28,7 +28,7 @@ fi
 myDir=`echo $CMS3tag | cut -c 6-`
 longName=`echo $dataSet | awk -F '/' '{print $2 "_" $3}'`
 shortName=`echo $dataSet | awk -F '/' '{print $2}'`
-lName=`echo $longName | cut -c 1-140`
+lName=`echo $longName | cut -c 1-100`
 
 #Set username
 USERNAME="$USER"

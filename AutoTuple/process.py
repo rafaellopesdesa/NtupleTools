@@ -33,7 +33,7 @@ parts.append(gtag)
 parts += lines[lineno].split()[5:]
 tempstr = parts[0].split('/')[1]+'_'+parts[0].split('/')[2]
 #now have some stupid additional requestname for SMSes
-requestname = tempstr[:140]
+requestname = tempstr[:100]
 #Parts contents:
   #0 - name 
   #1 - xsec
