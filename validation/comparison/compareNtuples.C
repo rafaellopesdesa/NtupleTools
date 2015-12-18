@@ -114,8 +114,8 @@ void doSinglePlots(vector <std::string> branches, bool isNew, TTree* tree){
 void test(){
 
   //Put in the files you want to compare here
-  string filename_new = "/home/users/sicheng/play/comparison/merged_ntuple_143.root";
-  string filename_old = "/home/users/sicheng/play/comparison/merged_ntuple_9.root";
+  string filename_new = "/home/users/namin/2015/76x/new/CMSSW_7_6_1/src/CMS3/NtupleMaker/test/ntuple_76X.root";
+  string filename_old = "/home/users/namin/2015/74x/CMSSW_7_4_14/src/CMS3/NtupleMaker/test/ntuple_74X.root";
 
   //Load files
   file_old = new TFile(filename_old.c_str());
