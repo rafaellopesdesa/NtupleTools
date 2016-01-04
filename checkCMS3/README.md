@@ -10,9 +10,7 @@ If you're checking a merged CMS3 sample, you can (optionally) put the path to th
 $ root
 root[0] .L checkCMS3.C+
 root[1] checkCMS3("/path/to/some/sample/directory/")
-```
-or
-```
+---or---
 root[1] checkCMS3("/path/to/some/merged/sample/", "/optional/path/to/unmerged/version/")
 ```
 
@@ -22,6 +20,7 @@ Detailed printouts will highlight where any problems are found.
 ###Tests performed:
   - Detailed event counting
   - Printout of CMS3 tag
+  - Consistency check between CMS3 tag and directory name
   - Detailed checks of post-processing variables
   - Checking for sParm branches
 

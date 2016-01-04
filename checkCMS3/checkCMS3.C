@@ -116,6 +116,22 @@ int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilt
 
   cout << "\nCMS3 tag: ";
   printColor( tagtext.Data(), 96, humanUser );
+  cout << endl;
+
+  TRegexp cms3Version("V[0-9][0-9]-[0-9][0-9]-[a-zA-Z0-9-_]*");
+
+  // If the sample to be checked is stored in the SNT hadoop area,
+  //  then check to make sure the directory has the correct tag name
+
+  if( samplePath.Contains("/hadoop/cms/store/group/snt") ) {
+	TString tagStored = tagtext(cms3Version);
+	TString tagDir    = samplePath(cms3Version);
+	if( tagStored != tagDir && tagDir != "" ) {
+	  printColor("CMS3 tags don't match!", 91, humanUser);
+	  cout << "This ntuple was made using " << tagStored << ", but it's stored in a directory named " << tagDir << "." << endl;
+	  nProblems++;
+	}
+  }
 
   
   /////////////////////////////////////////////////////////////////////////////////
