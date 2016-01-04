@@ -126,10 +126,17 @@ int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilt
   if( samplePath.Contains("/hadoop/cms/store/group/snt") ) {
 	TString tagStored = tagtext(cms3Version);
 	TString tagDir    = samplePath(cms3Version);
-	if( tagStored != tagDir && tagDir != "" ) {
-	  printColor("CMS3 tags don't match!", 91, humanUser);
-	  cout << "This ntuple was made using " << tagStored << ", but it's stored in a directory named " << tagDir << "." << endl;
-	  nProblems++;
+	if( tagStored != tagDir ) {
+	  if( tagDir == "" ) {
+		printColor("Warning: I couldn't detect a CMS3 version number in the name of the sample directory:", 93, humanUser);
+		cout << samplePath << endl;
+	  }
+	  else {
+		printColor("CMS3 tags don't match!", 91, humanUser);
+		cout << "This ntuple was made using " << tagStored << ", but it's stored in a directory named " << tagDir << "." << endl;
+		nProblems++;
+	  }
+
 	}
   }
 
