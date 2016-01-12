@@ -255,6 +255,10 @@ int checkCMS3( TString samplePath = "", TString unmerged_path = "", bool useFilt
       if( isHigh ) printf( "%28s:  %8lld  <-- count is high\n", filename(shortname).Data(), nEvts_file );
       else if( isLow) printf( "%28s:  %8lld  <-- count is low\n", filename(shortname).Data(), nEvts_file );
       else if( !isHigh && !isLow && nFilesHere<10 ) printf( "%28s:  %8lld\n", filename(shortname).Data(), nEvts_file );
+
+	  delete tree;
+	  file->Close();
+	  delete file;
     }
   }
 
