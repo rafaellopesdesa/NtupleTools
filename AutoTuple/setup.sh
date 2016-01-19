@@ -8,7 +8,7 @@ source /code/osgcode/cmssoft/cms/cmsset_default.sh
 
 gtag=`sed -n '1p' $1`
 tag=`sed -n '2p' $1`
-CMSSW_VER=CMSSW_7_4_14
+CMSSW_VER=CMSSW_7_6_3
 # CMSSW_VER=CMSSW_7_4_1_patch1
 export PATH=$PATH:`pwd`
 source /cvmfs/cms.cern.ch/crab3/crab.sh
@@ -25,16 +25,16 @@ then
   return 1 
 fi
 popd
-if [ ! -e /nfs-7/userdata/libCMS3/lib_$tag.tar.gz ]
+if [ ! -e /data/userdata/rclsa/libCMS3/lib_$tag.tar.gz ]
 then
   echo "Trying to make this on the fly.  Hopefully this works......"
   source ../cms3withCondor/make_libCMS3.sh $tag $CMSSW_VER
-  mv lib_$tag.tar.gz /nfs-7/userdata/libCMS3/lib_$tag.tar.gz
+  mv lib_$tag.tar.gz /data/userdata/rclsa/libCMS3/lib_$tag.tar.gz
   cd $CMSSW_BASE
 else
   cd ${CMSSW_VER}
   cmsenv
-  cp /nfs-7/userdata/libCMS3/lib_$tag.tar.gz . 
+  cp /data/userdata/rclsa/libCMS3/lib_$tag.tar.gz . 
   tar -xzvf lib_$tag.tar.gz
   scram b -j 10
 fi

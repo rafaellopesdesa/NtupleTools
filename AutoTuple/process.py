@@ -91,7 +91,7 @@ while (completelyDone == False):
   if (nLeft == 0): 
     completelyDone = True
     os.system('echo "%s done" >> crab_status_logs/pp.txt' % (dataSet))
-    os.system('. copy.sh %s %s %s' % (parts[0], tag, dateTime))
+#    os.system('. copy.sh %s %s %s' % (parts[0], tag, dateTime))
     print "running: . copy.sh %s %s %s " % (parts[0], tag, dateTime)
     continue
  

@@ -46,12 +46,12 @@ fi
 #export PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH
 
 #Use enviroment setting from MT2Analysis
-CMSSW_VERSION=CMSSW_7_4_1
+CMSSW_VERSION=CMSSW_7_6_3
 echo "[wrapper] setting env"
-export SCRAM_ARCH=slc6_amd64_gcc491
+export SCRAM_ARCH=slc6_amd64_gcc493
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 OLDDIR=`pwd`
-cd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/$CMSSW_VERSION/src
+cd /cvmfs/cms.cern.ch/slc6_amd64_gcc493/cms/cmssw/$CMSSW_VERSION/src
 #cmsenv
 eval `scramv1 runtime -sh`
 cd $OLDDIR

@@ -11,7 +11,7 @@ fi
 
 echo "Checkout and build CMS3:"
 
-curl https://raw.githubusercontent.com/cmstas/NtupleMaker/${THE_CMS3_TAG}/install.sh > install.sh
+curl https://raw.githubusercontent.com/rafaellopesdesa/NtupleMaker/${THE_CMS3_TAG}/install.sh > install.sh
 sed -i "4s/.*/CMS3Tag=${THE_CMS3_TAG}/g" install.sh
 sed -i "5s/.*/CMSSW_release=${CMSSW_RELEASE}/g" install.sh
 
@@ -19,7 +19,7 @@ DIR=$PWD
 
 source install.sh
 cd $CMSSW_BASE
-cp /nfs-7/userdata/JECs/*.db . 
+cp /data/userdata/rclsa/JECs/*.db . 
 echo "Making the tarball..."
 stuff1=`find src/ -name "data"`
 stuff2=`find src/ -name "interface"`
