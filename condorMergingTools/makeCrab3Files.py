@@ -30,7 +30,7 @@ def makeCrab3Config():
     outFile.write('config.General.requestName = \'%s\'\n' % outFileName[:100])#crab has a limit on characters in the requestName... take first 100
     outFile.write('\n')
     outFile.write('config.section_(\'JobType\')\n')
-    outFile.write('config.JobType.inputFiles = [ \'Summer15_25nsV5_MC.db\' ]\n')
+    outFile.write('config.JobType.inputFiles = [ \'Summer15_25nsV6_MC.db\' ]\n')
     outFile.write('config.JobType.pluginName = \'Analysis\'\n')
     outFile.write('config.JobType.psetName = \'%s_cfg.py\'\n' % ('./' + psetPfx + outFileName))
     outFile.write('\n')
